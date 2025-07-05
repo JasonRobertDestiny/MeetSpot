@@ -1,0 +1,48 @@
+@echo off
+chcp 65001 >nul
+echo ===== MeetSpot Vercel 优化部署推送助手 =====
+echo.
+
+REM 确定用户是否要推送到 GitHub
+set /p push_confirm="是否要推送更改到 GitHub? (y/n): "
+if /i "%push_confirm%" NEQ "y" (
+  echo 操作已取消
+  goto :end
+)
+
+REM 询问提交信息
+set /p commit_message="请输入提交信息 [优化: Vercel 部署包大小优化]: "
+if "%commit_message%"=="" set commit_message=优化: Vercel 部署包大小优化
+
+echo.
+echo 将推送以下关键文件:
+echo  - requirements.txt (精简依赖)
+echo  - vercel.json (优化构建配置)
+echo  - api/index.py (优化入口点)
+echo  - .vercelignore (更新忽略文件)
+echo.
+
+set /p final_confirm="确认继续? (y/n): "
+if /i "%final_confirm%" NEQ "y" (
+  echo 操作已取消
+  goto :end
+)
+
+echo.
+echo 正在添加文件...
+git add requirements.txt vercel.json api/index.py .vercelignore
+
+echo.
+echo 正在提交更改...
+git commit -m "%commit_message%"
+
+echo.
+echo 正在推送到GitHub...
+git push origin main
+
+echo.
+echo 推送完成！请检查 Vercel 控制台确认部署状态。
+echo.
+
+:end
+pause

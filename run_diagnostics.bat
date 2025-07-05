@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 echo ===== MeetSpot Vercel 部署诊断工具 =====
 echo.
 

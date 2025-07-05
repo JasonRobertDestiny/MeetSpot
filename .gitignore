@@ -89,7 +89,9 @@ comprehensive_test.py
 quick_test.py
 simple_test.py
 performance_verification.py
-verify_*.py
+# 部署验证文件需要保留
+# verify_deployment.py
+# diagnose_vercel_deployment.py
 *test*.py
 
 # 开发和构建文件
