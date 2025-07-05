@@ -1,6 +1,6 @@
 from typing import List
 
-import aiohttp
+import httpx
 from bs4 import BeautifulSoup
 
 from app.tool.base import BaseTool
@@ -44,11 +44,11 @@ class BingSearch(BaseTool):
         }
         search_url = f"https://www.bing.com/search?q={query}"
 
-        async with aiohttp.ClientSession() as session:
+        async with httpx.AsyncClient() as client:
             try:
-                async with session.get(search_url, headers=headers) as response:
-                    response.raise_for_status()
-                    html = await response.text()
+                response = await client.get(search_url, headers=headers)
+                response.raise_for_status()
+                html = response.text
             except Exception as e:
                 raise RuntimeError(f"必应搜索请求失败: {str(e)}")
 
