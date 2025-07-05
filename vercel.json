@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.py",
+      "src": "api/debug.py",
       "use": "@vercel/python"
     },
     {
@@ -37,15 +37,15 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/api/debug.py"
     },
     {
       "src": "/health",
-      "dest": "/api/index.py"
+      "dest": "/api/debug.py"
     },
     {
       "src": "/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/api/debug.py"
     }
   ],
   "env": {
