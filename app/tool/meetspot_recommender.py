@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 import aiofiles
-import aiohttp
+import httpx
 from pydantic import Field
 
 from app.logger import logger
@@ -406,18 +406,18 @@ class CafeRecommender(BaseTool):
             return self.geocode_cache[address]
         url = "https://restapi.amap.com/v3/geocode/geo"
         params = {"key": self.api_key, "address": address, "output": "json"}
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, params=params) as response:
-                if response.status != 200:
-                    logger.error(f"高德地图API地理编码请求失败: {response.status}, 地址: {address}")
-                    return None
-                data = await response.json()
-                if data["status"] != "1" or not data["geocodes"]:
-                    logger.error(f"地理编码失败: {data.get('info', '未知错误')}, 地址: {address}")
-                    return None
-                result = data["geocodes"][0]
-                self.geocode_cache[address] = result
-                return result
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, params=params)
+            if response.status_code != 200:
+                logger.error(f"高德地图API地理编码请求失败: {response.status_code}, 地址: {address}")
+                return None
+            data = response.json()
+            if data["status"] != "1" or not data["geocodes"]:
+                logger.error(f"地理编码失败: {data.get('info', '未知错误')}, 地址: {address}")
+                return None
+            result = data["geocodes"][0]
+            self.geocode_cache[address] = result
+            return result
 
     def _calculate_center_point(self, coordinates: List[Tuple[float, float]]) -> Tuple[float, float]:
         if not coordinates:
@@ -450,18 +450,21 @@ class CafeRecommender(BaseTool):
         if types: 
             params["types"] = types
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, params=params) as response:
-                if response.status != 200:
-                    logger.error(f"高德地图POI搜索失败: {response.status}, 参数: {params}")
-                    return []
-                data = await response.json()
-                if data["status"] != "1":
-                    logger.error(f"POI搜索API返回错误: {data.get('info', '未知错误')}, 参数: {params}")
-                    return []
-                pois = data.get("pois", [])
-                self.poi_cache[cache_key] = pois
-                return pois
+        if types: 
+            params["types"] = types
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, params=params)
+            if response.status_code != 200:
+                logger.error(f"高德地图POI搜索失败: {response.status_code}, 参数: {params}")
+                return []
+            data = response.json()
+            if data["status"] != "1":
+                logger.error(f"POI搜索API返回错误: {data.get('info', '未知错误')}, 参数: {params}")
+                return []
+            pois = data.get("pois", [])
+            self.poi_cache[cache_key] = pois
+            return pois
 
     def _rank_places(
         self,
