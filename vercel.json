@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/minimal.py",
+      "src": "api/test.py",
       "use": "@vercel/python"
     },
     {
@@ -37,15 +37,15 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/minimal.py"
+      "dest": "/api/test.py"
     },
     {
       "src": "/health",
-      "dest": "/api/minimal.py"
+      "dest": "/api/test.py"
     },
     {
       "src": "/(.*)",
-      "dest": "/api/minimal.py"
+      "dest": "/api/test.py"
     }
   ],
   "env": {
