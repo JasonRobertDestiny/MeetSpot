@@ -1,5 +1,6 @@
 # Core dependencies - 必要的核心依赖
 fastapi==0.100.0
+uvicorn==0.22.0
 pydantic==2.0.3
 
 # Utilities - 必要的工具包
