@@ -10,38 +10,30 @@
       "use": "@vercel/static"
     },
     {
-      "src": "workspace/**",
+      "src": "workspace/meetspot_finder.html",
       "use": "@vercel/static"
     },
     {
-      "src": "docs/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "config/**",
+      "src": "docs/logo.png",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/",
-      "dest": "/public/index.html"
+      "dest": "/workspace/meetspot_finder.html"
     },
     {
       "src": "/favicon.ico",
       "dest": "/public/favicon.ico"
     },
     {
-      "src": "/workspace/(.*)",
-      "dest": "/workspace/$1"
+      "src": "/workspace/meetspot_finder.html",
+      "dest": "/workspace/meetspot_finder.html"
     },
     {
-      "src": "/docs/(.*)",
-      "dest": "/docs/$1"
-    },
-    {
-      "src": "/config/(.*)",
-      "dest": "/config/$1"
+      "src": "/docs/logo.png",
+      "dest": "/docs/logo.png"
     },
     {
       "src": "/api/(.*)",
@@ -50,14 +42,6 @@
     {
       "src": "/health",
       "dest": "/api/index.py"
-    },
-    {
-      "src": "/(css|js|images|assets)/(.*)",
-      "dest": "/public/$1/$2"
-    },
-    {
-      "src": "/(.*\\.(jpg|jpeg|png|gif|svg|webp|css|js))",
-      "dest": "/public/$1"
     },
     {
       "src": "/(.*)",

@@ -5,7 +5,9 @@ comprehensive_test.py
 quick_test.py
 simple_test.py
 performance_verification.py
-verify_*.py
+# 保留部署验证文件
+# verify_deployment.py
+# diagnose_vercel_deployment.py
 *test*.py
 
 # 开发文件
@@ -14,6 +16,8 @@ show_development_plan.py
 stage1_development_planner.py
 fix_recommender.py
 run_flow.py
+check_status.py
+run_diagnostics.*
 
 # 文档和报告
 *_REPORT.md
@@ -34,6 +38,9 @@ PUSH_GUIDE.md
 RECRUITMENT_ACTION_PLAN.md
 STAGE1_COMPLETION_REPORT.md
 YAML_FIX_REPORT.md
+README_*.md
+LICENSE
+SECURITY.md
 
 # 构建和部署文件
 Dockerfile
@@ -41,7 +48,52 @@ docker-compose.yml
 deploy.sh
 deploy.bat
 verify_project.sh
+
+# 更多缓存和编译文件
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 日志和缓存
+logs/
+*.log
+
+# IDE相关
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 虚拟环境
+venv/
+env/
+ENV/
+
+# 不需要部署的目录
+functions/
+marketing/
+openmanus.egg-info/
+tests/
 deploy_to_vercel.*
+pyproject.toml
+setup.py
 
 # Cloudflare相关（不需要了）
 wrangler.toml
@@ -80,3 +132,7 @@ tests/
 *.egg-info/
 dist/
 build/
+
+# 减小部署大小
+app/sandbox/
+workspace/js_src/
