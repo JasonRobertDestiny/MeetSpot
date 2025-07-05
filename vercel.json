@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/simple_diagnose.py",
+      "src": "api/minimal.py",
       "use": "@vercel/python"
     },
     {
@@ -37,15 +37,15 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/simple_diagnose.py"
+      "dest": "/api/minimal.py"
     },
     {
       "src": "/health",
-      "dest": "/api/simple_diagnose.py"
+      "dest": "/api/minimal.py"
     },
     {
       "src": "/(.*)",
-      "dest": "/api/simple_diagnose.py"
+      "dest": "/api/minimal.py"
     }
   ],
   "env": {
