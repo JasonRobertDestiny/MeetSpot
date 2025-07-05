@@ -8,6 +8,18 @@
     {
       "src": "public/**",
       "use": "@vercel/static"
+    },
+    {
+      "src": "workspace/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "docs/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "config/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -16,8 +28,20 @@
       "dest": "/public/index.html"
     },
     {
+      "src": "/favicon.ico",
+      "dest": "/public/favicon.ico"
+    },
+    {
       "src": "/workspace/(.*)",
       "dest": "/workspace/$1"
+    },
+    {
+      "src": "/docs/(.*)",
+      "dest": "/docs/$1"
+    },
+    {
+      "src": "/config/(.*)",
+      "dest": "/config/$1"
     },
     {
       "src": "/api/(.*)",
@@ -28,8 +52,19 @@
       "dest": "/api/index.py"
     },
     {
+      "src": "/(css|js|images|assets)/(.*)",
+      "dest": "/public/$1/$2"
+    },
+    {
+      "src": "/(.*\\.(jpg|jpeg|png|gif|svg|webp|css|js))",
+      "dest": "/public/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/api/index.py"
     }
-  ]
+  ],
+  "env": {
+    "DEBUG": "true"
+  }
 }
