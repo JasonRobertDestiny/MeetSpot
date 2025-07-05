@@ -2,21 +2,12 @@
 fastapi==0.100.0
 uvicorn==0.22.0
 pydantic==2.0.3
-jinja2==3.1.2
 
 # Utilities - 必要的工具包
-aiofiles==23.1.0
 httpx==0.24.1
 
-# File processing - 文件处理
-toml==0.10.2
-
-# Map and location services - 地图和位置服务
+# Map and location services - 地图和位置服务（如果需要）
 requests==2.31.0
-geopy==2.3.0
-
-# UI and visualization - UI和可视化（可选）
-# folium==0.14.0
 
 # Additional utilities - 额外的工具
 python-multipart==0.0.5
