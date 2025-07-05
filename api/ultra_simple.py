@@ -70,6 +70,9 @@ try:
 except Exception as e:
     print(f"❌ FastAPI导入失败: {e}")
     
+    # 保存错误信息
+    import_error = str(e)
+    
     # 最基本的ASGI应用
     async def app(scope, receive, send):
         if scope["type"] == "http":
@@ -81,7 +84,7 @@ except Exception as e:
             response = {
                 "message": "MeetSpot API (基础模式)",
                 "status": "online",
-                "error": str(e),
+                "error": import_error,
                 "env_check": {
                     "amap": bool(amap_key),
                     "silicon": bool(silicon_key)

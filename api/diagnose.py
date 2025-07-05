@@ -94,13 +94,16 @@ try:
 
 except Exception as e:
     # 如果连FastAPI都无法导入
+    error_details = str(e)
+    error_traceback = traceback.format_exc()
+    
     async def debug_app(scope, receive, send):
         import json
         
         response = {
             "error": "FastAPI导入失败",
-            "details": str(e),
-            "traceback": traceback.format_exc()
+            "details": error_details,
+            "traceback": error_traceback
         }
         
         await send({
