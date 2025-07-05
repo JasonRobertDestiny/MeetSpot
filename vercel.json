@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/ultra_simple.py",
+      "src": "api/index.py",
       "use": "@vercel/python"
     },
     {
@@ -37,15 +37,15 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/ultra_simple.py"
+      "dest": "/api/index.py"
     },
     {
       "src": "/health",
-      "dest": "/api/ultra_simple.py"
+      "dest": "/api/index.py"
     },
     {
       "src": "/(.*)",
-      "dest": "/api/ultra_simple.py"
+      "dest": "/api/index.py"
     }
   ],
   "env": {
