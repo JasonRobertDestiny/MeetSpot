@@ -6,15 +6,19 @@
       "use": "@vercel/python"
     },
     {
-      "src": "workspace/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "docs/**",
+      "src": "public/**",
       "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "/",
+      "dest": "/public/index.html"
+    },
+    {
+      "src": "/workspace/(.*)",
+      "dest": "/workspace/$1"
+    },
     {
       "src": "/api/(.*)",
       "dest": "/api/index.py"
@@ -24,29 +28,8 @@
       "dest": "/api/index.py"
     },
     {
-      "src": "/docs",
-      "dest": "/api/index.py"
-    },
-    {
-      "src": "/workspace/(.*)",
-      "dest": "/workspace/$1"
-    },
-    {
-      "src": "/docs/(.*)",
-      "dest": "/docs/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/api/index.py"
-    },
-    {
       "src": "/(.*)",
       "dest": "/api/index.py"
     }
-  ],
-  "functions": {
-    "api/index.py": {
-      "maxDuration": 60
-    }
-  }
+  ]
 }
