@@ -22,6 +22,9 @@ try:
 except ImportError as e:
     print(f"❌ Import error: {e}")
     
+    # 存储错误信息供端点使用
+    import_error_msg = str(e)
+    
     # 创建一个简单的备用应用
     from fastapi import FastAPI
     from fastapi.responses import JSONResponse
@@ -34,7 +37,7 @@ except ImportError as e:
             "message": "MeetSpot API 正在运行",
             "status": "online",
             "mode": "fallback",
-            "error": str(e)
+            "error": import_error_msg
         })
     
     @app.get("/health")
@@ -42,14 +45,16 @@ except ImportError as e:
         return JSONResponse({
             "status": "healthy",
             "service": "MeetSpot",
-            "mode": "fallback"
+            "mode": "fallback",
+            "error": import_error_msg
         })
     
     @app.post("/api/find_meetspot")
     async def find_meetspot_fallback():
         return JSONResponse({
             "error": "Service temporarily unavailable",
-            "message": "推荐服务暂时不可用，请稍后重试"
+            "message": "推荐服务暂时不可用，请稍后重试",
+            "details": import_error_msg
         }, status_code=503)
 
 # 确保应用可以被 Vercel 访问
