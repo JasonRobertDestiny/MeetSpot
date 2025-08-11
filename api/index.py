@@ -21,9 +21,134 @@ try:
     from app.tool.meetspot_recommender import CafeRecommender
     from app.logger import logger
     print("✅ 成功导入所有必要模块")
+    config_available = True
 except ImportError as e:
-    print(f"❌ 导入模块失败: {e}")
+    print(f"⚠️ 导入模块警告: {e}")
     config = None
+    config_available = False
+    
+    # 在Vercel环境下创建最小化配置类
+    class MinimalConfig:
+        class AMapSettings:
+            def __init__(self, api_key):
+                self.api_key = api_key
+                
+        def __init__(self):
+            amap_key = os.getenv("AMAP_API_KEY", "")
+            if amap_key:
+                self.amap = self.AMapSettings(amap_key)
+            else:
+                self.amap = None
+    
+    if os.getenv("AMAP_API_KEY"):
+        config = MinimalConfig()
+        config_available = True
+        print("✅ 创建最小化配置（仅高德地图）")
+    else:
+        print("❌ 未找到AMAP_API_KEY环境变量")
+
+# 在Vercel环境下导入最小化推荐器
+if not config_available and os.getenv("AMAP_API_KEY"):
+    try:
+        # 创建最小化推荐器
+        import asyncio
+        import httpx
+        import json
+        import hashlib
+        import time
+        from datetime import datetime
+        
+        class MinimalCafeRecommender:
+            """最小化推荐器，专为Vercel环境设计"""
+            
+            def __init__(self):
+                self.api_key = os.getenv("AMAP_API_KEY")
+                self.base_url = "https://restapi.amap.com/v3"
+                
+            async def execute(self, locations, keywords="咖啡馆", place_type="", user_requirements=""):
+                """执行推荐"""
+                try:
+                    # 简化的推荐逻辑
+                    result_html = await self._generate_recommendations(
+                        locations, keywords, user_requirements
+                    )
+                    
+                    # 生成HTML文件
+                    html_filename = f"place_recommendation_{datetime.now().strftime('%Y%m%d%H%M%S')}_{hashlib.md5(str(time.time()).encode()).hexdigest()[:8]}.html"
+                    html_path = f"workspace/js_src/{html_filename}"
+                    
+                    # 确保目录存在
+                    os.makedirs("workspace/js_src", exist_ok=True)
+                    
+                    # 写入HTML文件
+                    with open(html_path, 'w', encoding='utf-8') as f:
+                        f.write(result_html)
+                    
+                    # 返回结果对象
+                    class Result:
+                        def __init__(self, output):
+                            self.output = output
+                    
+                    return Result(f"生成的推荐页面：{html_path}\nHTML页面: {html_filename}")
+                    
+                except Exception as e:
+                    return Result(f"推荐失败: {str(e)}")
+            
+            async def _generate_recommendations(self, locations, keywords, user_requirements):
+                """生成推荐HTML"""
+                # 简化的HTML模板
+                html_content = f"""
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetSpot 推荐结果</title>
+    <style>
+        body {{ font-family: 'Microsoft YaHei', sans-serif; margin: 20px; }}
+        .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; }}
+        .locations {{ margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; }}
+        .result {{ margin: 10px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 MeetSpot 推荐结果</h1>
+        <p>为您推荐最佳会面地点</p>
+    </div>
+    
+    <div class="locations">
+        <h3>📍 您的位置信息</h3>
+        <p><strong>位置:</strong> {', '.join(locations)}</p>
+        <p><strong>需求:</strong> {keywords}</p>
+        {f'<p><strong>特殊要求:</strong> {user_requirements}</p>' if user_requirements else ''}
+    </div>
+    
+    <div class="result">
+        <h3>💡 推荐建议</h3>
+        <p>由于在Vercel环境下运行，推荐功能已简化。建议您:</p>
+        <ul>
+            <li>选择位置中心点附近的{keywords}</li>
+            <li>考虑交通便利性和停车条件</li>
+            <li>选择环境舒适、适合交流的场所</li>
+        </ul>
+    </div>
+    
+    <div class="result">
+        <h3>⚠️ 注意事项</h3>
+        <p>当前运行在简化模式下。如需完整功能，请在本地环境运行或配置完整的环境变量。</p>
+    </div>
+</body>
+</html>
+                """
+                return html_content
+        
+        CafeRecommender = MinimalCafeRecommender
+        print("✅ 创建最小化推荐器")
+        
+    except Exception as e:
+        print(f"❌ 创建最小化推荐器失败: {e}")
+        CafeRecommender = None
 
 # 请求模型定义
 class LocationRequest(BaseModel):
@@ -106,8 +231,9 @@ async def health_check():
         "status": "healthy",
         "timestamp": time.time(),
         "config": {
-            "amap_configured": bool(AMAP_API_KEY or (config and config.amap.api_key)),
-            "full_features": bool(config)
+            "amap_configured": bool(AMAP_API_KEY or (config and hasattr(config, 'amap') and config.amap)),
+            "full_features": config_available,
+            "minimal_mode": not config_available and bool(AMAP_API_KEY)
         }
     }
 

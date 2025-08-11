@@ -8,10 +8,6 @@
   ],
   "routes": [
     {
-      "src": "/",
-      "dest": "/api/index.py"
-    },
-    {
       "src": "/api/(.*)",
       "dest": "/api/index.py"
     },
@@ -24,20 +20,12 @@
       "dest": "/api/index.py"
     },
     {
-      "src": "/workspace/(.*)",
-      "dest": "/api/index.py"
-    },
-    {
-      "src": "/public/(.*)",
+      "src": "/",
       "dest": "/api/index.py"
     },
     {
       "src": "/(.*)",
       "dest": "/api/index.py"
     }
-  ],
-  "env": {
-    "AMAP_API_KEY": "@amap_api_key",
-    "AMAP_SECURITY_JS_CODE": "@amap_security_js_code"
-  }
+  ]
 }
