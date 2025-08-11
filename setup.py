@@ -44,7 +44,7 @@ setup(
     python_requires=">=3.11",
     entry_points={
         "console_scripts": [
-            "meetspot=web_server:main",
+            "meetspot=simple_server:main",
         ],
     },
     include_package_data=True,

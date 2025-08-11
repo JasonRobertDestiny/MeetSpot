@@ -288,6 +288,11 @@ class Config:
         return self._config.search_config
 
     @property
+    def amap(self) -> Optional[AMapSettings]:
+        """获取高德地图API配置"""
+        return self._config.amap
+
+    @property
     def workspace_root(self) -> Path:
         """Get the workspace root directory"""
         return WORKSPACE_ROOT

@@ -4,20 +4,12 @@
     {
       "src": "api/index.py",
       "use": "@vercel/python"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/",
-      "dest": "/public/index.html"
-    },
-    {
-      "src": "/workspace/(.*)",
-      "dest": "/workspace/$1"
+      "dest": "/api/index.py"
     },
     {
       "src": "/api/(.*)",
@@ -28,8 +20,24 @@
       "dest": "/api/index.py"
     },
     {
+      "src": "/config",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/workspace/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/public/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
       "src": "/(.*)",
       "dest": "/api/index.py"
     }
-  ]
+  ],
+  "env": {
+    "AMAP_API_KEY": "@amap_api_key",
+    "AMAP_SECURITY_JS_CODE": "@amap_security_js_code"
+  }
 }

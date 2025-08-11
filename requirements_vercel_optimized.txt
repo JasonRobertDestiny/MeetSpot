@@ -1,0 +1,39 @@
+# MeetSpot Vercel Deployment Dependencies
+# Optimized for serverless deployment
+
+# Core FastAPI framework
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+
+# Data validation and parsing
+pydantic==2.11.7
+pydantic-core==2.33.2
+
+# HTTP clients for API calls
+httpx==0.28.1
+aiohttp==3.12.15
+aiofiles==24.1.0
+
+# Configuration parsing
+tomli==2.1.0
+
+# Template engine for HTML generation
+jinja2==3.1.6
+
+# File upload support
+python-multipart==0.0.20
+
+# Logging
+loguru==0.7.3
+
+# Time utilities
+python-dateutil==2.9.0
+
+# JSON handling
+orjson==3.10.12
+
+# Async utilities
+anyio==4.8.0
+
+# Security
+cryptography==44.0.0
