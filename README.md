@@ -11,7 +11,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-green.svg)](https://fastapi.tiangolo.com/)
 [![Build Status](https://github.com/JasonRobertDestiny/MeetSpot/actions/workflows/ci.yml/badge.svg)](https://github.com/JasonRobertDestiny/MeetSpot/actions)
 
-English | [简体中文](README_ZH.md)
+🎯 **[Live Demo](https://meetspot-irq2.onrender.com)** | English | [简体中文](README_ZH.md)
 
 </div>
 
