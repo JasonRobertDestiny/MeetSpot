@@ -17,7 +17,7 @@
 
 [![Build Status](https://github.com/JasonRobertDestiny/MeetSpot/actions/workflows/ci.yml/badge.svg)](https://github.com/JasonRobertDestiny/MeetSpot/actions)
 
-🎯 **[在线体验 Demo](https://meetspot-irq2.onrender.com)** | [English](README.md) | 简体中文
+🎯 **[在线体验 Demo](https://meetspot-irq2.onrender.com)** | 📺 **[演示视频](https://www.bilibili.com/video/BV1aUK7zNEvo/)** | [English](README.md) | 简体中文
 
 
 
