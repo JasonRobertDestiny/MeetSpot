@@ -163,7 +163,8 @@ class CafeRecommender(BaseTool):
             "theme_secondary": "#fdebd0",
             "theme_light": "#fef9e7",
             "theme_dark": "#4a2303",
-        },        "健身房": {
+        },
+        "健身房": {
             "topic": "健身汇",
             "icon_header": "bx-dumbbell",
             "icon_section": "bx-dumbbell",
@@ -282,8 +283,8 @@ class CafeRecommender(BaseTool):
         user_requirements: str = "",
         theme: str = "",  # 添加主题参数
     ) -> ToolResult:
-        if hasattr(config._config, "amap") and hasattr(config._config.amap, "api_key"):
-            self.api_key = config._config.amap.api_key
+        if hasattr(config, "amap") and config.amap and hasattr(config.amap, "api_key"):
+            self.api_key = config.amap.api_key
         
         if not self.api_key:
             logger.error("高德地图API密钥未配置。请在config.yml中设置 amap.api_key。")
@@ -315,7 +316,9 @@ class CafeRecommender(BaseTool):
             keywords_list = [kw.strip() for kw in keywords.split() if kw.strip()]
             primary_keyword = keywords_list[0] if keywords_list else "咖啡馆"
             
-            searched_places = []            # 如果有多个关键词，使用并发搜索提高性能
+            searched_places = []
+            
+            # 如果有多个关键词，使用并发搜索提高性能
             if len(keywords_list) > 1:
                 logger.info(f"多场景并发搜索: {keywords_list}")
                 
@@ -349,7 +352,8 @@ class CafeRecommender(BaseTool):
                         logger.error(f"搜索 '{keywords_list[i]}' 时出错: {result}")
                     elif result:
                         all_places.extend(result)
-                  # 去重（基于场所名称和坐标位置，更宽松的去重策略）
+                
+                # 去重（基于场所名称和坐标位置，更宽松的去重策略）
                 seen = set()
                 unique_places = []
                 for place in all_places:
@@ -583,7 +587,8 @@ class CafeRecommender(BaseTool):
         places: List[Dict], 
         center_point: Tuple[float, float],
         user_requirements: str,
-        keywords: str,        theme: str = ""  # 添加主题参数
+        keywords: str,
+        theme: str = ""  # 添加主题参数
     ) -> str:
         # 根据主题参数确定配置
         if theme:

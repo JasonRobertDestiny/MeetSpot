@@ -5,7 +5,7 @@
   "main": "web_server.py",
   "scripts": {
     "dev": "python web_server.py",
-    "build": "echo 'Building for Vercel...'"
+    "start": "python web_server.py"
   },
   "engines": {
     "python": "3.11"

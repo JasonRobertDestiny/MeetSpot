@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: meetspot
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python web_server.py
+    healthCheckPath: /health
+    envVars:
+      - key: AMAP_API_KEY
+        sync: false  # 必需：在 Render 控制台设置
+      - key: PYTHON_VERSION
+        value: "3.11"
+    autoDeploy: true
+    region: singapore  # 离中国较近

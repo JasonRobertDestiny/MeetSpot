@@ -119,14 +119,14 @@ RECRUITMENT_ACTION_PLAN.md
 STAGE1_COMPLETION_REPORT.md
 YAML_FIX_REPORT.md
 
-# Docker和其他部署配置（Vercel不需要）
+# Docker和其他部署配置
 Dockerfile
 docker-compose.yml
 deploy.sh
 deploy.bat
 verify_project.sh
 
-# Cloudflare相关（切换到Vercel了）
+# Cloudflare相关
 wrangler.toml
 src/
 functions/

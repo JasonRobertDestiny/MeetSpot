@@ -6,7 +6,7 @@ MeetSpot Local Development Server
 This is the main entry point for local development.
 It imports and runs the FastAPI application from api/index.py.
 
-For production deployment on Vercel, the api/index.py file is used directly.
+For production deployment on Railway, this file serves as the main entry point.
 """
 
 import sys
@@ -16,25 +16,37 @@ import os
 sys.path.insert(0, os.path.dirname(__file__))
 
 def main():
-    """Main entry point for local development server"""
+    """Main entry point for development and production server"""
     try:
         # Import the FastAPI app from api/index.py
         from api.index import app
         import uvicorn
         
-        print("🚀 启动 MeetSpot 本地开发服务器...")
-        print("📍 服务地址: http://localhost:8000")
-        print("📚 API文档: http://localhost:8000/docs")
-        print("🔧 健康检查: http://localhost:8000/health")
+        # Get port from environment variable (Railway sets PORT automatically)
+        port = int(os.environ.get("PORT", 8000))
+        
+        # Detect if running in production (Railway sets RAILWAY_ENVIRONMENT)
+        is_production = os.environ.get("RAILWAY_ENVIRONMENT") is not None
+        
+        if is_production:
+            print("🚀 启动 MeetSpot 生产服务器 (Railway)...")
+            print(f"📍 服务端口: {port}")
+        else:
+            print("🚀 启动 MeetSpot 本地开发服务器...")
+            print(f"📍 服务地址: http://localhost:{port}")
+        
+        print("📚 API文档: /docs")
+        print("🔧 健康检查: /health")
         print("=" * 50)
         
-        # Run the server
+        # Run the server with production-optimized settings
         uvicorn.run(
             "api.index:app", 
             host="0.0.0.0", 
-            port=8000,
-            reload=True,  # Enable auto-reload for development
-            log_level="info"
+            port=port,
+            reload=not is_production,  # Disable reload in production
+            log_level="info",
+            access_log=True
         )
         
     except ImportError as e:
