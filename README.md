@@ -243,3 +243,23 @@ Made with ❤️ by [JasonRobertDestiny](https://github.com/JasonRobertDestiny)
 </div>
 
 [![Star History Chart](https://api.star-history.com/svg?repos=JasonRobertDestiny/MeetSpot&type=Date)](https://www.star-history.com/#JasonRobertDestiny/MeetSpot&Date)
+
+---
+
+## 💬 Join Our Community
+
+<div align="center">
+
+### MeetSpot Exchange Group
+
+<img src="docs/wechat.png" alt="MeetSpot WeChat Group" width="300"/>
+
+**Scan QR code to join our WeChat group for:**
+- 🚀 Product updates and announcements
+- 💡 Feature discussions and suggestions  
+- 🤝 Technical support and Q&A
+- 🌟 Share your usage experience
+
+*QR code valid for 7 days (expires August 19th), please join as soon as possible*
+
+</div>
