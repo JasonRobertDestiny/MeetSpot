@@ -101,7 +101,7 @@ run_flow.py
 
 # 文档和报告（保留README等重要文档）
 *_REPORT.md
-*_GUIDE.md
+# *_GUIDE.md  # 暂时注释，允许 RENDER_DEPLOY_GUIDE.md
 AUTOMATION_GUIDE.md
 BADGE_FIX_REPORT.md
 CHANGELOG.md
