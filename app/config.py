@@ -252,7 +252,13 @@ class Config:
         # 处理高德地图API配置
         amap_config = raw_config.get("amap", {})
         amap_settings = None
-        if amap_config and amap_config.get("api_key"):
+        # 优先使用环境变量中的 AMAP_API_KEY
+        if amap_api_key:
+            amap_settings = AMapSettings(
+                api_key=amap_api_key,
+                security_js_code=os.getenv("AMAP_SECURITY_JS_CODE", amap_config.get("security_js_code", ""))
+            )
+        elif amap_config and amap_config.get("api_key"):
             amap_settings = AMapSettings(**amap_config)
 
         config_dict = {
