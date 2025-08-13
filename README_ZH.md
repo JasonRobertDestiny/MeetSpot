@@ -295,23 +295,3 @@ curl http://127.0.0.1:8000/health
 </div>
 
 [![Star History Chart](https://api.star-history.com/svg?repos=JasonRobertDestiny/MeetSpot&type=Date)](https://www.star-history.com/#JasonRobertDestiny/MeetSpot&Date)
-
----
-
-## 💬 加入我们的社区
-
-<div align="center">
-
-### MeetSpot 交流群
-
-<img src="docs/wechat.png" alt="MeetSpot微信交流群" width="300"/>
-
-**扫描二维码加入我们的微信交流群：**
-- 🚀 获取产品更新和公告
-- 💡 参与功能讨论和建议
-- 🤝 获得技术支持和答疑
-- 🌟 分享您的使用体验
-
-*该二维码7天内（8月19日前）有效，请尽快加入*
-
-</div>
