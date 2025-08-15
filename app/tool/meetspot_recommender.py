@@ -283,20 +283,38 @@ class CafeRecommender(BaseTool):
         user_requirements: str = "",
         theme: str = "",  # 添加主题参数
     ) -> ToolResult:
-        if hasattr(config, "amap") and config.amap and hasattr(config.amap, "api_key"):
-            self.api_key = config.amap.api_key
+        # 尝试从多个来源获取API key
+        if not self.api_key:
+            # 首先尝试从config对象获取
+            if hasattr(config, "amap") and config.amap and hasattr(config.amap, "api_key"):
+                self.api_key = config.amap.api_key
+            # 如果config不可用，尝试从环境变量获取
+            elif not self.api_key:
+                import os
+                self.api_key = os.getenv("AMAP_API_KEY", "")
         
         if not self.api_key:
-            logger.error("高德地图API密钥未配置。请在config.yml中设置 amap.api_key。")
+            logger.error("高德地图API密钥未配置。请在config.toml中设置 amap.api_key 或设置环境变量 AMAP_API_KEY。")
             return ToolResult(output="推荐失败: 高德地图API密钥未配置。")
 
         try:
             coordinates = []
             location_info = []
-            for location in locations:
+            for i, location in enumerate(locations):
+                # 在多个地址查询之间添加延迟，避免API限制
+                if i > 0:
+                    await asyncio.sleep(0.5)  # 500ms延迟
+                
                 geocode_result = await self._geocode(location)
                 if not geocode_result:
-                    return ToolResult(output=f"无法找到地点: {location}")
+                    # 检查是否为大学简称但地理编码失败
+                    enhanced_address = self._enhance_address(location)
+                    if enhanced_address != location:
+                        return ToolResult(output=f"❌ 无法找到地点: {location}\n\n🔍 **识别为大学简称**\n您输入的 '{location}' 可能是大学简称，但未能成功解析。\n\n💡 **建议尝试：**\n• **完整名称**：'{enhanced_address}'\n• **添加城市**：'北京 {location}'、'上海 {location}'\n• **具体地址**：'北京市海淀区{enhanced_address}'\n• **校区信息**：如 '{location}本部'、'{location}新校区'")
+                    else:
+                        # 提供更详细的地址输入指导
+                        suggestions = self._get_address_suggestions(location)
+                        return ToolResult(output=f"❌ 无法找到地点: {location}\n\n🔍 **地址解析失败**\n系统无法识别您输入的地址，请检查以下几点：\n\n💡 **具体建议：**\n{suggestions}\n\n📍 **标准地址格式示例：**\n• **完整地址**：'北京市海淀区中关村大街27号'\n• **知名地标**：'北京大学'、'天安门广场'、'上海外滩'\n• **商圈区域**：'三里屯'、'王府井'、'南京路步行街'\n• **交通枢纽**：'北京南站'、'上海虹桥机场'\n\n⚠️ **常见错误避免：**\n• 避免过于简短：'大学' → '北京大学'\n• 避免拼写错误：'北大' → '北京大学'\n• 避免模糊描述：'那个商场' → '王府井百货大楼'\n\n🔧 **如果仍有问题：**\n• 检查网络连接是否正常\n• 尝试使用地址的官方全称\n• 确认地点确实存在且对外开放")
                 lng, lat = geocode_result["location"].split(",")
                 coordinates.append((float(lng), float(lat)))
                 location_info.append({
@@ -308,7 +326,30 @@ class CafeRecommender(BaseTool):
                 })
 
             if not coordinates:
-                return ToolResult(output="未能解析任何有效地点。")
+                error_msg = "❌ 未能解析任何有效的地点位置。\n\n"
+                error_msg += "🔍 **解析失败的地址：**\n"
+                for location in locations:
+                    error_msg += f"• {location}\n"
+                    suggestions = self._get_address_suggestions(location)
+                    if suggestions:
+                        error_msg += f"  💡 建议：{suggestions}\n"
+                error_msg += "\n"
+                
+                error_msg += "📍 **地址输入检查清单：**\n"
+                error_msg += "• **拼写准确性**：确保地名、路名拼写无误\n"
+                error_msg += "• **地理层级**：包含省市区信息，如 '北京市海淀区...'\n"
+                error_msg += "• **地址完整性**：提供门牌号或具体位置描述\n"
+                error_msg += "• **地点真实性**：确认地点确实存在且可被地图服务识别\n\n"
+                error_msg += "💡 **推荐格式示例：**\n"
+                error_msg += "• **完整地址**：'北京市海淀区中关村大街1号'\n"
+                error_msg += "• **知名地标**：'北京大学'、'上海外滩'、'广州塔'\n"
+                error_msg += "• **商圈/区域**：'三里屯'、'南京路步行街'、'春熙路'\n"
+                error_msg += "• **交通枢纽**：'北京南站'、'上海虹桥机场'、'广州白云机场'\n\n"
+                error_msg += "📝 **多地点输入说明：**\n"
+                error_msg += "• **方式一**：在不同输入框中分别填写，如第一个框填'北京大学'，第二个框填'中关村'\n"
+                error_msg += "• **方式二**：在一个输入框中用空格分隔，如'北京大学 中关村'（系统会自动拆分）\n"
+                error_msg += "• **注意**：完整地址（包含'市'、'区'、'县'）不会被拆分，如'北京市海淀区'\n"
+                return ToolResult(output=error_msg)
 
             center_point = self._calculate_center_point(coordinates)
             
@@ -386,7 +427,68 @@ class CafeRecommender(BaseTool):
                     types="" 
                 )
                 if not searched_places:
-                     return ToolResult(output=f"在计算的中心点附近找不到与 '{keywords}' 相关的场所。")
+                    # 生成智能提示信息
+                    location_names = [loc['name'] for loc in location_info]
+                    formatted_addresses = [loc['formatted_address'] for loc in location_info]
+                    
+                    # 检查是否有地址被解析到意外的城市
+                    unexpected_locations = []
+                    for i, (name, addr) in enumerate(zip(location_names, formatted_addresses)):
+                        enhanced = self._enhance_address(name)
+                        if enhanced != name:  # 是简称
+                            # 检查解析结果是否包含预期的城市关键词
+                            expected_cities = {
+                                "北京大学": ["北京", "海淀"],
+                                "清华大学": ["北京", "海淀"],
+                                "上海交通大学": ["上海", "闵行"],
+                                "复旦大学": ["上海", "杨浦"],
+                                "浙江大学": ["杭州", "西湖"],
+                                "中山大学": ["广州", "海珠"],
+                                "华中科技大学": ["武汉", "洪山"]
+                            }
+                            
+                            if enhanced in expected_cities:
+                                expected_city_keywords = expected_cities[enhanced]
+                                if not any(keyword in addr for keyword in expected_city_keywords):
+                                    unexpected_locations.append((name, enhanced, addr))
+                    
+                    error_msg = f"❌ 在计算的中心点附近找不到与 '{keywords}' 相关的场所。\n\n"
+                    
+                    if unexpected_locations:
+                        error_msg += "🔍 **可能的问题分析：**\n"
+                        for orig_name, enhanced_name, actual_addr in unexpected_locations:
+                            error_msg += f"• '{orig_name}' 被解析到：{actual_addr}\n"
+                            error_msg += f"  这可能不是您想要的 {enhanced_name}\n"
+                        
+                        error_msg += "\n💡 **建议解决方案：**\n"
+                        error_msg += "• 使用完整的大学名称，如 '北京大学'、'上海交通大学'\n"
+                        error_msg += "• 添加城市信息，如 '北京 清华大学'、'上海 复旦大学'\n"
+                        error_msg += "• 使用具体的校区地址，如 '北京市海淀区清华大学'\n"
+                    else:
+                        # 提供更具体的建议
+                        center_lng, center_lat = center_point
+                        error_msg += "🔍 **当前搜索信息：**\n"
+                        error_msg += f"• 搜索关键词：'{keywords}'\n"
+                        error_msg += f"• 搜索中心点：({center_lng:.4f}, {center_lat:.4f})\n"
+                        error_msg += f"• 搜索半径：5公里\n\n"
+                        
+                        error_msg += "💡 **建议尝试：**\n"
+                        error_msg += "• **更换关键词**：尝试 '餐厅'、'商场'、'酒店'、'银行' 等\n"
+                        error_msg += "• **使用更具体的地址**：请输入完整详细的地址信息\n"
+                        error_msg += "  - 完整地址：'北京市朝阳区建国门外大街1号'\n"
+                        error_msg += "  - 知名地标：'北京大学'、'天安门广场'、'上海外滩'\n"
+                        error_msg += "  - 商圈区域：'三里屯太古里'、'王府井步行街'\n"
+                        error_msg += "  - 交通枢纽：'北京南站'、'首都国际机场T3航站楼'\n"
+                        error_msg += "• **避免模糊地址**：避免使用 '附近'、'那边'、'市中心' 等模糊描述\n"
+                        error_msg += "• **检查拼写准确性**：确保地名、路名拼写正确无误\n"
+                        error_msg += "• **尝试附近知名地标**：如果当前位置偏僻，选择附近的大型商场、地铁站等\n\n"
+                        error_msg += "📝 **正确的地址输入格式：**\n"
+                        error_msg += "• **多个地点请分别输入**：在不同的输入框中分别填写每个地点\n"
+                        error_msg += "• **或用空格分隔**：如 '北京大学 中关村' 会被自动识别为两个地点\n"
+                        error_msg += "• **完整地址示例**：'北京市海淀区北京大学' 和 '北京市海淀区中关村大街'\n"
+                        error_msg += "• **地标名称示例**：'北京大学' 和 '中关村'\n"
+                    
+                    return ToolResult(output=error_msg)
 
             recommended_places = self._rank_places(searched_places, center_point, user_requirements, keywords)
 
@@ -405,27 +507,216 @@ class CafeRecommender(BaseTool):
             logger.exception(f"场所推荐过程中发生错误: {str(e)}") 
             return ToolResult(output=f"推荐失败: {str(e)}")
 
+    def _enhance_address(self, address: str) -> str:
+        """智能地址增强 - 为常见简称添加更准确的搜索词，包含城市信息以避免歧义"""
+        # 大学简称映射，包含城市信息以提高准确性
+        university_mapping = {
+            "北大": "北京市海淀区北京大学",
+            "清华": "北京市海淀区清华大学", 
+            "上交": "上海市闵行区上海交通大学",
+            "复旦": "上海市杨浦区复旦大学",
+            "浙大": "杭州市西湖区浙江大学",
+            "南大": "南京市鼓楼区南京大学",
+            "中大": "广州市海珠区中山大学",
+            "华科": "武汉市洪山区华中科技大学",
+            "西交": "西安市碑林区西安交通大学",
+            "哈工大": "哈尔滨市南岗区哈尔滨工业大学",
+            "中科大": "合肥市包河区中国科学技术大学",
+            "人大": "北京市海淀区中国人民大学",
+            "北师大": "北京市海淀区北京师范大学",
+            "华师大": "上海市普陀区华东师范大学",
+            "北理工": "北京市海淀区北京理工大学",
+            "北航": "北京市海淀区北京航空航天大学",
+            "同济": "上海市杨浦区同济大学",
+            "东南": "南京市玄武区东南大学",
+            "天大": "天津市南开区天津大学",
+            "南开": "天津市南开区南开大学",
+            "厦大": "厦门市思明区厦门大学",
+            "山大": "济南市历城区山东大学",
+            "川大": "成都市武侯区四川大学",
+            "重大": "重庆市沙坪坝区重庆大学",
+            "西大": "西安市碑林区西北大学",
+            "兰大": "兰州市城关区兰州大学",
+            "大连理工": "大连市甘井子区大连理工大学",
+            "东北大学": "沈阳市和平区东北大学",
+            "吉大": "长春市朝阳区吉林大学",
+            "华南理工": "广州市天河区华南理工大学",
+            "电子科大": "成都市郫都区电子科技大学",
+            "西工大": "西安市碑林区西北工业大学",
+            "中南": "长沙市岳麓区中南大学",
+            "湖大": "长沙市岳麓区湖南大学",
+            "华中师大": "武汉市洪山区华中师范大学",
+            "西南": "重庆市北碚区西南大学",
+            "暨大": "广州市天河区暨南大学",
+            "华工": "广州市天河区华南理工大学",
+            "中财": "北京市海淀区中央财经大学",
+            "对外经贸": "北京市朝阳区对外经济贸易大学",
+            "央美": "北京市朝阳区中央美术学院",
+            "北影": "北京市海淀区北京电影学院",
+            "中戏": "北京市东城区中央戏剧学院",
+            "上戏": "上海市静安区上海戏剧学院",
+            "中音": "北京市西城区中央音乐学院",
+            "上音": "上海市徐汇区上海音乐学院"
+        }
+        
+        # 检查是否为大学简称
+        if address in university_mapping:
+            enhanced = university_mapping[address]
+            logger.info(f"地址增强: '{address}' -> '{enhanced}'")
+            return enhanced
+        
+        return address
+
+    def _get_address_suggestions(self, address: str) -> str:
+        """根据输入的地址提供智能建议"""
+        suggestions = []
+        
+        # 检查是否包含常见的模糊词汇
+        vague_terms = {
+            "大学": "**请输入完整大学名称**，如 '北京大学'、'清华大学'、'复旦大学'",
+            "学校": "**请输入具体学校全名**，如 '北京市第一中学'、'上海交通大学附属中学'",
+            "医院": "**请输入完整医院名称**，如 '北京协和医院'、'上海华山医院'",
+            "商场": "**请输入具体商场名称**，如 '王府井百货大楼'、'上海环球港'",
+            "火车站": "**请输入完整站名**，如 '北京站'、'上海虹桥站'、'广州南站'",
+            "机场": "**请输入完整机场名称**，如 '北京首都国际机场'、'上海浦东国际机场'",
+            "公园": "**请输入具体公园名称**，如 '颐和园'、'中山公园'、'西湖公园'",
+            "广场": "**请输入具体广场名称**，如 '天安门广场'、'人民广场'",
+            "地铁站": "**请输入完整地铁站名**，如 '中关村地铁站'、'人民广场地铁站'",
+            "购物中心": "**请输入具体购物中心名称**，如 '北京apm'、'上海iapm'"
+        }
+        
+        for term, suggestion in vague_terms.items():
+            if term in address:
+                suggestions.append(f"• {suggestion}")
+        
+        # 检查是否只是城市名
+        major_cities = ["北京", "上海", "广州", "深圳", "杭州", "南京", "武汉", "成都", "西安", "天津"]
+        if address in major_cities:
+            suggestions.append(f"• **城市名过于宽泛**，请添加具体区域，如 '{address}市海淀区中关村'")
+            suggestions.append(f"• **或使用知名地标**，如 '{address}大学'、'{address}火车站'、'{address}机场'")
+            suggestions.append(f"• **推荐格式**：'{address}市 + 区县 + 街道/地标'，如 '{address}市朝阳区三里屯'")
+        
+        # 检查长度
+        if len(address) <= 2:
+            suggestions.append("• **地址过于简短**，请提供更详细的信息")
+            suggestions.append("• **标准格式**：'省市 + 区县 + 具体地点'，如 '北京市海淀区中关村大街'")
+            suggestions.append("• **或使用完整地标名**：如 '北京大学'、'天安门广场'、'上海外滩'")
+        elif len(address) <= 4:
+            suggestions.append("• **地址信息不够具体**，建议添加更多细节")
+            suggestions.append("• **如果是地标**：请使用完整名称，如 '北京大学' 而非 '北大'")
+            suggestions.append("• **如果是地址**：请添加区县信息，如 '海淀区' + 您的地址")
+        
+        # 通用建议
+        if not suggestions:
+            suggestions.extend([
+                "• **请输入具体地址**：如 '北京市海淀区中关村大街1号'",
+                "• **使用知名地标**：如 '北京大学'、'天安门广场'、'上海外滩'",
+                "• **添加省市区信息**：如 '北京市朝阳区三里屯'",
+                "• **使用完整建筑名**：如 '王府井百货大楼'、'北京协和医院'",
+                "• **检查拼写准确性**：确保地名无错别字",
+                "• **尝试官方全称**：避免使用简称或昵称"
+            ])
+        else:
+            # 如果有特定建议，添加通用的具体地址要求
+            suggestions.insert(0, "• **请输入更具体的地址信息**")
+        
+        # 添加多地点输入说明
+        suggestions.append("")
+        suggestions.append("📝 **多地点输入提示：**")
+        suggestions.append("• 可在一个输入框中用空格分隔多个地点，如 '北京大学 中关村'")
+        suggestions.append("• 或在不同输入框中分别填写每个地点")
+        suggestions.append("• 完整地址（含'市'、'区'、'县'）不会被自动拆分")
+        
+        return "\n".join(suggestions)
+
     async def _geocode(self, address: str) -> Optional[Dict[str, Any]]:
         if address in self.geocode_cache:
             return self.geocode_cache[address]
+        
+        # 确保API密钥已设置
+        if not self.api_key:
+            if hasattr(config, "amap") and config.amap and hasattr(config.amap, "api_key"):
+                self.api_key = config.amap.api_key
+            else:
+                logger.error("高德地图API密钥未配置")
+                return None
+        
+        # 智能地址增强
+        enhanced_address = self._enhance_address(address)
+        
         url = "https://restapi.amap.com/v3/geocode/geo"
-        params = {"key": self.api_key, "address": address, "output": "json"}
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, params=params) as response:
-                if response.status != 200:
-                    logger.error(f"高德地图API地理编码请求失败: {response.status}, 地址: {address}")
+        params = {"key": self.api_key, "address": enhanced_address, "output": "json"}
+        
+        # 重试机制，最多重试3次
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                # 添加延迟以避免API限制
+                if attempt > 0:
+                    await asyncio.sleep(1 * attempt)  # 递增延迟
+                
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, params=params) as response:
+                        if response.status != 200:
+                            logger.error(f"高德地图API地理编码请求失败: {response.status}, 地址: {address}, 尝试: {attempt + 1}")
+                            if attempt == max_retries - 1:
+                                return None
+                            continue
+                        
+                        data = await response.json()
+                        
+                        # 检查API限制错误
+                        if data.get("info") == "CUQPS_HAS_EXCEEDED_THE_LIMIT":
+                            logger.warning(f"API并发限制超出，地址: {address}, 尝试: {attempt + 1}, 等待后重试")
+                            if attempt == max_retries - 1:
+                                logger.error(f"地理编码失败: API并发限制超出，地址: {address}")
+                                return None
+                            await asyncio.sleep(2 * (attempt + 1))  # 更长的延迟
+                            continue
+                        
+                        if data["status"] != "1" or not data["geocodes"]:
+                            logger.error(f"地理编码失败: {data.get('info', '未知错误')}, 地址: {address}")
+                            return None
+                        
+                        result = data["geocodes"][0]
+                        self.geocode_cache[address] = result  # 使用原始地址作为缓存键
+                        return result
+                        
+            except Exception as e:
+                logger.error(f"地理编码请求异常: {str(e)}, 地址: {address}, 尝试: {attempt + 1}")
+                if attempt == max_retries - 1:
                     return None
-                data = await response.json()
-                if data["status"] != "1" or not data["geocodes"]:
-                    logger.error(f"地理编码失败: {data.get('info', '未知错误')}, 地址: {address}")
-                    return None
-                result = data["geocodes"][0]
-                self.geocode_cache[address] = result
-                return result
+                await asyncio.sleep(1 * (attempt + 1))
+        
+        return None
 
     def _calculate_center_point(self, coordinates: List[Tuple[float, float]]) -> Tuple[float, float]:
+        """计算多个坐标点的中心点（使用球面几何）"""
         if not coordinates:
             raise ValueError("至少需要一个坐标来计算中心点。")
+        
+        if len(coordinates) == 1:
+            return coordinates[0]
+        
+        # 对于两个点，使用球面中点计算
+        if len(coordinates) == 2:
+            import math
+            
+            lat1, lng1 = math.radians(coordinates[0][1]), math.radians(coordinates[0][0])
+            lat2, lng2 = math.radians(coordinates[1][1]), math.radians(coordinates[1][0])
+            
+            dLng = lng2 - lng1
+            
+            Bx = math.cos(lat2) * math.cos(dLng)
+            By = math.cos(lat2) * math.sin(dLng)
+            
+            lat3 = math.atan2(math.sin(lat1) + math.sin(lat2),
+                              math.sqrt((math.cos(lat1) + Bx) * (math.cos(lat1) + Bx) + By * By))
+            lng3 = lng1 + math.atan2(By, math.cos(lat1) + Bx)
+            
+            return (math.degrees(lng3), math.degrees(lat3))
+        
+        # 对于多个点，使用简单平均（可以进一步优化）
         avg_lng = sum(lng for lng, _ in coordinates) / len(coordinates)
         avg_lat = sum(lat for _, lat in coordinates) / len(coordinates)
         return (avg_lng, avg_lat)
