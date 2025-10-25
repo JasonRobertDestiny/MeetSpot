@@ -582,17 +582,20 @@ class LLM:
                 if not response.choices or not response.choices[0].message.content:
                     raise ValueError("Empty or invalid response from LLM")
 
-                self.update_token_count(response.usage.prompt_tokens)
+                self.update_token_count(
+                    response.usage.prompt_tokens, response.usage.completion_tokens
+                )
                 return response.choices[0].message.content
 
             # Handle streaming request
-            self.update_token_count(input_tokens)
             response = await self.client.chat.completions.create(**params)
 
             collected_messages = []
+            completion_text = ""
             async for chunk in response:
                 chunk_message = chunk.choices[0].delta.content or ""
                 collected_messages.append(chunk_message)
+                completion_text += chunk_message
                 print(chunk_message, end="", flush=True)
 
             print()  # Newline after streaming
@@ -600,6 +603,12 @@ class LLM:
 
             if not full_response:
                 raise ValueError("Empty response from streaming LLM")
+
+            completion_tokens = self.count_tokens(completion_text)
+            logger.info(
+                f"Estimated completion tokens for streaming response with images: {completion_tokens}"
+            )
+            self.update_token_count(input_tokens, completion_tokens)
 
             return full_response
 
