@@ -1,47 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <!-- 主页 - 最高优先级 -->
     <url>
         <loc>https://meetspot-irq2.onrender.com/</loc>
-        <lastmod>2025-11-08</lastmod>
+        <lastmod>2024-11-08</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
-        <mobile:mobile/>
     </url>
 
     <!-- API文档 -->
     <url>
         <loc>https://meetspot-irq2.onrender.com/docs</loc>
-        <lastmod>2025-11-08</lastmod>
+        <lastmod>2024-11-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
-        <mobile:mobile/>
     </url>
 
-    <!-- API重定向端点 -->
-    <url>
-        <loc>https://meetspot-irq2.onrender.com/redoc</loc>
-        <lastmod>2025-11-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
-        <mobile:mobile/>
-    </url>
-
-    <!-- 健康检查端点（较低优先级） -->
+    <!-- 健康检查端点 -->
     <url>
         <loc>https://meetspot-irq2.onrender.com/health</loc>
-        <lastmod>2025-11-08</lastmod>
+        <lastmod>2024-11-08</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.3</priority>
-        <mobile:mobile/>
-    </url>
-
-    <!-- API端点（用于API文档索引） -->
-    <url>
-        <loc>https://meetspot-irq2.onrender.com/api/find_meetspot</loc>
-        <lastmod>2025-11-08</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.7</priority>
     </url>
 </urlset>
