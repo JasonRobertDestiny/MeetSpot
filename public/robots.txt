@@ -1,0 +1,26 @@
+# MeetSpot - Robots.txt
+# 允许所有搜索引擎爬取
+
+User-agent: *
+Allow: /
+Disallow: /workspace/
+Disallow: /api/
+Disallow: /logs/
+
+# 百度爬虫
+User-agent: Baiduspider
+Allow: /
+Disallow: /workspace/
+Disallow: /api/
+
+# Google爬虫
+User-agent: Googlebot
+Allow: /
+Disallow: /workspace/
+Disallow: /api/
+
+# Sitemap位置
+Sitemap: https://meetspot-irq2.onrender.com/sitemap.xml
+
+# 爬取延迟（防止过载）
+Crawl-delay: 1

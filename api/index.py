@@ -237,6 +237,24 @@ async def health_check():
         }
     }
 
+@app.get("/robots.txt")
+async def robots_txt():
+    """返回robots.txt文件"""
+    robots_file = "public/robots.txt"
+    if os.path.exists(robots_file):
+        return FileResponse(robots_file, media_type="text/plain")
+    # 如果文件不存在，返回默认配置
+    return FileResponse(robots_file, media_type="text/plain")
+
+@app.get("/sitemap.xml")
+async def sitemap_xml():
+    """返回sitemap.xml文件"""
+    sitemap_file = "public/sitemap.xml"
+    if os.path.exists(sitemap_file):
+        return FileResponse(sitemap_file, media_type="application/xml")
+    # 如果文件不存在，返回404
+    raise HTTPException(status_code=404, detail="Sitemap not found")
+
 @app.get("/config")
 async def get_config():
     """获取当前配置状态（不暴露敏感信息）"""
