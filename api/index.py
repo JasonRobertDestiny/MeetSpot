@@ -246,6 +246,15 @@ async def robots_txt():
     # 如果文件不存在，返回默认配置
     return FileResponse(robots_file, media_type="text/plain")
 
+@app.get("/google48ac1a797739b7b0.html")
+async def google_verification():
+    """返回Google Search Console验证文件"""
+    google_file = "public/google48ac1a797739b7b0.html"
+    if os.path.exists(google_file):
+        return FileResponse(google_file, media_type="text/html")
+    # 如果文件不存在，返回404
+    raise HTTPException(status_code=404, detail="Google verification file not found")
+
 @app.get("/sitemap.xml")
 async def sitemap_xml():
     """返回sitemap.xml文件"""
