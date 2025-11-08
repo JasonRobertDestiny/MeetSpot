@@ -1,26 +1,44 @@
-# MeetSpot - Robots.txt
-# 允许所有搜索引擎爬取
+# MeetSpot 智能会面点推荐系统
+# https://meetspot-irq2.onrender.com/
+# Robots.txt for SEO optimization
 
 User-agent: *
 Allow: /
+Allow: /api/find_meetspot
+Allow: /docs
+Allow: /redoc
+Allow: /health
 Disallow: /workspace/
-Disallow: /api/
+Disallow: /config/
+Disallow: /__pycache__/
+Disallow: /.github/
+Disallow: /.git/
+Disallow: /tests/
 Disallow: /logs/
 
-# 百度爬虫
-User-agent: Baiduspider
-Allow: /
-Disallow: /workspace/
-Disallow: /api/
-
-# Google爬虫
+# 允许所有主流搜索引擎爬虫
 User-agent: Googlebot
 Allow: /
-Disallow: /workspace/
-Disallow: /api/
 
-# Sitemap位置
+User-agent: Bingbot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Sogou
+Allow: /
+
+User-agent: 360Spider
+Allow: /
+
+# 站点地图位置
 Sitemap: https://meetspot-irq2.onrender.com/sitemap.xml
 
-# 爬取延迟（防止过载）
+# 爬取速率限制（避免过载服务器）
 Crawl-delay: 1
+
+# 其他说明
+# - 主页和API文档是核心内容
+# - workspace目录包含动态生成的推荐结果，不需要索引
+# - config和其他技术目录不对外开放
