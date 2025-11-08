@@ -247,6 +247,15 @@ async def google_verification():
     # 如果文件不存在，返回404
     raise HTTPException(status_code=404, detail="Google verification file not found")
 
+@app.get("/BingSiteAuth.xml")
+async def bing_verification():
+    """返回Bing站点验证文件"""
+    bing_file = "public/BingSiteAuth.xml"
+    if os.path.exists(bing_file):
+        return FileResponse(bing_file, media_type="application/xml")
+    # 如果文件不存在，返回404
+    raise HTTPException(status_code=404, detail="Bing verification file not found")
+
 @app.get("/config")
 async def get_config():
     """获取当前配置状态（不暴露敏感信息）"""

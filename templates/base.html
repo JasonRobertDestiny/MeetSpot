@@ -33,57 +33,150 @@
 
     <link rel="preconnect" href="https://restapi.amap.com">
     <link rel="dns-prefetch" href="https://restapi.amap.com">
+    <link rel="preconnect" href="https://unpkg.com">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #4F46E5;
-            --primary-dark: #3730A3;
-            --text: #1F2937;
-            --muted: #6B7280;
-            --bg: #F9FAFB;
+            /* 统一紫蓝渐变配色系统 */
+            --gradient-primary: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+            --primary: #667EEA;
+            --primary-dark: #764BA2;
+            --success: #50C1A3;
+            --info: #4F46E5;
+            --warning: #F59E0B;
+
+            /* 文字 */
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+
+            /* 背景 */
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F9FAFB;
+            --bg-tertiary: #F3F4F6;
+
+            /* 阴影 */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
+
         * { box-sizing: border-box; }
+
         body {
             margin: 0;
             font-family: "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-            color: var(--text);
-            background: var(--bg);
+            color: var(--text-primary);
+            background: var(--bg-secondary);
             line-height: 1.7;
         }
-        header, footer {
-            background: #fff;
-            border-bottom: 1px solid #E5E7EB;
+
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { color: var(--primary-dark); }
+
+        /* Header 样式 */
+        .site-header {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .logo-icon {
+            font-size: 1.5rem;
+        }
+
+        .tagline {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            font-weight: 400;
+            margin-left: 8px;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 24px;
+            font-weight: 600;
+        }
+
+        .main-nav a {
+            color: rgba(255, 255, 255, 0.9);
+            transition: all 0.2s;
+            padding: 8px 0;
+        }
+
+        .main-nav a:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .github-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+        }
+
+        .github-badge:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .github-badge i {
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 24px;
         }
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            gap: 20px;
-            font-weight: 600;
+
+        main {
+            min-height: 60vh;
+            padding: 40px 0;
         }
-        nav a {
-            color: var(--text);
-            text-decoration: none;
-        }
-        nav a:hover { color: var(--primary); }
-        main { min-height: 60vh; }
-        footer {
-            margin-top: 60px;
-            border-top: 1px solid #E5E7EB;
-            padding: 32px 0;
-        }
+
         .breadcrumbs {
             font-size: 0.9rem;
-            color: var(--muted);
+            color: var(--text-muted);
             padding: 16px 0;
         }
-        .breadcrumbs a { color: var(--muted); }
+
+        .breadcrumbs a { color: var(--text-muted); }
+
         .sr-only {
             position: absolute;
             width: 1px;
@@ -94,23 +187,310 @@
             clip: rect(0,0,0,0);
             border: 0;
         }
-        .btn-primary {
-            display: inline-flex;
+
+        /* Footer 样式 */
+        .enhanced-footer {
+            background: linear-gradient(to bottom, var(--bg-secondary), #E5E7EB);
+            padding: 48px 0 24px;
+            margin-top: 80px;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 40px;
+            margin-bottom: 32px;
+        }
+
+        .footer-container h3 {
+            margin: 0 0 16px 0;
+            color: var(--text-primary);
+            font-size: 1.125rem;
+        }
+
+        .footer-container p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .author-info {
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+
+        .author-info p {
+            margin: 4px 0;
+        }
+
+        .project-stat {
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .social-links, .footer-links a {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
+            background: white;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            font-weight: 500;
+            justify-content: center;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .social-btn i {
+            font-size: 1.2rem;
+        }
+
+        .wechat-btn:hover { background: #EEF2FF; }
+        .github-btn:hover { background: #F3F4F6; }
+        .blog-btn:hover { background: #FFF7ED; }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .support-text {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .support-btn {
+            display: flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
             padding: 12px 24px;
-            border-radius: 999px;
-            background: var(--primary);
-            color: #fff;
+            border-radius: 8px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            cursor: pointer;
             font-weight: 600;
-            text-decoration: none;
+            transition: all 0.2s;
+            width: 100%;
         }
-        .grid {
-            display: grid;
-            gap: 20px;
+
+        .support-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
-        @media (max-width: 640px) {
-            nav ul { flex-wrap: wrap; }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 24px 0;
+            text-align: center;
+            border-top: 1px solid #D1D5DB;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Modal 样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 480px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            animation: modalSlideUp 0.3s ease-out;
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-content h3 {
+            margin: 0 0 20px 0;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .qr-container {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .qr-container img {
+            max-width: 280px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .qr-notice {
+            margin-top: 16px;
+            padding: 12px;
+            background: #FFF7ED;
+            border-left: 4px solid var(--warning);
+            color: #92400E;
+            font-weight: 500;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .qr-fallback {
+            margin-top: 16px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-align: left;
+        }
+
+        .qr-fallback a {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .support-message {
+            margin: 20px 0;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .other-support {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+        }
+
+        .other-support p {
+            margin: 0 0 12px 0;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .other-support ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .other-support li {
+            margin: 8px 0;
+            color: var(--text-secondary);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+            }
+
+            .main-nav {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .github-badge {
+                font-size: 0.875rem;
+                padding: 6px 12px;
+            }
+
+            .github-badge span {
+                display: none;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .modal-content {
+                padding: 24px;
+            }
+
+            .tagline {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand {
+                font-size: 1rem;
+            }
+
+            .main-nav {
+                gap: 16px;
+            }
         }
     </style>
 
@@ -118,20 +498,29 @@
 </head>
 <body>
     <a href="#main" class="sr-only">跳转到主内容</a>
-    <header>
-        <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:64px;">
-            <a href="/" style="font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;">MeetSpot 聚点</a>
-            <nav>
-                <ul>
-                    <li><a href="/">首页</a></li>
-                    <li><a href="/about">关于</a></li>
-                    <li><a href="/how-it-works">使用指南</a></li>
-                    <li><a href="/faq">FAQ</a></li>
-                </ul>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-content">
+            <a href="/" class="brand">
+                <span class="logo-icon">📍</span>
+                <span class="logo-text">MeetSpot</span>
+                <span class="tagline">让聚会更公平</span>
+            </a>
+            <nav class="main-nav">
+                <a href="/">首页</a>
+                <a href="/about">关于</a>
+                <a href="/how-it-works">使用指南</a>
+                <a href="/faq">FAQ</a>
             </nav>
+            <a href="https://github.com/JasonRobertDestiny/MeetSpot" class="github-badge" target="_blank" rel="noopener">
+                <i class='bx bxl-github'></i>
+                <span>Star on GitHub</span>
+            </a>
         </div>
     </header>
 
+    <!-- Breadcrumbs -->
     {% if breadcrumbs %}
     <div class="container breadcrumbs">
         {% for crumb in breadcrumbs %}
@@ -144,22 +533,143 @@
     </div>
     {% endif %}
 
+    <!-- Main Content -->
     <main id="main" class="container">
         {% block content %}{% endblock %}
     </main>
 
-    <footer>
-        <div class="container" style="display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;">
-            <div>
-                <strong>MeetSpot</strong>
-                <p>智能聚会地点推荐系统 · 让每次聚会公平高效</p>
+    <!-- Footer -->
+    <footer class="enhanced-footer">
+        <div class="footer-container">
+            <div class="footer-about">
+                <h3>MeetSpot 聚点</h3>
+                <p>智能聚会地点推荐系统，让每次聚会都公平高效</p>
+                <div class="author-info">
+                    <p>作者：<a href="https://jasonrobert.me/" target="_blank" rel="noopener">Jason Robert</a></p>
+                    <p class="project-stat">🌟 开源项目 · 持续更新中</p>
+                </div>
             </div>
-            <div>
-                <a href="/sitemap.xml">Sitemap</a> ·
-                <a href="/robots.txt">Robots</a>
+
+            <div class="footer-community">
+                <h3>加入社区</h3>
+                <div class="social-links">
+                    <button class="social-btn wechat-btn" onclick="showWeChatGroupModal()">
+                        <i class='bx bxl-wechat'></i>
+                        <span>微信交流群</span>
+                    </button>
+                    <a href="https://github.com/JasonRobertDestiny/MeetSpot" class="social-btn github-btn" target="_blank" rel="noopener">
+                        <i class='bx bxl-github'></i>
+                        <span>GitHub仓库</span>
+                    </a>
+                    <a href="https://jasonrobert.me/" class="social-btn blog-btn" target="_blank" rel="noopener">
+                        <i class='bx bx-link-external'></i>
+                        <span>作者博客</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h3>快速链接</h3>
+                <a href="/how-it-works">使用指南</a>
+                <a href="/faq">常见问题</a>
+                <a href="/about">关于项目</a>
+                <a href="/sitemap.xml">网站地图</a>
+            </div>
+
+            <div class="footer-support">
+                <h3>支持项目</h3>
+                <p>如果MeetSpot对你有帮助</p>
+                <button class="support-btn" onclick="showSupportModal()">
+                    ☕ 请我喝杯咖啡
+                </button>
+                <p class="support-text">MeetSpot是开源项目，您的支持是最大动力</p>
             </div>
         </div>
+
+        <div class="footer-bottom">
+            <p>© 2025 MeetSpot · Built with ❤️ by <a href="https://jasonrobert.me/" target="_blank">Jason Robert</a></p>
+        </div>
     </footer>
+
+    <!-- 微信群 Modal -->
+    <div id="wechat-modal" class="modal" onclick="closeModal(event, 'wechat-modal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal(event, 'wechat-modal')" aria-label="关闭">&times;</button>
+            <h3>加入MeetSpot交流群 💬</h3>
+            <p>与数千名用户一起交流使用心得，获取最新功能更新</p>
+            <div class="qr-container">
+                <img src="/public/docs/vx_chat.png" alt="微信群二维码" loading="lazy">
+                <div class="qr-notice">
+                    ⏰ 该二维码7天内（11月15日前）有效，重新进入将更新
+                </div>
+                <div class="qr-fallback">
+                    <strong>如二维码过期，请通过以下方式联系：</strong>
+                    <ul>
+                        <li><a href="https://github.com/JasonRobertDestiny/MeetSpot/issues" target="_blank">GitHub Issues</a></li>
+                        <li><a href="https://jasonrobert.me/" target="_blank">博客留言</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 打赏 Modal -->
+    <div id="support-modal" class="modal" onclick="closeModal(event, 'support-modal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal(event, 'support-modal')" aria-label="关闭">&times;</button>
+            <h3>感谢你的支持 💖</h3>
+            <p>MeetSpot是完全免费的开源项目，你的赞赏将帮助项目持续改进</p>
+            <div class="qr-container">
+                <img src="/public/docs/vx_payment.png" alt="微信支付码" loading="lazy">
+                <p class="support-message">你的每一份支持都是最大的动力 ☕</p>
+            </div>
+            <div class="other-support">
+                <p>也可以通过以下方式支持：</p>
+                <ul>
+                    <li>⭐ 在GitHub上给项目点Star</li>
+                    <li>📢 分享给需要的朋友</li>
+                    <li>🐛 提交Issue帮助改进</li>
+                    <li>💡 贡献代码和想法</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal控制函数
+        function showWeChatGroupModal() {
+            document.getElementById('wechat-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function showSupportModal() {
+            document.getElementById('support-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(event, modalId) {
+            event.stopPropagation();
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ESC键关闭Modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+
+        // 阻止Modal内容点击冒泡
+        document.querySelectorAll('.modal-content').forEach(content => {
+            content.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        });
+    </script>
 
     {% block scripts %}{% endblock %}
 </body>
