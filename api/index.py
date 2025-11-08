@@ -238,21 +238,39 @@ async def health_check():
         }
     }
 
-@app.get("/google48ac1a797739b7b0.html")
+@app.api_route("/google48ac1a797739b7b0.html", methods=["GET", "HEAD"])
 async def google_verification():
-    """返回Google Search Console验证文件"""
+    """返回Google Search Console验证文件（支持GET和HEAD请求）"""
     google_file = "public/google48ac1a797739b7b0.html"
     if os.path.exists(google_file):
-        return FileResponse(google_file, media_type="text/html")
+        response = FileResponse(
+            google_file,
+            media_type="text/html",
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
+        )
+        return response
     # 如果文件不存在，返回404
     raise HTTPException(status_code=404, detail="Google verification file not found")
 
-@app.get("/BingSiteAuth.xml")
+@app.api_route("/BingSiteAuth.xml", methods=["GET", "HEAD"])
 async def bing_verification():
-    """返回Bing站点验证文件"""
+    """返回Bing站点验证文件（支持GET和HEAD请求）"""
     bing_file = "public/BingSiteAuth.xml"
     if os.path.exists(bing_file):
-        return FileResponse(bing_file, media_type="application/xml")
+        response = FileResponse(
+            bing_file,
+            media_type="application/xml",
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
+        )
+        return response
     # 如果文件不存在，返回404
     raise HTTPException(status_code=404, detail="Bing verification file not found")
 
