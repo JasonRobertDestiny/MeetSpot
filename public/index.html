@@ -942,6 +942,12 @@
                 </a>
             </div>
             <div class="social-proof-item">
+                <i class='bx bxl-youtube'></i>
+                <a href="https://www.bilibili.com/video/BV1aUK7zNEvo/" target="_blank" rel="noopener" style="color: white; text-decoration: none;">
+                    <span>观看演示视频</span>
+                </a>
+            </div>
+            <div class="social-proof-item">
                 <i class='bx bxs-group'></i>
                 <span>已服务 1000+ 用户</span>
             </div>
@@ -1079,13 +1085,20 @@
                             <p>查看源码,贡献代码</p>
                         </div>
                     </a>
-                    <div class="community-link">
+                    <a href="/docs-static/vx_chat.png" class="community-link" onclick="showQRModal('微信交流群', '/docs-static/vx_chat.png', '扫码加入MeetSpot用户交流群'); return false;" title="点击查看微信群二维码">
                         <i class='bx bxl-wechat'></i>
                         <div>
                             <h4>微信交流</h4>
-                            <p>添加微信: _jasonrobert</p>
+                            <p>点击查看群二维码</p>
                         </div>
-                    </div>
+                    </a>
+                    <a href="https://www.bilibili.com/video/BV1aUK7zNEvo/" class="community-link" target="_blank" rel="noopener" title="观看演示视频">
+                        <i class='bx bxl-youtube'></i>
+                        <div>
+                            <h4>演示视频</h4>
+                            <p>B站查看使用教程</p>
+                        </div>
+                    </a>
                     <a href="https://jasonrobert.me/" class="community-link" target="_blank" rel="noopener">
                         <i class='bx bxs-user-circle'></i>
                         <div>
@@ -1093,13 +1106,13 @@
                             <p>了解技术细节和开发故事</p>
                         </div>
                     </a>
-                    <div class="community-link">
+                    <a href="/docs-static/vx_payment.png" class="community-link" onclick="showQRModal('请喝咖啡☕', '/docs-static/vx_payment.png', '您的支持是项目持续发展的动力'); return false;" title="点击查看捐赠二维码">
                         <i class='bx bxs-donate-heart'></i>
                         <div>
                             <h4>支持项目</h4>
-                            <p>捐赠支持项目持续发展</p>
+                            <p>点击查看捐赠二维码</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -1351,10 +1364,62 @@
         </div>
     </div>
 
+    <!-- 二维码模态框 -->
+    <div id="qrModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8);">
+        <div style="position: relative; margin: 10% auto; padding: 20px; max-width: 400px; background: white; border-radius: 15px; text-align: center;">
+            <span id="closeModal" style="position: absolute; right: 20px; top: 10px; font-size: 30px; font-weight: bold; cursor: pointer; color: #666;">&times;</span>
+            <h3 id="modalTitle" style="margin-bottom: 20px; color: #333;"></h3>
+            <img id="modalImage" src="" alt="" style="width: 100%; max-width: 300px; height: auto;">
+            <p id="modalDesc" style="margin-top: 15px; color: #666;"></p>
+        </div>
+    </div>
+
     <script>
         let selectedPlaceTypes = new Set();
         let selectedThemeOrder = [];
         const MAX_PLACE_TYPES = 3;
+
+        // 二维码模态框功能
+        function showQRModal(title, imageSrc, description) {
+            const modal = document.getElementById('qrModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalImage = document.getElementById('modalImage');
+            const modalDesc = document.getElementById('modalDesc');
+
+            modalTitle.textContent = title;
+            modalImage.src = imageSrc;
+            modalImage.alt = title;
+            modalDesc.textContent = description;
+            modal.style.display = 'block';
+        }
+
+        // 关闭模态框
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('qrModal');
+            const closeBtn = document.getElementById('closeModal');
+
+            if (closeBtn) {
+                closeBtn.onclick = function() {
+                    modal.style.display = 'none';
+                }
+            }
+
+            // 点击模态框外部也关闭
+            window.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            }
+
+            updatePlaceTypeHint();
+            updateLocationCountHint();
+
+            // 默认选择咖啡馆
+            const cafeType = document.querySelector('.place-type[data-type="咖啡馆"]');
+            if (cafeType) {
+                cafeType.click();
+            }
+        });
 
         // 场所类型选择
         document.querySelectorAll('.place-type').forEach(type => {
@@ -1707,18 +1772,6 @@
                         hideStatusDisplay();
                     }
                 }, 1000);
-            }
-        });
-
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            updatePlaceTypeHint();
-            updateLocationCountHint();
-
-            // 默认选择咖啡馆
-            const cafeType = document.querySelector('.place-type[data-type="咖啡馆"]');
-            if (cafeType) {
-                cafeType.click();
             }
         });
     </script>
