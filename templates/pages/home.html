@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- 新增醒目的Hero区块 -->
+<div style="background:linear-gradient(135deg, #667EEA 0%, #764BA2 100%);color:#fff;padding:40px;border-radius:24px;text-align:center;margin-bottom:40px;box-shadow:0 20px 60px rgba(102,126,234,0.3);">
+    <h2 style="font-size:2rem;margin-bottom:12px;">🎯 智能聚会地点推荐系统</h2>
+    <p style="font-size:1.2rem;opacity:0.95;margin-bottom:24px;">输入多人位置，一键找到最公平的中点会面地点</p>
+    <a href="/public/meetspot_finder.html" style="display:inline-block;background:#fff;color:#667EEA;padding:16px 48px;border-radius:12px;text-decoration:none;font-size:1.2rem;font-weight:bold;box-shadow:0 8px 24px rgba(0,0,0,0.1);transition:transform 0.2s;">
+        ⚡ 立即开始使用（完全免费）
+    </a>
+    <p style="margin-top:16px;font-size:0.9rem;opacity:0.9;">无需注册 · 支持2-10人 · 智能推荐咖啡馆/餐厅</p>
+</div>
+
+<section style="padding:60px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;align-items:start;">
+    <div>
+        <p class="badge" style="color:#6B7280;font-weight:600;">SEO Ready · Mobile First</p>
+        <h1 style="font-size:2.6rem;margin-bottom:16px;">Find the fairest meeting location midpoint for every group.</h1>
+        <p>MeetSpot结合地理算法、结构化数据和内容策略, 让团队、家庭与社区聚会都能快速找到公平的会面地点, 并自动生成可被搜索引擎理解的推荐页面。</p>
+        <div style="margin-top:24px;display:flex;gap:16px;flex-wrap:wrap;">
+            <a class="btn-primary" href="/public/meetspot_finder.html" style="background:#4F46E5;color:#fff;padding:14px 32px;font-size:1.1rem;box-shadow:0 4px 14px rgba(79, 70, 229, 0.4);">🚀 立即免费使用</a>
+            <a class="btn-primary" style="background:#fff;color:var(--primary);border:1px solid var(--primary);" href="/how-it-works">查看使用指南</a>
+            <a class="btn-primary" style="background:#fff;color:var(--primary);border:1px solid var(--primary);" href="/faq">FAQ</a>
+        </div>
+        <div style="margin-top:24px;display:flex;gap:16px;">
+            <div>
+                <strong style="font-size:2rem;display:block;">10k+</strong>
+                <span>已服务聚会</span>
+            </div>
+            <div>
+                <strong style="font-size:2rem;display:block;">30%</strong>
+                <span>平均节省通勤时间</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 优化后的热门城市卡片 - 横向滚动 -->
+    <div style="background:#fff;border-radius:24px;padding:24px;box-shadow:0 20px 60px rgba(15,23,42,0.08);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <div>
+                <h2 style="margin:0;">热门城市</h2>
+                <p style="margin:4px 0 0 0;color:var(--muted);font-size:0.9rem;">选择一个城市, 获取本地化的聚会地点推荐</p>
+            </div>
+            <a href="#all-cities" style="color:var(--primary);text-decoration:none;font-size:0.9rem;" onclick="toggleAllCities(event)">
+                <span id="toggle-text">查看全部 ▼</span>
+            </a>
+        </div>
+
+        <!-- 初始显示：横向滚动的前8个城市 -->
+        <div id="featured-cities" style="display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;margin-bottom:12px;">
+            {% for city in cities[:8] %}
+            <a href="/meetspot/{{ city.slug }}" style="display:block;padding:12px;border:1px solid #E5E7EB;border-radius:12px;text-decoration:none;color:inherit;transition:all 0.2s;background:#FAFAFA;" onmouseover="this.style.borderColor='#667EEA';this.style.background='#F9FAFB'" onmouseout="this.style.borderColor='#E5E7EB';this.style.background='#FAFAFA'">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                    <strong style="font-size:1.05rem;">{{ city.name }}</strong>
+                    <span style="font-size:0.75rem;color:#9CA3AF;">{{ city.name_en }}</span>
+                </div>
+                <p style="margin:0;font-size:0.85rem;color:var(--muted);line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">{{ city.description[:40] }}...</p>
+            </a>
+            {% endfor %}
+        </div>
+
+        <!-- 折叠的所有城市 -->
+        <div id="all-cities" style="display:none;max-height:400px;overflow-y:auto;border-top:1px solid #E5E7EB;padding-top:12px;">
+            <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:8px;">
+                {% for city in cities[8:] %}
+                <a href="/meetspot/{{ city.slug }}" style="display:block;padding:8px 12px;border-radius:8px;text-decoration:none;color:inherit;transition:background 0.2s;font-size:0.9rem;" onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='transparent'">
+                    <strong>{{ city.name }}</strong> <span style="color:#9CA3AF;font-size:0.8rem;">{{ city.name_en }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="background:#fff;border-radius:24px;padding:32px;box-shadow:0 20px 60px rgba(15,23,42,0.05);">
+    <h2>Why teams choose MeetSpot</h2>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));">
+        <article>
+            <h3>🎯 Midpoint intelligence</h3>
+            <p>球面几何 + 权重算法确保每个人的路程都在可接受范围内, 并自动平衡多种场景。</p>
+        </article>
+        <article>
+            <h3>🔍 SEO-ready exports</h3>
+            <p>推荐页面内置WebApplication、LocalBusiness、FAQ结构化数据, 方便被搜索引擎索引。</p>
+        </article>
+        <article>
+            <h3>📝 Content operations</h3>
+            <p>模板系统自动生成城市介绍、FAQ、内链, 轻松满足500+字内容要求。</p>
+        </article>
+    </div>
+</section>
+
+<section style="margin-top:40px;background:#fff;border-radius:24px;padding:32px;box-shadow:0 20px 60px rgba(15,23,42,0.05);">
+    <h2>🚀 Workflow overview</h2>
+    <ol style="padding-left:18px;line-height:1.8;">
+        <li><strong>输入地址</strong> - 输入参与者地址或地标, 系统自动校验并扩展简写。</li>
+        <li><strong>选择场景</strong> - 选择聚会场景与关键词, 服务端生成Meta与Schema。</li>
+        <li><strong>获取推荐</strong> - 生成推荐列表与静态HTML, 可直接分享或提交索引。</li>
+        <li><strong>监控效果</strong> - 通过Sitemap与Search Console监控收录与排名。</li>
+    </ol>
+</section>
+
+<script>
+function toggleAllCities(e) {
+    e.preventDefault();
+    const allCities = document.getElementById('all-cities');
+    const toggleText = document.getElementById('toggle-text');
+
+    if (allCities.style.display === 'none') {
+        allCities.style.display = 'block';
+        toggleText.textContent = '收起 ▲';
+    } else {
+        allCities.style.display = 'none';
+        toggleText.textContent = '查看全部 ▼';
+    }
+}
+</script>
+{% endblock %}

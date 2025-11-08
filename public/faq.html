@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetSpot FAQ | Structured Data, Keywords, and Midpoint Planning</title>
+    <meta name="description" content="Answers to the most common MeetSpot questions: midpoint logic, structured data, SEO keywords, pricing, embedding, and monitoring.">
+    <link rel="canonical" href="https://meetspot-irq2.onrender.com/faq">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <style>
+        body { margin:0; font-family:"Inter",Arial,sans-serif; background:#f4f6fb; color:#121830; line-height:1.7; }
+        header { background:#121830; color:#fff; padding:40px 0; }
+        .container { max-width:960px; margin:0 auto; padding:0 24px; }
+        nav { display:flex; justify-content:space-between; align-items:center; }
+        nav a { color:#e3e9ff; text-decoration:none; margin-left:16px; }
+        h1 { font-size:2.4rem; }
+        section { background:#fff; border-radius:24px; padding:32px; margin-top:-40px; box-shadow:0 30px 60px rgba(12,15,33,0.12); }
+        .faq-item { border-bottom:1px solid #e5e8f5; padding:18px 0; }
+        .faq-item:last-child { border-bottom:none; }
+        .faq-item h3 { margin-bottom:8px; }
+        footer { text-align:center; padding:40px 0; color:#6b6f88; font-size:0.9rem; }
+        @media(max-width:640px){ nav{flex-direction:column; gap:12px;} }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div style="font-weight:700;font-size:1.2rem;"><i class='bx bx-map'></i> MeetSpot</div>
+                <div>
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/how-it-works">How it works</a>
+                </div>
+            </nav>
+            <div style="margin-top:40px; max-width:720px;">
+                <h1>Frequently Asked Questions</h1>
+                <p>Everything you need to know about midpoint planning, structured data, pricing, and our SEO automation workflow.</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="margin:0 auto 60px;">
+        <section>
+            <div class="faq-item">
+                <h3>What makes MeetSpot different from a basic midpoint calculator?</h3>
+                <p>We combine centroid math, live venue data, and shareable SEO-ready pages. Your meeting recap already includes LocalBusiness, WebApplication, FAQPage, and Review schema so it can rank for keywords like “meeting location midpoint” or “group meeting point finder”.</p>
+            </div>
+            <div class="faq-item">
+                <h3>How many people can I add?</h3>
+                <p>The recommender supports 2-10 participants by default. If you need larger groups for events, clone the open-source repo, adjust <code>MAX_PARTICIPANTS</code> inside <code>app/tool/meetspot_recommender.py</code>, and redeploy.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Can I use Chinese addresses or keywords?</h3>
+                <p>Yes. MeetSpot was born in Asia, so it fully supports 中文地址、聚会地点、会面点 等输入，并且仍会输出包含英文 SEO 关键词的页面，以兼顾本地化与全球搜索表现。</p>
+            </div>
+            <div class="faq-item">
+                <h3>Is there an API?</h3>
+                <p>Absolutely. Hit <code>/api/find_meetspot</code> with a JSON payload. We recommend using <a href="/docs">/docs</a> for an interactive schema and <a href="/recommend">/recommend</a> for legacy compatibility.</p>
+            </div>
+            <div class="faq-item">
+                <h3>How much does MeetSpot cost?</h3>
+                <p>MeetSpot is free for now. We may launch premium collaboration features later, but the midpoint calculator and SEO toolkit will always have a generous free tier.</p>
+            </div>
+            <div class="faq-item">
+                <h3>How do I keep SEO scores high?</h3>
+                <p>Follow the <a href="/SEO_API_OPTIMIZATION_GUIDE.md">SEO API Optimization Guide</a>: ensure titles exceed 50 characters, meta descriptions ~155 characters, include structured data, and publish 500+ word sections. Track ranking deltas weekly via Keyword.com.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Can I embed the results elsewhere?</h3>
+                <p>Yes. Each generated HTML file is static and can be uploaded to your CMS or referenced directly. You can also parse the output to create custom cards inside your product.</p>
+            </div>
+            <div class="faq-item">
+                <h3>What if I need to remove a page from Google?</h3>
+                <p>Update <code>public/robots.txt</code> to disallow the path or remove it from <code>public/sitemap.xml</code>, then request removal via Search Console’s URL tool.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        © <span id="year"></span> MeetSpot · <a href="/">Return home</a>
+    </footer>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

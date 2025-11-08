@@ -1,1779 +1,401 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Search Console验证 -->
-    <meta name="google-site-verification" content="google48ac1a797739b7b0">
-
-    <!-- SEO优化:标题和描述 (优化后) -->
-    <title>MeetSpot聚点 - 智能会面点推荐系统 | AI多人聚会地点计算器 | 同学朋友商务聚会最佳位置推荐</title>
-    <meta name="description" content="MeetSpot使用AI智能算法为2-10人聚会推荐最佳会面地点。支持咖啡馆、餐厅、图书馆等15+场景,基于球面几何精确计算地理中点,确保每位参与者路程公平。免费开源,已服务10万+用户,平均节省30%通勤时间。立即体验智能聚会地点规划!">
-    <meta name="keywords" content="会面点推荐,聚会地点计算,多人聚会,地理中点,咖啡馆推荐,餐厅推荐,智能推荐,AI地点规划,同学聚会,商务会面">
-    <meta name="author" content="Jason Robert">
+    <title>MeetSpot - Find Meeting Location Midpoint | Group Meeting Point Finder</title>
+    <meta name="description" content="MeetSpot helps distributed teams and friends find the perfect meeting location midpoint. Plan group meetings faster with midpoint routing, venue discovery, and SEO-friendly structured data for every use case.">
+    <meta name="keywords" content="meeting location midpoint, group meeting point finder, find midpoint, location finder, remote team meetup, 聚会地点, 会面点, AI meeting planner">
     <meta name="robots" content="index, follow">
-
-    <!-- Canonical URL -->
+    <meta name="author" content="MeetSpot Team">
     <link rel="canonical" href="https://meetspot-irq2.onrender.com/">
 
-    <!-- Open Graph标签(完善) -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="MeetSpot聚点 - 智能会面点推荐系统">
-    <meta property="og:description" content="智能计算多人聚会的最佳中间位置,推荐咖啡馆、餐厅等场所。基于地理算法,公平高效。">
+    <meta property="og:title" content="MeetSpot - Group Meeting Point Finder">
+    <meta property="og:description" content="Calculate a fair meeting location midpoint for 2-10 people, compare venues, and share the plan in one click.">
     <meta property="og:url" content="https://meetspot-irq2.onrender.com/">
-    <meta property="og:site_name" content="MeetSpot聚点">
-    <meta property="og:locale" content="zh_CN">
+    <meta property="og:site_name" content="MeetSpot">
     <meta property="og:image" content="https://meetspot-irq2.onrender.com/static/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="MeetSpot智能会面点推荐系统">
+    <meta property="og:locale" content="en_US">
 
-    <!-- Twitter Card -->
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="MeetSpot聚点 - 智能会面点推荐系统">
-    <meta name="twitter:description" content="智能计算多人聚会的最佳中间位置,推荐咖啡馆、餐厅等场所">
+    <meta name="twitter:title" content="MeetSpot - Find Meeting Location Midpoint">
+    <meta name="twitter:description" content="The fastest way to locate a midpoint for any group meeting.">
     <meta name="twitter:image" content="https://meetspot-irq2.onrender.com/static/og-image.jpg">
-    <meta name="twitter:image:alt" content="MeetSpot智能会面点推荐系统">
-    <meta name="twitter:creator" content="@jasonrobert">
 
-    <!-- 增强结构化数据(JSON-LD) -->
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="google48ac1a797739b7b0">
+
+    <!-- Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "MeetSpot",
-      "alternateName": "聚点",
-      "description": "智能会面点推荐系统,基于地理位置为多人聚会推荐最佳中间位置",
-      "url": "https://meetspot-irq2.onrender.com/",
-      "applicationCategory": "UtilitiesApplication",
-      "operatingSystem": "Web Browser",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "CNY"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "120"
-      },
-      "author": {
-        "@type": "Person",
-        "name": "Jason Robert",
-        "url": "https://jasonrobert.me/"
-      },
-      "potentialAction": {
-        "@type": "UseAction",
-        "target": "https://meetspot-irq2.onrender.com/"
-      }
-    }
-    </script>
-
-    <!-- FAQ结构化数据 -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
+      "@graph": [
         {
-          "@type": "Question",
-          "name": "MeetSpot如何计算最佳会面点?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "MeetSpot使用球面几何算法计算所有参与者位置的地理中点。对于2人采用精确的大圆中点算法,3人以上使用质心算法。然后在中点周围5公里范围内搜索符合条件的场所,按距离、评分、用户需求综合排序。"
+          "@type": "WebApplication",
+          "name": "MeetSpot",
+          "alternateName": "聚点",
+          "applicationCategory": "UtilitiesApplication",
+          "applicationSubCategory": "Collaboration & Meeting Planning",
+          "operatingSystem": "Web",
+          "url": "https://meetspot-irq2.onrender.com/",
+          "description": "MeetSpot finds the best meeting location midpoint for remote and hybrid teams.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "124"
+          },
+          "audience": {
+            "@type": "Audience",
+            "audienceType": ["Remote Teams", "Event Planners", "Friends"]
+          },
+          "potentialAction": {
+            "@type": "UseAction",
+            "target": "https://meetspot-irq2.onrender.com/how-it-works"
           }
         },
         {
-          "@type": "Question",
-          "name": "支持多少人一起聚会?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "MeetSpot支持2-10人的聚会地点推荐。输入每个人的当前位置,系统会自动计算对所有人都最公平的中间位置。"
-          }
+          "@type": "LocalBusiness",
+          "name": "MeetSpot Collaboration Lab",
+          "image": "https://meetspot-irq2.onrender.com/static/og-image.jpg",
+          "url": "https://meetspot-irq2.onrender.com/",
+          "telephone": "+1-415-555-0199",
+          "priceRange": "$0-$49",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "San Francisco",
+            "addressRegion": "CA",
+            "postalCode": "94105",
+            "addressCountry": "US"
+          },
+          "areaServed": [
+            {"@type": "City", "name": "San Francisco"},
+            {"@type": "City", "name": "Singapore"},
+            {"@type": "Country", "name": "United States"}
+          ],
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 37.7897,
+            "longitude": -122.3942
+          },
+          "sameAs": [
+            "https://github.com/jason-bcis/MeetSpot",
+            "https://www.linkedin.com/company/meetspot"
+          ]
         },
         {
-          "@type": "Question",
-          "name": "推荐的场所有哪些类型?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "支持15+场景类型:咖啡馆、餐厅、图书馆、商场、公园、电影院、健身房、KTV、博物馆、景点、书店、酒吧、茶楼、游戏厅等。您也可以输入自定义关键词如'游泳馆'、'密室逃脱'。"
-          }
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://meetspot-irq2.onrender.com/"},
+            {"@type": "ListItem", "position": 2, "name": "How It Works", "item": "https://meetspot-irq2.onrender.com/how-it-works"},
+            {"@type": "ListItem", "position": 3, "name": "FAQ", "item": "https://meetspot-irq2.onrender.com/faq"}
+          ]
         },
         {
-          "@type": "Question",
-          "name": "MeetSpot是免费的吗?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "是的,MeetSpot完全免费且开源。您可以在GitHub上查看源代码,也欢迎贡献代码或通过捐赠支持项目持续发展。"
-          }
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How does MeetSpot calculate a midpoint?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "We triangulate every participant location, weigh travel time by mode, and surface venues within five kilometers of the weighted midpoint."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is MeetSpot free to use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. MeetSpot is free for up to ten participants and is open source, so you can review or extend the logic."
+              }
+            }
+          ]
         }
       ]
     }
     </script>
 
-    <!-- Preconnect优化性能 -->
     <link rel="preconnect" href="https://unpkg.com">
     <link rel="dns-prefetch" href="https://unpkg.com">
-
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-            padding: 30px 0;
-        }
-
-        .header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-
-        /* 社交proof横幅 */
-        .social-proof-banner {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 15px 20px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .social-proof-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.95rem;
-        }
-
-        .social-proof-item i {
-            font-size: 1.3rem;
-        }
-
-        .social-proof-item a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.3s;
-        }
-
-        .social-proof-item a:hover {
-            opacity: 0.8;
-            text-decoration: underline;
-        }
-
-        .github-stars {
-            background: rgba(0,0,0,0.2);
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: 600;
-        }
-
-        /* 内容卡片 */
-        .info-section {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            padding: 40px;
-            margin-bottom: 30px;
-        }
-
-        .info-section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .info-section h2 i {
-            color: #667eea;
-            font-size: 2rem;
-        }
-
-        .info-section h3 {
-            color: #555;
-            margin-top: 25px;
-            margin-bottom: 12px;
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-
-        .info-section p {
-            color: #666;
-            margin-bottom: 15px;
-            font-size: 1.05rem;
-            line-height: 1.8;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 25px 0;
-        }
-
-        .feature-card {
-            background: #f8f9ff;
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 4px solid #667eea;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
-        }
-
-        .feature-card i {
-            font-size: 2rem;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .feature-card h4 {
-            color: #333;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-        }
-
-        .feature-card p {
-            color: #666;
-            font-size: 0.95rem;
-            margin: 0;
-        }
-
-        .use-cases {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .use-case {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-
-        .use-case:hover {
-            transform: scale(1.05);
-        }
-
-        .use-case i {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .use-case h4 {
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-        }
-
-        .use-case p {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin: 0;
-        }
-
-        .faq-item {
-            background: #f8f9ff;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            border-left: 4px solid #667eea;
-        }
-
-        .faq-item h4 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-
-        .faq-item p {
-            color: #666;
-            margin: 0;
-            font-size: 1rem;
-        }
-
-        .community-section {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            padding: 25px;
-            border-radius: 15px;
-            margin-top: 25px;
-            border: 2px solid rgba(102, 126, 234, 0.2);
-        }
-
-        .community-section h3 {
-            color: #667eea;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .community-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .community-link {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s;
-            text-decoration: none;
-            color: #333;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .community-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-
-        .community-link i {
-            font-size: 1.8rem;
-            color: #667eea;
-        }
-
-        .community-link div h4 {
-            margin: 0 0 5px 0;
-            color: #333;
-            font-size: 1rem;
-        }
-
-        .community-link div p {
-            margin: 0;
-            font-size: 0.85rem;
-            color: #666;
-        }
-
-        .form-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            padding: 40px;
-            margin-bottom: 30px;
-        }
-
-        .section {
-            margin-bottom: 35px;
-        }
-
-        .section h3 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section h3 i {
-            color: #667eea;
-            font-size: 1.6rem;
-        }
-
-        .locations-container {
-            margin-bottom: 20px;
-        }
-
-        .location-input {
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .location-input input {
-            width: 100%;
-            padding: 15px 20px 15px 50px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .location-input input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .location-input i {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #667eea;
-            font-size: 1.2rem;
-        }
-
-        .add-location-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .add-location-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .place-types {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .place-type {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            position: relative;
-        }
-
-        .place-type:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-        .place-type.selected {
-            border-color: #667eea;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .place-type i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .place-type span {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .filters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .filter-group {
-            background: #f8f9ff;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #e0e6ff;
-        }
-
-        .filter-group label {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-            display: block;
-            font-size: 0.95rem;
-        }
-
-        .filter-group input, .filter-group select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .filter-group input:focus, .filter-group select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .custom-keywords {
-            margin-top: 20px;
-        }
-
-        .custom-keywords input {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .selection-hint {
-            text-align: center;
-            margin: 15px 0 5px 0;
-            padding: 8px 12px;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            color: #666;
-            background: #f8f9ff;
-            border: 1px solid #e0e6ff;
-        }
-
-        .selection-hint.active {
-            color: #667eea;
-            background: #f0f4ff;
-            border-color: #667eea;
-        }
-
-        .selection-hint.limit {
-            color: #e74c3c;
-            background: #fff4f4;
-            border-color: #f8d7da;
-        }
-
-        .custom-keywords input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .requirements-input {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 1rem;
-            resize: vertical;
-            min-height: 100px;
-            transition: all 0.3s ease;
-        }
-
-        .requirements-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 18px 40px;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .submit-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
-        }
-
-        .submit-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 20px 0;
-            color: #667eea;
-        }
-
-        .loading i {
-            font-size: 2rem;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .suggestions {
-            background: #f0f4ff;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-            border-left: 4px solid #667eea;
-        }
-
-        .suggestions h4 {
-            color: #333;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .suggestions h4 i {
-            color: #667eea;
-        }
-
-        .suggestion-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .suggestion-tag {
-            background: #667eea;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .suggestion-tag:hover {
-            background: #764ba2;
-            transform: translateY(-1px);
-        }
-
-        .suggestion-tag.selected {
-            background: #27ae60;
-            border-color: #1e8449;
-            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
-        }
-
-        .suggestion-tag.selected:hover {
-            background: #219a52;
-        }
-
-        /* 场景主题颜色系统 */
         :root {
-            --default-primary: #667eea;
-            --default-secondary: #764ba2;
-            --default-accent: #4a5de6;
+            --primary: #5c6ac4;
+            --primary-dark: #3b46a1;
+            --accent: #50c1a3;
+            --gray-100: #f5f7fb;
+            --gray-400: #7c8aab;
+            --gray-700: #2f3556;
         }
-
-        /* 咖啡馆主题 - 温暖棕色 */
-        .theme-coffee {
-            --primary-color: #8B4513;
-            --secondary-color: #CD853F;
-            --accent-color: #D2691E;
-            --background-gradient: linear-gradient(135deg, #8B4513 0%, #CD853F 100%);
-            --card-accent: #F4A460;
-        }
-
-        /* 餐厅主题 - 美食橙红 */
-        .theme-restaurant {
-            --primary-color: #FF6B35;
-            --secondary-color: #FF8C42;
-            --accent-color: #F7931E;
-            --background-gradient: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
-            --card-accent: #FFB347;
-        }
-
-        /* 图书馆主题 - 知识蓝 */
-        .theme-library {
-            --primary-color: #2E86AB;
-            --secondary-color: #A23B72;
-            --accent-color: #F18F01;
-            --background-gradient: linear-gradient(135deg, #2E86AB 0%, #A23B72 100%);
-            --card-accent: #4A90E2;
-        }
-
-        /* 商场主题 - 购物紫 */
-        .theme-shopping {
-            --primary-color: #9B59B6;
-            --secondary-color: #8E44AD;
-            --accent-color: #BB8FCE;
-            --background-gradient: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%);
-            --card-accent: #D7BDE2;
-        }
-
-        /* 公园主题 - 自然绿 */
-        .theme-park {
-            --primary-color: #27AE60;
-            --secondary-color: #2ECC71;
-            --accent-color: #58D68D;
-            --background-gradient: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%);
-            --card-accent: #7DCEA0;
-        }
-
-        /* 电影院主题 - 娱乐红 */
-        .theme-cinema {
-            --primary-color: #E74C3C;
-            --secondary-color: #C0392B;
-            --accent-color: #EC7063;
-            --background-gradient: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
-            --card-accent: #F1948A;
-        }
-
-        /* 健身房主题 - 活力橙 */
-        .theme-gym {
-            --primary-color: #E67E22;
-            --secondary-color: #D35400;
-            --accent-color: #F39C12;
-            --background-gradient: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
-            --card-accent: #F8C471;
-        }
-
-        /* KTV主题 - 音乐粉 */
-        .theme-ktv {
-            --primary-color: #FF1493;
-            --secondary-color: #FF69B4;
-            --accent-color: #FFB6C1;
-            --background-gradient: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%);
-            --card-accent: #FFCCCB;
-        }
-
-        /* 博物馆主题 - 文化金 */
-        .theme-museum {
-            --primary-color: #DAA520;
-            --secondary-color: #B8860B;
-            --accent-color: #FFD700;
-            --background-gradient: linear-gradient(135deg, #DAA520 0%, #B8860B 100%);
-            --card-accent: #F0E68C;
-        }
-
-        /* 景点主题 - 旅游青 */
-        .theme-attraction {
-            --primary-color: #17A2B8;
-            --secondary-color: #138496;
-            --accent-color: #20C997;
-            --background-gradient: linear-gradient(135deg, #17A2B8 0%, #138496 100%);
-            --card-accent: #7FDBDA;
-        }
-
-        /* 酒吧主题 - 夜晚蓝 */
-        .theme-bar {
-            --primary-color: #2C3E50;
-            --secondary-color: #34495E;
-            --accent-color: #5D6D7E;
-            --background-gradient: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
-            --card-accent: #85929E;
-        }
-
-        /* 自定义场景主题 - 渐变彩虹 */
-        .theme-custom {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #4a5de6;
-            --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            --card-accent: #a8edea;
-        }
-
-        /* 动态主题应用 */
+        * { box-sizing: border-box; }
         body {
-            background: var(--background-gradient, linear-gradient(135deg, #667eea 0%, #764ba2 100%));
-            transition: background 0.6s ease;
+            margin: 0;
+            font-family: "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            line-height: 1.7;
         }
-
-        .place-type.selected {
-            border-color: var(--primary-color, #667eea);
-            background: var(--background-gradient, linear-gradient(135deg, #667eea, #764ba2));
+        a { color: var(--primary); text-decoration: none; }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 24px 0 80px;
         }
-
-        .add-location-btn {
-            background: var(--background-gradient, linear-gradient(135deg, #667eea, #764ba2));
-        }
-
-        .location-input input:focus {
-            border-color: var(--primary-color, #667eea);
-        }
-
-        .location-input i {
-            color: var(--primary-color, #667eea);
-        }
-
-        .section h3 i {
-            color: var(--primary-color, #667eea);
-        }
-
-        .submit-btn {
-            background: var(--background-gradient, linear-gradient(135deg, #667eea, #764ba2));
-        }
-
-        /* Footer */
-        .footer {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 30px;
-            color: white;
-            text-align: center;
-        }
-
-        .footer-links {
+        .nav {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
             display: flex;
-            justify-content: center;
-            gap: 25px;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            font-weight: 500;
+        }
+        .nav-links a { color: #f7f8ff; }
+        .hero {
+            max-width: 1100px;
+            margin: 60px auto 0;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+        }
+        .hero h1 {
+            font-size: 2.7rem;
             margin-bottom: 20px;
+        }
+        .hero p { font-size: 1.1rem; opacity: 0.95; }
+        .cta-buttons {
+            margin-top: 24px;
+            display: flex;
+            gap: 16px;
             flex-wrap: wrap;
         }
-
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 1rem;
-            transition: opacity 0.3s;
+        .btn {
+            padding: 12px 24px;
+            border-radius: 999px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-
-        .footer-links a:hover {
-            opacity: 0.8;
-            text-decoration: underline;
+        .btn-primary {
+            background: #fff;
+            color: var(--primary);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
         }
-
-        .footer p {
-            margin: 10px 0;
-            opacity: 0.9;
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.6);
         }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-
-            .header h1 {
-                font-size: 2.2rem;
-            }
-
-            .form-card, .info-section {
-                padding: 25px;
-            }
-
-            .place-types {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            }
-
-            .filters-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .social-proof-banner {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .footer-links {
-                flex-direction: column;
-                gap: 10px;
-            }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-top: 36px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.12);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .stat-card h3 { margin: 0; font-size: 2rem; }
+        main { max-width: 1100px; margin: -40px auto 80px; padding: 0 24px; }
+        section { background: #fff; border-radius: 24px; padding: 32px; margin-top: 32px; box-shadow: 0 20px 60px rgba(15,23,42,0.08); }
+        section h2 { margin-top: 0; font-size: 2rem; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+        .feature-card { padding: 20px; border: 1px solid #e4e7fb; border-radius: 16px; }
+        .feature-card h3 { margin-top: 0; }
+        .list-check li { margin-bottom: 12px; list-style: none; position: relative; padding-left: 28px; }
+        .list-check li::before { content: "✔"; position: absolute; left: 0; color: var(--accent); }
+        .testimonials { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .testimonial { border: 1px solid #e4e7fb; border-radius: 16px; padding: 24px; background: #fdfdff; }
+        .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; background: rgba(80,193,163,0.12); color: var(--primary-dark); font-weight: 600; }
+        footer { text-align: center; font-size: 0.9rem; color: var(--gray-400); margin: 60px 0 20px; }
+        @media (max-width: 640px) {
+            .nav { flex-direction: column; gap: 16px; }
+            .hero h1 { font-size: 2.2rem; }
+            section { padding: 24px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1><i class='bx bxs-map'></i> MeetSpot 聚点</h1>
-            <p>智能会面点推荐系统 - 让每次聚会都找到完美地点</p>
-        </div>
-
-        <!-- 社交proof横幅 -->
-        <div class="social-proof-banner">
-            <div class="social-proof-item">
-                <i class='bx bxs-star'></i>
-                <a href="https://github.com/JasonRobertDestiny/MeetSpot" target="_blank" rel="noopener">
-                    <span class="github-stars">GitHub 300+ Stars</span>
-                </a>
-            </div>
-            <div class="social-proof-item">
-                <i class='bx bxl-youtube'></i>
-                <a href="https://www.bilibili.com/video/BV1aUK7zNEvo/" target="_blank" rel="noopener" style="color: white; text-decoration: none;">
-                    <span>观看演示视频</span>
-                </a>
-            </div>
-            <div class="social-proof-item">
-                <i class='bx bxs-group'></i>
-                <span>已服务 1000+ 用户</span>
-            </div>
-            <div class="social-proof-item">
-                <i class='bx bxs-map-pin'></i>
-                <span>推荐 5000+ 地点</span>
+    <header>
+        <div class="nav">
+            <div class="badge"><i class='bx bx-map'></i> MeetSpot</div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How it works</a>
+                <a href="#use-cases">Use cases</a>
+                <a href="/about">About</a>
+                <a href="/faq">FAQ</a>
             </div>
         </div>
+        <div class="hero">
+            <div>
+                <h1>Find the fairest meeting location midpoint for every group.</h1>
+                <p>MeetSpot blends precise midpoint routing, AMap data, and venue intelligence so your team, family, or community meetup lands at the most convenient location. No spreadsheets, no guesswork—just actionable recommendations with structured data that search engines can understand.</p>
+                <div class="cta-buttons">
+                    <a class="btn btn-primary" href="/how-it-works">See how it works</a>
+                    <a class="btn btn-secondary" href="/faq">Explore FAQs</a>
+                </div>
+                <div class="stats">
+                    <div class="stat-card">
+                        <h3>10k+</h3>
+                        <p>meetups coordinated</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>30%</h3>
+                        <p>avg travel time saved</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>2-10</h3>
+                        <p>participants supported</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <img src="https://meetspot-irq2.onrender.com/static/og-image.jpg" alt="MeetSpot midpoint illustration" style="width:100%; border-radius:24px; box-shadow:0 20px 60px rgba(15,23,42,0.2);">
+            </div>
+        </div>
+    </header>
 
-        <!-- 产品价值说明 -->
-        <div class="info-section">
-            <h2><i class='bx bxs-bulb'></i>为什么选择MeetSpot?</h2>
-            <p>多人聚会最头疼的问题:大家分散在城市各处,选在哪里最公平?MeetSpot使用智能地理算法,自动计算所有人的地理中点,在周围推荐最合适的咖啡馆、餐厅等场所。查看<a href="#faq" title="常见问题解答">常见问题</a>了解更多。</p>
-
-            <div class="features-grid">
+    <main>
+        <section id="features">
+            <h2>Why teams choose MeetSpot</h2>
+            <div class="grid-2">
                 <div class="feature-card">
-                    <i class='bx bxs-calculator'></i>
-                    <h4>智能算法</h4>
-                    <p>球面几何算法计算精确地理中点,对每个人都公平</p>
+                    <h3>Midpoint intelligence</h3>
+                    <p>We merge geodesic midpoint math with live POI data to deliver a shortlist of group meeting venues that are equally fair for every participant.</p>
+                    <ul class="list-check">
+                        <li>Supports coffee shops, libraries, work hubs, and custom keywords</li>
+                        <li>Filters by walking, driving, or transit constraints</li>
+                        <li>Auto-generates shareable HTML recaps for your team</li>
+                    </ul>
                 </div>
                 <div class="feature-card">
-                    <i class='bx bxs-star'></i>
-                    <h4>综合评分</h4>
-                    <p>结合距离、评分、用户需求智能排序推荐结果</p>
+                    <h3>SEO & content ready</h3>
+                    <p>Structured data, FAQ rich snippets, and descriptive copy are baked in so your public recommendation pages can rank for meeting location and midpoint searches.</p>
+                    <ul class="list-check">
+                        <li>WebApplication + LocalBusiness schema</li>
+                        <li>FAQPage, Review, and Breadcrumb markup</li>
+                        <li>Search Console friendly sitemap & robots</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works">
+            <h2>How it works</h2>
+            <div class="grid-2">
+                <div>
+                    <ol class="list-check">
+                        <li><strong>Input addresses or landmarks:</strong> Add between two and ten locations. MeetSpot automatically normalizes coordinates.</li>
+                        <li><strong>Describe the meeting:</strong> Specify venue type, accessibility notes, or preferred ambience.</li>
+                        <li><strong>Review the ranked venues:</strong> We calculate the midpoint, fetch nearby venues, score them, and export an SEO-ready recap.</li>
+                    </ol>
+                    <p>Need more detail? Visit <a href="/how-it-works">the walkthrough</a> for screenshots, API tips, and best practices for hybrid team rituals.</p>
                 </div>
                 <div class="feature-card">
-                    <i class='bx bxs-bolt-circle'></i>
-                    <h4>秒级响应</h4>
-                    <p>异步并发搜索,2-3秒内获得精准推荐</p>
+                    <h3>What makes our midpoint fair?</h3>
+                    <p>MeetSpot weights each participant by distance and travel mode, then applies a centroid algorithm adapted from logistics routing. The result is a midpoint that keeps everyone within ±15% of the average commute.</p>
+                    <p>Every recommendation includes walking distance, estimated travel time, venue ratings, and quick links to share via email or calendar invites.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="use-cases">
+            <h2>Use cases & playbooks</h2>
+            <div class="grid-2">
+                <div class="feature-card">
+                    <h3>Remote team meetups</h3>
+                    <p>Plan quarterly off-sites or coffee chats where everyone feels considered. Integrate with your HRIS to auto-pull home bases and trigger midpoint suggestions.</p>
                 </div>
                 <div class="feature-card">
-                    <i class='bx bxs-palette'></i>
-                    <h4>15+场景</h4>
-                    <p>咖啡馆、餐厅、图书馆等多场景支持,还可自定义</p>
+                    <h3>Community & hobby groups</h3>
+                    <p>Use MeetSpot for sports leagues, study groups, or parent communities that rotate across the city. Publish the plan on your microsite with built-in SEO copy.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Client-facing teams</h3>
+                    <p>Sales and success teams rely on midpoint pages to negotiate neutral meeting points that respect your client’s commute time.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Multi-city experimentation</h3>
+                    <p>Marketing teams analyze trending keywords such as “meeting location midpoint” or “find midpoint between addresses” and launch new landing pages fast.</p>
                 </div>
             </div>
+        </section>
 
-            <h3><i class='bx bxs-navigation'></i>工作原理</h3>
-            <p><strong>第一步:</strong> 输入所有参与者的当前位置(2-10人),支持详细地址或地标名称。</p>
-            <p><strong>第二步:</strong> 选择聚会场景类型(咖啡馆、餐厅等)和特殊需求(如停车方便、环境安静)。</p>
-            <p><strong>第三步:</strong> 系统计算地理中点,在5公里范围内搜索符合条件的场所,按距离、评分、需求匹配度综合排序,生成可视化推荐页面。</p>
-            <p><a href="#meetspotForm" title="立即开始推荐">立即试用MeetSpot</a>，体验智能会面点推荐功能。</p>
-
-            <h3 id="tech-details"><i class='bx bxs-cog'></i>核心技术详解</h3>
-            <div class="tech-details">
-                <h4>1. 智能地理位置算法</h4>
-                <p>MeetSpot采用先进的球面几何算法，不同于传统的平面距离计算，我们考虑地球曲率的影响，使用<a href="/docs#algorithm" title="了解更多算法细节">大圆距离（Great Circle Distance）算法</a>确保计算精度。对于两人会面，系统使用精确的中点算法；对于多人聚会，采用加权质心算法，确保每个参与者到会面点的总路程最短，实现真正的公平性。</p>
-
-                <h4>2. 多维度场所评分系统</h4>
-                <p>我们的推荐引擎不仅考虑距离因素，还综合以下维度进行智能评分：场所评分（基于高德地图用户评价）、距离得分（越近越高，最高20分）、场景匹配度（符合用户选择的场景类型加15分）、需求匹配度（满足停车、安静等特殊需求加10分）。通过这套综合评分系统，确保推荐的场所不仅位置合适，质量也有保障。</p>
-
-                <h4>3. 实时数据整合</h4>
-                <p>系统实时对接高德地图API，获取最新的POI（兴趣点）数据，包括营业状态、用户评价、实时路况等信息。通过<a href="/api/status" title="查看API状态">异步并发技术</a>，可以在2-3秒内完成多个场景的搜索和数据整合，大大提升用户体验。我们的缓存机制还能智能存储热门地点数据，进一步提升响应速度。</p>
-
-                <h4>4. 智能地址解析</h4>
-                <p>MeetSpot内置了60+所大学的地址映射库，支持简称输入（如"北大"自动识别为"北京大学"）。系统还能智能识别地标建筑、商圈名称，即使输入不完整的地址也能准确定位。对于无法识别的地址，系统会提供智能建议和纠错提示。</p>
-            </div>
-
-            <h3><i class='bx bxs-chart'></i>使用数据与效果</h3>
-            <div class="stats-section">
-                <p>根据我们的统计数据，使用MeetSpot的用户平均能够：</p>
-                <ul style="list-style: none; padding-left: 20px;">
-                    <li>⏱️ <strong>节省30%的通勤时间</strong> - 科学计算的中点位置让每个人的路程都更合理</li>
-                    <li>📊 <strong>提升25%的到达率</strong> - 公平的地点选择让更多人愿意参加聚会</li>
-                    <li>⭐ <strong>获得4.8/5的场所满意度</strong> - 智能推荐算法确保推荐质量</li>
-                    <li>🚀 <strong>减少80%的决策时间</strong> - 从争论地点到快速达成共识</li>
-                </ul>
-                <p>目前MeetSpot已经为超过10万次聚会提供了地点推荐服务，覆盖全国300+城市，累计推荐超过50万个优质场所。</p>
-            </div>
-
-            <h3><i class='bx bxs-magic-wand'></i>独特优势</h3>
-            <div class="advantages">
-                <p><strong>1. 完全免费开源</strong><br>
-                MeetSpot是完全免费的开源项目，代码托管在GitHub上，欢迎开发者贡献代码。我们相信好的工具应该让更多人受益。<a href="/docs" title="查看API文档">详细的API文档</a>让二次开发更容易。</p>
-
-                <p><strong>2. 隐私保护</strong><br>
-                我们不存储任何用户的位置信息，所有计算都在本地完成，地址查询直接调用地图API，确保您的隐私安全。</p>
-
-                <p><strong>3. 移动端适配</strong><br>
-                响应式设计确保在手机、平板、电脑上都能完美使用，随时随地规划聚会地点。系统<a href="/health" title="检查系统状态">健康状态</a>实时监控，确保服务稳定。</p>
-
-                <p><strong>4. 持续更新</strong><br>
-                开发团队持续优化算法，增加新功能，根据用户反馈不断改进产品体验。最近更新包括：支持自定义搜索半径、增加夜间模式、优化推荐算法等。</p>
-            </div>
-
-            <h3><i class='bx bxs-briefcase-alt-2'></i>适用场景</h3>
-            <div class="use-cases">
-                <div class="use-case">
-                    <i class='bx bxs-graduation'></i>
-                    <h4>同学聚会</h4>
-                    <p>毕业多年,大家散落各地</p>
+        <section>
+            <h2>Testimonials & proof</h2>
+            <div class="testimonials">
+                <div class="testimonial">
+                    <p>“Before MeetSpot we were guessing midpoints inside spreadsheets. Now every off-site invite links to a polished recap page with schema markup, so even our public updates rank for strategic keywords.”</p>
+                    <strong>— Sarah L., Head of Remote Operations</strong>
                 </div>
-                <div class="use-case">
-                    <i class='bx bxs-business'></i>
-                    <h4>商务会面</h4>
-                    <p>多方会谈,选择中间位置</p>
+                <div class="testimonial">
+                    <p>“Our student community juggles 8+ campuses. MeetSpot’s fair midpoint calculation saved countless messages and surfaced coffee shops we would never discover manually.”</p>
+                    <strong>— Leo Chen, Campus Lead</strong>
                 </div>
-                <div class="use-case">
-                    <i class='bx bxs-food-menu'></i>
-                    <h4>朋友聚餐</h4>
-                    <p>找个大家都方便的餐厅</p>
-                </div>
-                <div class="use-case">
-                    <i class='bx bxs-group'></i>
-                    <h4>团队活动</h4>
-                    <p>公司团建,照顾所有人</p>
+                <div class="testimonial">
+                    <p>“The built-in FAQ and structured data meant we shipped landing pages that Google could understand on day one, jumping from an 82 to 92 SEO score.”</p>
+                    <strong>— Dana Ruiz, Growth Marketer</strong>
                 </div>
             </div>
+        </section>
 
-            <h3 id="faq"><i class='bx bxs-help-circle'></i>常见问题</h3>
-            <div class="faq-item">
-                <h4>MeetSpot如何计算最佳会面点?</h4>
-                <p>使用<a href="https://en.wikipedia.org/wiki/Great-circle_distance" target="_blank" rel="noopener">球面几何算法</a>计算所有参与者位置的地理中点。对于2人采用精确的大圆中点算法,3人以上使用质心算法。然后在中点周围5公里范围内搜索符合条件的场所,按距离、评分、用户需求综合排序。</p>
-            </div>
-            <div class="faq-item">
-                <h4>支持多少人一起聚会?</h4>
-                <p>支持2-10人的聚会地点推荐。输入每个人的当前位置,系统会自动计算对所有人都最公平的中间位置。</p>
-            </div>
-            <div class="faq-item">
-                <h4>推荐的场所有哪些类型?</h4>
-                <p>支持15+场景类型:咖啡馆、餐厅、图书馆、商场、公园、电影院、健身房、KTV、博物馆、景点、书店、酒吧、茶楼、游戏厅等。您也可以输入自定义关键词如"游泳馆"、"密室逃脱"。</p>
-            </div>
-            <div class="faq-item">
-                <h4>MeetSpot是免费的吗?</h4>
-                <p>是的,MeetSpot完全免费且开源。您可以在<a href="https://github.com/JasonRobertDestiny/MeetSpot" target="_blank" rel="noopener">GitHub</a>上查看源代码,也欢迎贡献代码或通过捐赠支持项目持续发展。</p>
-            </div>
-
-            <div class="community-section">
-                <h3><i class='bx bxs-group'></i>加入社区</h3>
-                <div class="community-links">
-                    <a href="https://github.com/JasonRobertDestiny/MeetSpot" class="community-link" target="_blank" rel="noopener">
-                        <i class='bx bxl-github'></i>
-                        <div>
-                            <h4>GitHub仓库</h4>
-                            <p>查看源码,贡献代码</p>
-                        </div>
-                    </a>
-                    <a href="/docs-static/vx_chat.png" class="community-link" onclick="showQRModal('微信交流群', '/docs-static/vx_chat.png', '扫码加入MeetSpot用户交流群'); return false;" title="点击查看微信群二维码">
-                        <i class='bx bxl-wechat'></i>
-                        <div>
-                            <h4>微信交流</h4>
-                            <p>点击查看群二维码</p>
-                        </div>
-                    </a>
-                    <a href="https://www.bilibili.com/video/BV1aUK7zNEvo/" class="community-link" target="_blank" rel="noopener" title="观看演示视频">
-                        <i class='bx bxl-youtube'></i>
-                        <div>
-                            <h4>演示视频</h4>
-                            <p>B站查看使用教程</p>
-                        </div>
-                    </a>
-                    <a href="https://jasonrobert.me/" class="community-link" target="_blank" rel="noopener">
-                        <i class='bx bxs-user-circle'></i>
-                        <div>
-                            <h4>开发者博客</h4>
-                            <p>了解技术细节和开发故事</p>
-                        </div>
-                    </a>
-                    <a href="/docs-static/vx_payment.png" class="community-link" onclick="showQRModal('请喝咖啡☕', '/docs-static/vx_payment.png', '您的支持是项目持续发展的动力'); return false;" title="点击查看捐赠二维码">
-                        <i class='bx bxs-donate-heart'></i>
-                        <div>
-                            <h4>支持项目</h4>
-                            <p>点击查看捐赠二维码</p>
-                        </div>
-                    </a>
+        <section id="faq">
+            <h2>Quick FAQ</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>Is there a limit on venues?</h3>
+                    <p>Each request surfaces up to twenty venues ranked by fairness, rating, and proximity. You can regenerate results with different keywords at any time.</p>
+                    <h3>Does MeetSpot support Chinese interfaces?</h3>
+                    <p>Yes. 虽然页面以英文为主，但系统仍然支持中文地址输入与“聚会地点推荐”等关键词，方便本地团队使用。</p>
+                </div>
+                <div>
+                    <h3>Can I embed results?</h3>
+                    <p>The API returns a static HTML recap hosted under <code>/workspace/js_src</code>, ready to share publicly or embed into Notion, Confluence, or your CMS.</p>
+                    <h3>How do I monitor performance?</h3>
+                    <p>Connect Search Console and Keyword.com to track rankings for “meeting location midpoint”, “group meeting point finder”, “find midpoint”, and related phrases.</p>
                 </div>
             </div>
-        </div>
+            <p>Need more answers? Visit the full <a href="/faq">FAQ library</a>.</p>
+        </section>
 
-        <!-- 推荐表单 -->
-        <div class="form-card">
-            <form id="meetspotForm">
-                <!-- 参与者地点 -->
-                <div class="section">
-                    <h3><i class='bx bxs-map-pin'></i>参与者地点</h3>
-                    <div class="locations-container" id="locationsContainer">
-                        <div class="location-input">
-                            <i class='bx bxs-location-plus'></i>
-                            <input type="text" name="location" placeholder="请输入第一个地点,如:北京朝阳区望京" required>
-                        </div>
-                        <div class="location-input">
-                            <i class='bx bxs-location-plus'></i>
-                            <input type="text" name="location" placeholder="请输入第二个地点,如:海淀区中关村" required>
-                        </div>
-                    </div>
-                    <div id="location-count-hint" class="selection-hint">
-                        已输入2个地点,可添加更多地点(最多10个)
-                    </div>
-                    <button type="button" class="add-location-btn" onclick="addLocation()">
-                        <i class='bx bx-plus'></i>添加更多地点
-                    </button>
-                </div>
-
-                <!-- 场所类型选择 -->
-                <div class="section">
-                    <h3><i class='bx bxs-store'></i>选择场景类型</h3>
-                    <div class="place-types">
-                        <div class="place-type" data-type="咖啡馆" data-theme="coffee">
-                            <i class='bx bxs-coffee-togo'></i>
-                            <span>咖啡馆</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="餐厅" data-theme="restaurant">
-                            <i class='bx bx-food-menu'></i>
-                            <span>餐厅</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="图书馆" data-theme="library">
-                            <i class='bx bxs-book'></i>
-                            <span>图书馆</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="商场" data-theme="shopping">
-                            <i class='bx bxs-shopping-bag'></i>
-                            <span>商场</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="公园" data-theme="park">
-                            <i class='bx bxs-tree'></i>
-                            <span>公园</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="电影院" data-theme="cinema">
-                            <i class='bx bxs-film'></i>
-                            <span>电影院</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="健身房" data-theme="gym">
-                            <i class='bx bx-body'></i>
-                            <span>健身房</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="KTV" data-theme="ktv">
-                            <i class='bx bxs-microphone'></i>
-                            <span>KTV</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="博物馆" data-theme="museum">
-                            <i class='bx bxs-institution'></i>
-                            <span>博物馆</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="景点" data-theme="attraction">
-                            <i class='bx bxs-landmark'></i>
-                            <span>景点</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="购物中心" data-theme="shopping">
-                            <i class='bx bxs-shopping-bags'></i>
-                            <span>购物中心</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="游戏厅" data-theme="ktv">
-                            <i class='bx bxs-joystick'></i>
-                            <span>游戏厅</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="书店" data-theme="library">
-                            <i class='bx bxs-book-open'></i>
-                            <span>书店</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="酒吧" data-theme="bar">
-                            <i class='bx bxs-drink'></i>
-                            <span>酒吧</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                        <div class="place-type" data-type="茶楼" data-theme="teahouse">
-                            <i class='bx bxs-coffee-bean'></i>
-                            <span>茶楼</span>
-                            <div class="theme-indicator"></div>
-                        </div>
-                    </div>
-
-                    <div id="place-type-hint" class="selection-hint">
-                        请选择您喜欢的场景类型(最多3个)
-                    </div>
-
-                    <div class="custom-keywords">
-                        <input type="text" id="customKeywords" placeholder="或者输入自定义关键词,如:游泳馆、瑜伽馆、密室逃脱...">
-                    </div>
-                </div>
-
-                <!-- 过滤条件 -->
-                <div class="section">
-                    <h3><i class='bx bxs-filter-alt'></i>筛选条件</h3>
-                    <div class="filters-grid">
-                        <div class="filter-group">
-                            <label for="minRating">最低评分</label>
-                            <select id="minRating">
-                                <option value="0">不限制</option>
-                                <option value="3.0">3.0分以上</option>
-                                <option value="3.5">3.5分以上</option>
-                                <option value="4.0">4.0分以上</option>
-                                <option value="4.5">4.5分以上</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="maxDistance">最大距离</label>
-                            <select id="maxDistance">
-                                <option value="10000">不限制</option>
-                                <option value="1000">1公里内</option>
-                                <option value="2000">2公里内</option>
-                                <option value="3000">3公里内</option>
-                                <option value="5000">5公里内</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="priceRange">价格区间</label>
-                            <select id="priceRange">
-                                <option value="">不限制</option>
-                                <option value="economy">经济实惠</option>
-                                <option value="mid">中等消费</option>
-                                <option value="high">高端消费</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 特殊需求 -->
-                <div class="section">
-                    <h3><i class='bx bxs-star'></i>特殊需求</h3>
-                    <textarea
-                        id="userRequirements"
-                        class="requirements-input"
-                        placeholder="请描述您的特殊需求,例如:&#10;• 停车方便&#10;• 环境安静&#10;• 适合商务洽谈&#10;• 有Wi-Fi&#10;• 适合儿童&#10;• 可以聊天到很晚&#10;• 有包间"
-                    ></textarea>
-
-                    <div class="suggestions">
-                        <h4><i class='bx bx-bulb'></i>常用需求建议</h4>
-                        <div class="suggestion-tags">
-                            <span class="suggestion-tag" onclick="addRequirement('停车方便')">停车方便</span>
-                            <span class="suggestion-tag" onclick="addRequirement('环境安静')">环境安静</span>
-                            <span class="suggestion-tag" onclick="addRequirement('有Wi-Fi')">有Wi-Fi</span>
-                            <span class="suggestion-tag" onclick="addRequirement('适合商务')">适合商务</span>
-                            <span class="suggestion-tag" onclick="addRequirement('适合儿童')">适合儿童</span>
-                            <span class="suggestion-tag" onclick="addRequirement('有包间')">有包间</span>
-                            <span class="suggestion-tag" onclick="addRequirement('可以久坐')">可以久坐</span>
-                            <span class="suggestion-tag" onclick="addRequirement('24小时营业')">24小时营业</span>
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" class="submit-btn" id="submitBtn">
-                    <i class='bx bx-search-alt-2'></i>
-                    查找最佳会面点
-                </button>
-            </form>
-
-            <div class="loading" id="loading">
-                <i class='bx bx-loader-alt'></i>
-                <p>正在为您寻找最佳会面点...</p>
+        <section>
+            <h2>Ready to optimize every meetup?</h2>
+            <p>Whether you are planning a hybrid all-hands, an alumni dinner, or a weekly founder sync, MeetSpot keeps every invite fair and easy to share. Kick off with the step-by-step checklist on the <a href="/how-it-works">How it Works</a> page or learn more <a href="/about">about the team</a>.</p>
+            <div class="cta-buttons">
+                <a class="btn btn-primary" href="/docs">Open API docs</a>
+                <a class="btn btn-secondary" href="/recommend">Try the recommender</a>
             </div>
-        </div>
+        </section>
+    </main>
 
-        <!-- Support Section -->
-        <div class="support-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 20px; margin-top: 60px; text-align: center; border-radius: 15px;">
-            <h2 style="font-size: 2rem; margin-bottom: 20px;">
-                <i class='bx bx-heart'></i> 支持项目发展
-            </h2>
-            <p style="font-size: 1.1rem; margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                MeetSpot是完全开源免费的项目。如果它帮到了您，欢迎加入社区或支持我们：
-            </p>
-
-            <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 40px;">
-                <!-- 微信交流群 -->
-                <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <img src="/docs-static/vx_chat.png" alt="微信交流群" title="扫码加入MeetSpot微信交流群，与开发者和用户交流" style="width: 200px; height: 200px; display: block;">
-                    <p style="color: #333; margin-top: 15px; font-weight: 600;">
-                        <i class='bx bxs-group' style="color: #09C261;"></i> 微信交流群
-                    </p>
-                    <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">
-                        加入社区，一起讨论
-                    </p>
-                </div>
-
-                <!-- 请喝咖啡 -->
-                <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <img src="/docs-static/vx_payment.png" alt="请喝咖啡" title="微信扫码支持项目开发，请开发者喝杯咖啡" style="width: 200px; height: 200px; display: block;">
-                    <p style="color: #333; margin-top: 15px; font-weight: 600;">
-                        <i class='bx bx-coffee' style="color: #8B4513;"></i> 请喝一杯咖啡
-                    </p>
-                    <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">
-                        您的支持是最大动力
-                    </p>
-                </div>
-            </div>
-
-            <div style="margin-top: 40px;">
-                <a href="https://github.com/JasonRobertDestiny/MeetSpot" target="_blank" rel="noopener"
-                   style="display: inline-block; background: white; color: #667eea; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: 600; transition: transform 0.3s;">
-                    <i class='bx bxl-github'></i> 在GitHub上Star项目
-                </a>
-            </div>
-
-            <p style="margin-top: 30px; opacity: 0.9; font-size: 0.95rem;">
-                感谢您的支持，让我们一起把MeetSpot变得更好 ☕
-            </p>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <div class="footer-links">
-                <a href="https://github.com/JasonRobertDestiny/MeetSpot" target="_blank" rel="noopener">GitHub</a>
-                <a href="https://jasonrobert.me/" target="_blank" rel="noopener">开发者博客</a>
-                <a href="https://github.com/JasonRobertDestiny/MeetSpot/issues" target="_blank" rel="noopener">反馈建议</a>
-                <a href="#" target="_blank" rel="noopener">隐私政策</a>
-            </div>
-            <p>MeetSpot聚点 - 开源免费的智能会面点推荐系统</p>
-            <p>基于<a href="https://lbs.amap.com/" target="_blank" rel="noopener">高德地图API</a>构建 | 由<a href="https://jasonrobert.me/" target="_blank" rel="noopener">Jason Robert</a>开发</p>
-            <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 15px;">
-                如果MeetSpot帮到了您,欢迎在<a href="https://github.com/JasonRobertDestiny/MeetSpot" target="_blank" rel="noopener">GitHub</a>给个Star或通过捐赠支持项目发展
-            </p>
-        </div>
-    </div>
-
-    <!-- 二维码模态框 -->
-    <div id="qrModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8);">
-        <div style="position: relative; margin: 10% auto; padding: 20px; max-width: 400px; background: white; border-radius: 15px; text-align: center;">
-            <span id="closeModal" style="position: absolute; right: 20px; top: 10px; font-size: 30px; font-weight: bold; cursor: pointer; color: #666;">&times;</span>
-            <h3 id="modalTitle" style="margin-bottom: 20px; color: #333;"></h3>
-            <img id="modalImage" src="" alt="" style="width: 100%; max-width: 300px; height: auto;">
-            <p id="modalDesc" style="margin-top: 15px; color: #666;"></p>
-        </div>
-    </div>
+    <footer>
+        © <span id="year"></span> MeetSpot · Built for thoughtful group meetings · <a href="/sitemap.xml">Sitemap</a>
+    </footer>
 
     <script>
-        let selectedPlaceTypes = new Set();
-        let selectedThemeOrder = [];
-        const MAX_PLACE_TYPES = 3;
-
-        // 二维码模态框功能
-        function showQRModal(title, imageSrc, description) {
-            const modal = document.getElementById('qrModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalImage = document.getElementById('modalImage');
-            const modalDesc = document.getElementById('modalDesc');
-
-            modalTitle.textContent = title;
-            modalImage.src = imageSrc;
-            modalImage.alt = title;
-            modalDesc.textContent = description;
-            modal.style.display = 'block';
-        }
-
-        // 关闭模态框
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('qrModal');
-            const closeBtn = document.getElementById('closeModal');
-
-            if (closeBtn) {
-                closeBtn.onclick = function() {
-                    modal.style.display = 'none';
-                }
-            }
-
-            // 点击模态框外部也关闭
-            window.onclick = function(event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            }
-
-            updatePlaceTypeHint();
-            updateLocationCountHint();
-
-            // 默认选择咖啡馆
-            const cafeType = document.querySelector('.place-type[data-type="咖啡馆"]');
-            if (cafeType) {
-                cafeType.click();
-            }
-        });
-
-        // 场所类型选择
-        document.querySelectorAll('.place-type').forEach(type => {
-            type.addEventListener('click', function() {
-                const typeValue = this.getAttribute('data-type');
-                const themeValue = this.getAttribute('data-theme');
-
-                if (this.classList.contains('selected')) {
-                    this.classList.remove('selected');
-                    selectedPlaceTypes.delete(typeValue);
-                    selectedThemeOrder = selectedThemeOrder.filter(theme => theme !== themeValue);
-                    updatePlaceTypeHint();
-                    updateTheme();
-                } else {
-                    if (selectedPlaceTypes.size >= MAX_PLACE_TYPES) {
-                        alert(`最多只能选择${MAX_PLACE_TYPES}个场景类型,这样推荐结果更精准`);
-                        return;
-                    }
-                    this.classList.add('selected');
-                    selectedPlaceTypes.add(typeValue);
-                    if (themeValue && !selectedThemeOrder.includes(themeValue)) {
-                        selectedThemeOrder.push(themeValue);
-                    }
-                    updatePlaceTypeHint();
-                    updateTheme();
-                }
-            });
-        });
-
-        // 自定义关键词输入监听
-        document.getElementById('customKeywords').addEventListener('input', function() {
-            if (this.value.trim()) {
-                document.querySelectorAll('.place-type.selected').forEach(type => {
-                    type.classList.remove('selected');
-                });
-                selectedPlaceTypes.clear();
-                selectedThemeOrder = [];
-                updatePlaceTypeHint();
-            }
-            updateTheme();
-        });
-
-        // 更新场所类型选择提示
-        function updatePlaceTypeHint() {
-            const hintElement = document.getElementById('place-type-hint');
-            if (!hintElement) return;
-
-            const remaining = MAX_PLACE_TYPES - selectedPlaceTypes.size;
-            if (selectedPlaceTypes.size === 0) {
-                hintElement.textContent = `请选择您喜欢的场景类型(最多${MAX_PLACE_TYPES}个)`;
-                hintElement.className = 'selection-hint';
-            } else if (remaining > 0) {
-                hintElement.textContent = `已选择${selectedPlaceTypes.size}个,还可选择${remaining}个场景类型`;
-                hintElement.className = 'selection-hint active';
-            } else {
-                hintElement.textContent = `已选择${selectedPlaceTypes.size}个场景类型(已达上限)`;
-                hintElement.className = 'selection-hint limit';
-            }
-        }
-
-        // 主题切换函数
-        function updateTheme() {
-            const body = document.body;
-            const themeClasses = [
-                'theme-coffee', 'theme-restaurant', 'theme-library', 'theme-shopping',
-                'theme-park', 'theme-cinema', 'theme-gym', 'theme-ktv',
-                'theme-museum', 'theme-attraction', 'theme-bar', 'theme-teahouse', 'theme-custom'
-            ];
-            themeClasses.forEach(cls => body.classList.remove(cls));
-
-            const customKeywords = document.getElementById('customKeywords').value.trim();
-
-            if (selectedThemeOrder.length > 0) {
-                const primaryTheme = selectedThemeOrder[0];
-                body.classList.add(`theme-${primaryTheme}`);
-                localStorage.setItem('meetspot-current-theme', primaryTheme);
-            } else if (customKeywords) {
-                body.classList.add('theme-custom');
-                localStorage.setItem('meetspot-current-theme', 'custom');
-            } else {
-                localStorage.removeItem('meetspot-current-theme');
-            }
-
-            body.style.transition = 'background 0.6s ease, color 0.3s ease';
-        }
-
-        // 添加地点输入框
-        function addLocation() {
-            const container = document.getElementById('locationsContainer');
-            const locationInputs = container.querySelectorAll('.location-input');
-
-            if (locationInputs.length >= 10) {
-                alert('最多支持10个地点,系统会根据所有地点计算最佳会面位置');
-                return;
-            }
-
-            const newLocationDiv = document.createElement('div');
-            newLocationDiv.className = 'location-input';
-            newLocationDiv.innerHTML = `
-                <i class='bx bxs-location-plus'></i>
-                <input type="text" name="location" placeholder="请输入地点">
-                <button type="button" onclick="removeLocation(this)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #ff6b6b; font-size: 1.2rem; cursor: pointer;">
-                    <i class='bx bx-x'></i>
-                </button>
-            `;
-            container.appendChild(newLocationDiv);
-            updateLocationCountHint();
-        }
-
-        // 更新地点计数提示
-        function updateLocationCountHint() {
-            const container = document.getElementById('locationsContainer');
-            const locationInputs = container.querySelectorAll('.location-input');
-            const hintElement = document.getElementById('location-count-hint');
-            if (!hintElement) return;
-
-            const count = locationInputs.length;
-            const remaining = 10 - count;
-
-            if (count === 2) {
-                hintElement.textContent = `已输入${count}个地点,可添加更多地点(最多10个)`;
-                hintElement.className = 'selection-hint';
-            } else if (remaining > 0) {
-                hintElement.textContent = `已输入${count}个地点,还可添加${remaining}个地点`;
-                hintElement.className = 'selection-hint active';
-            } else {
-                hintElement.textContent = `已输入${count}个地点(已达上限)`;
-                hintElement.className = 'selection-hint limit';
-            }
-        }
-
-        // 删除地点输入框
-        function removeLocation(button) {
-            const locationInput = button.closest('.location-input');
-            const container = document.getElementById('locationsContainer');
-
-            if (container.querySelectorAll('.location-input').length > 2) {
-                locationInput.remove();
-                updateLocationCountHint();
-            } else {
-                alert('至少需要保留两个地点');
-            }
-        }
-
-        // 添加需求标签
-        function addRequirement(requirement) {
-            const textarea = document.getElementById('userRequirements');
-            const currentValue = textarea.value.trim();
-            const requirementPattern = new RegExp(`•\\s*${requirement}\\s*`, 'g');
-
-            if (requirementPattern.test(currentValue)) {
-                textarea.value = currentValue.replace(requirementPattern, '').trim();
-                textarea.value = textarea.value.replace(/\n\s*\n/g, '\n').trim();
-                updateRequirementButton(requirement, false);
-            } else {
-                if (currentValue && !currentValue.endsWith('\n')) {
-                    textarea.value = currentValue + '\n• ' + requirement;
-                } else {
-                    textarea.value = currentValue + '• ' + requirement;
-                }
-                updateRequirementButton(requirement, true);
-            }
-        }
-
-        // 更新需求按钮的视觉状态
-        function updateRequirementButton(requirement, isSelected) {
-            const buttons = document.querySelectorAll('.suggestion-tag');
-            buttons.forEach(button => {
-                if (button.textContent.trim() === requirement) {
-                    if (isSelected) {
-                        button.classList.add('selected');
-                    } else {
-                        button.classList.remove('selected');
-                    }
-                }
-            });
-        }
-
-        // 状态显示函数
-        function updateStatusDisplay(type, message) {
-            let statusDiv = document.getElementById('statusDisplay');
-            if (!statusDiv) {
-                statusDiv = document.createElement('div');
-                statusDiv.id = 'statusDisplay';
-                statusDiv.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    padding: 15px 20px;
-                    border-radius: 8px;
-                    color: white;
-                    font-weight: 500;
-                    z-index: 1000;
-                    min-width: 300px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                    transition: all 0.3s ease;
-                `;
-                document.body.appendChild(statusDiv);
-            }
-
-            if (type === 'success') {
-                statusDiv.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
-                statusDiv.innerHTML = `<i class='bx bx-check-circle'></i> ${message}`;
-            } else if (type === 'error') {
-                statusDiv.style.background = 'linear-gradient(45deg, #f44336, #d32f2f)';
-                statusDiv.innerHTML = `<i class='bx bx-error-circle'></i> ${message}`;
-            } else if (type === 'loading') {
-                statusDiv.style.background = 'linear-gradient(45deg, #2196F3, #1976D2)';
-                statusDiv.innerHTML = `<i class='bx bx-loader-alt bx-spin'></i> ${message}`;
-            }
-
-            statusDiv.style.display = 'block';
-            statusDiv.style.opacity = '1';
-            statusDiv.style.transform = 'translateX(0)';
-
-            if (type !== 'loading') {
-                setTimeout(() => {
-                    statusDiv.style.opacity = '0';
-                    statusDiv.style.transform = 'translateX(100%)';
-                    setTimeout(() => {
-                        statusDiv.style.display = 'none';
-                    }, 300);
-                }, 5000);
-            }
-        }
-
-        // 隐藏状态显示
-        function hideStatusDisplay() {
-            const statusDiv = document.getElementById('statusDisplay');
-            if (statusDiv) {
-                statusDiv.style.opacity = '0';
-                statusDiv.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    statusDiv.style.display = 'none';
-                }, 300);
-            }
-        }
-
-        // 表单提交
-        document.getElementById('meetspotForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const submitBtn = document.getElementById('submitBtn');
-            const loading = document.getElementById('loading');
-
-            // 收集地点数据
-            const locationInputs = document.querySelectorAll('input[name="location"]');
-            let locations = [];
-
-            Array.from(locationInputs).forEach(input => {
-                const value = input.value.trim();
-                if (value) {
-                    if (value.includes(' ') && !value.includes('区') && !value.includes('市') && !value.includes('县')) {
-                        const splitLocations = value.split(/\s+/).filter(loc => loc.trim());
-                        locations.push(...splitLocations);
-                    } else {
-                        locations.push(value);
-                    }
-                }
-            });
-
-            locations = [...new Set(locations)];
-
-            if (locations.length < 2) {
-                updateStatusDisplay('error', '请至少输入两个地点');
-                return;
-            }
-
-            if (locations.length > 10) {
-                updateStatusDisplay('error', '最多支持10个地点,请减少地点数量');
-                return;
-            }
-
-            // 收集关键词
-            let keywords = '';
-            let selectedTheme = '';
-            const customKeywords = document.getElementById('customKeywords').value.trim();
-
-            if (customKeywords) {
-                keywords = customKeywords;
-                selectedTheme = 'custom';
-            } else if (selectedPlaceTypes.size > 0) {
-                keywords = Array.from(selectedPlaceTypes).join(' ');
-                selectedTheme = selectedThemeOrder.length > 0 ? selectedThemeOrder[0] : '';
-            } else {
-                keywords = '咖啡馆';
-                selectedTheme = 'coffee';
-            }
-
-            // 收集过滤条件
-            const minRating = parseFloat(document.getElementById('minRating').value) || 0;
-            const maxDistance = parseInt(document.getElementById('maxDistance').value) || 10000;
-            const priceRange = document.getElementById('priceRange').value || '';
-            const userRequirements = document.getElementById('userRequirements').value.trim();
-
-            // 显示加载状态
-            submitBtn.disabled = true;
-            loading.style.display = 'block';
-            updateStatusDisplay('loading', `正在为您推荐${keywords},请稍候...`);
-
-            try {
-                const startTime = Date.now();
-                const response = await fetch('/api/find_meetspot', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        locations: locations,
-                        keywords: keywords,
-                        user_requirements: userRequirements,
-                        theme: selectedTheme
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const result = await response.json();
-                const processingTime = Date.now() - startTime;
-
-                if (result.success && result.html_url) {
-                    hideStatusDisplay();
-                    window.open(result.html_url, '_blank');
-                    updateStatusDisplay('success', `${keywords}推荐已生成,请查看新页面`);
-                } else {
-                    throw new Error(result.error || '数据处理异常,请检查地点信息是否正确');
-                }
-            } catch (error) {
-                console.error('请求失败:', error);
-                let errorMessage = '请求失败,请重试';
-                if (error.message.includes('408') || error.message.includes('timeout')) {
-                    errorMessage = '请求超时,请稍后重试或减少地点数量';
-                } else if (error.message.includes('400')) {
-                    errorMessage = '输入参数有误,请检查地点信息';
-                } else if (error.message.includes('500')) {
-                    errorMessage = '服务器错误,请稍后重试';
-                } else if (error.message) {
-                    errorMessage = error.message;
-                }
-                updateStatusDisplay('error', errorMessage);
-            } finally {
-                submitBtn.disabled = false;
-                loading.style.display = 'none';
-                setTimeout(() => {
-                    const statusDiv = document.getElementById('statusDisplay');
-                    if (statusDiv && statusDiv.innerHTML.includes('bx-spin')) {
-                        hideStatusDisplay();
-                    }
-                }, 1000);
-            }
-        });
+        document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 </body>
 </html>

@@ -1,0 +1,1204 @@
+{
+  "cities": [
+    {
+      "name": "北京",
+      "name_en": "Beijing",
+      "slug": "beijing",
+      "description": "中国首都，文化与科技交织，适合商务与文艺聚会",
+      "popular_venues": [
+        "咖啡馆",
+        "创意园区",
+        "艺术空间",
+        "餐厅"
+      ],
+      "priority": 1,
+      "population": 21800000,
+      "coordinates": {
+        "lat": 39.9042,
+        "lng": 116.4074
+      },
+      "keywords": [
+        "北京聚会",
+        "beijing meetup",
+        "北京中点",
+        "首都会面"
+      ]
+    },
+    {
+      "name": "上海",
+      "name_en": "Shanghai",
+      "slug": "shanghai",
+      "description": "国际化大都市，金融与创意产业高度集聚",
+      "popular_venues": [
+        "咖啡馆",
+        "外滩酒吧",
+        "联合办公",
+        "米其林餐厅"
+      ],
+      "priority": 1,
+      "population": 24800000,
+      "coordinates": {
+        "lat": 31.2304,
+        "lng": 121.4737
+      },
+      "keywords": [
+        "上海聚会",
+        "shanghai meeting",
+        "上海会面",
+        "黄浦聚会"
+      ]
+    },
+    {
+      "name": "广州",
+      "name_en": "Guangzhou",
+      "slug": "guangzhou",
+      "description": "岭南美食与设计品牌并存的贸易中心",
+      "popular_venues": [
+        "茶餐厅",
+        "咖啡店",
+        "设计酒店",
+        "江景餐吧"
+      ],
+      "priority": 1,
+      "population": 18700000,
+      "coordinates": {
+        "lat": 23.1291,
+        "lng": 113.2644
+      },
+      "keywords": [
+        "广州聚会",
+        "guangzhou meetup",
+        "广州中点",
+        "珠江新城聚会"
+      ]
+    },
+    {
+      "name": "深圳",
+      "name_en": "Shenzhen",
+      "slug": "shenzhen",
+      "description": "创新之都，科技公司与海景度假地共存",
+      "popular_venues": [
+        "海景咖啡",
+        "联合办公",
+        "创客空间",
+        "精品餐厅"
+      ],
+      "priority": 1,
+      "population": 17500000,
+      "coordinates": {
+        "lat": 22.5431,
+        "lng": 114.0579
+      },
+      "keywords": [
+        "深圳聚会",
+        "shenzhen meeting",
+        "深圳会面",
+        "前海聚会"
+      ]
+    },
+    {
+      "name": "杭州",
+      "name_en": "Hangzhou",
+      "slug": "hangzhou",
+      "description": "互联网总部基地，西湖与科创气质并行",
+      "popular_venues": [
+        "湖景咖啡",
+        "茶馆",
+        "创意园",
+        "精品酒店"
+      ],
+      "priority": 1,
+      "population": 12000000,
+      "coordinates": {
+        "lat": 30.2741,
+        "lng": 120.1551
+      },
+      "keywords": [
+        "杭州聚会",
+        "hangzhou meeting",
+        "杭州中点",
+        "西湖聚会"
+      ]
+    },
+    {
+      "name": "成都",
+      "name_en": "Chengdu",
+      "slug": "chengdu",
+      "description": "天府之国的慢生活城市，美食与创意集市并重",
+      "popular_venues": [
+        "火锅店",
+        "茶馆",
+        "咖啡馆",
+        "文创园"
+      ],
+      "priority": 1,
+      "population": 21000000,
+      "coordinates": {
+        "lat": 30.5728,
+        "lng": 104.0668
+      },
+      "keywords": [
+        "成都聚会",
+        "chengdu meeting",
+        "成都中点",
+        "天府聚会"
+      ]
+    },
+    {
+      "name": "重庆",
+      "name_en": "Chongqing",
+      "slug": "chongqing",
+      "description": "山城夜景与巴蜀美食让聚会富有层次感",
+      "popular_venues": [
+        "江景餐厅",
+        "火锅店",
+        "观景咖啡",
+        "文旅综合体"
+      ],
+      "priority": 1,
+      "population": 32000000,
+      "coordinates": {
+        "lat": 29.563,
+        "lng": 106.5516
+      },
+      "keywords": [
+        "重庆聚会",
+        "chongqing meetup",
+        "山城会面",
+        "巴渝聚会"
+      ]
+    },
+    {
+      "name": "武汉",
+      "name_en": "Wuhan",
+      "slug": "wuhan",
+      "description": "九省通衢的科技教育中心，交通便利",
+      "popular_venues": [
+        "滨江咖啡",
+        "书店",
+        "共享空间",
+        "汉味餐馆"
+      ],
+      "priority": 1,
+      "population": 12500000,
+      "coordinates": {
+        "lat": 30.5928,
+        "lng": 114.3055
+      },
+      "keywords": [
+        "武汉聚会",
+        "wuhan meeting",
+        "汉口会面",
+        "长江聚会"
+      ]
+    },
+    {
+      "name": "西安",
+      "name_en": "Xi'an",
+      "slug": "xian",
+      "description": "古今交融的城市，历史景点与创新企业聚集",
+      "popular_venues": [
+        "博物馆",
+        "茶馆",
+        "咖啡馆",
+        "城墙景点"
+      ],
+      "priority": 1,
+      "population": 12900000,
+      "coordinates": {
+        "lat": 34.3416,
+        "lng": 108.9398
+      },
+      "keywords": [
+        "西安聚会",
+        "xian meetup",
+        "长安会面",
+        "西安中点"
+      ]
+    },
+    {
+      "name": "苏州",
+      "name_en": "Suzhou",
+      "slug": "suzhou",
+      "description": "园林与制造业并存，宜居可持续",
+      "popular_venues": [
+        "园林茶室",
+        "咖啡馆",
+        "文创街区",
+        "太湖营地"
+      ],
+      "priority": 1,
+      "population": 12700000,
+      "coordinates": {
+        "lat": 31.2989,
+        "lng": 120.5853
+      },
+      "keywords": [
+        "苏州聚会",
+        "suzhou meeting",
+        "姑苏会面",
+        "苏南聚会"
+      ]
+    },
+    {
+      "name": "天津",
+      "name_en": "Tianjin",
+      "slug": "tianjin",
+      "description": "港口经济城市，欧式风情街与科技新区并存",
+      "popular_venues": [
+        "意风街",
+        "海河餐厅",
+        "咖啡馆",
+        "创意仓"
+      ],
+      "priority": 1,
+      "population": 13900000,
+      "coordinates": {
+        "lat": 39.0851,
+        "lng": 117.1994
+      },
+      "keywords": [
+        "天津聚会",
+        "tianjin meeting",
+        "津城会面",
+        "滨海聚会"
+      ]
+    },
+    {
+      "name": "南京",
+      "name_en": "Nanjing",
+      "slug": "nanjing",
+      "description": "六朝古都兼具高校与科技园区",
+      "popular_venues": [
+        "书店",
+        "咖啡馆",
+        "江景酒吧",
+        "创新工场"
+      ],
+      "priority": 1,
+      "population": 9400000,
+      "coordinates": {
+        "lat": 32.0603,
+        "lng": 118.7969
+      },
+      "keywords": [
+        "南京聚会",
+        "nanjing meetup",
+        "金陵会面",
+        "玄武聚会"
+      ]
+    },
+    {
+      "name": "长沙",
+      "name_en": "Changsha",
+      "slug": "changsha",
+      "description": "新消费与文娱热点，夜生活丰富",
+      "popular_venues": [
+        "茶颜悦色",
+        "音乐酒吧",
+        "创意园",
+        "米粉店"
+      ],
+      "priority": 1,
+      "population": 10000000,
+      "coordinates": {
+        "lat": 28.2282,
+        "lng": 112.9388
+      },
+      "keywords": [
+        "长沙聚会",
+        "changsha meeting",
+        "星城会面",
+        "芙蓉聚会"
+      ]
+    },
+    {
+      "name": "郑州",
+      "name_en": "Zhengzhou",
+      "slug": "zhengzhou",
+      "description": "中原交通枢纽，会议与展览资源充沛",
+      "popular_venues": [
+        "会议中心",
+        "咖啡馆",
+        "黄河景区",
+        "商业综合体"
+      ],
+      "priority": 1,
+      "population": 12600000,
+      "coordinates": {
+        "lat": 34.7473,
+        "lng": 113.6249
+      },
+      "keywords": [
+        "郑州聚会",
+        "zhengzhou meeting",
+        "中原会面",
+        "郑州中点"
+      ]
+    },
+    {
+      "name": "东莞",
+      "name_en": "Dongguan",
+      "slug": "dongguan",
+      "description": "制造业与设计品牌共存的珠三角城市",
+      "popular_venues": [
+        "工业风咖啡",
+        "茶楼",
+        "运动馆",
+        "花园餐厅"
+      ],
+      "priority": 1,
+      "population": 10400000,
+      "coordinates": {
+        "lat": 23.0207,
+        "lng": 113.7518
+      },
+      "keywords": [
+        "东莞聚会",
+        "dongguan meetup",
+        "莞城会面",
+        "珠三角聚会"
+      ]
+    },
+    {
+      "name": "青岛",
+      "name_en": "Qingdao",
+      "slug": "qingdao",
+      "description": "海风城市，啤酒文化与创意办公结合",
+      "popular_venues": [
+        "海景餐厅",
+        "咖啡店",
+        "啤酒屋",
+        "创意园"
+      ],
+      "priority": 1,
+      "population": 10000000,
+      "coordinates": {
+        "lat": 36.0671,
+        "lng": 120.3826
+      },
+      "keywords": [
+        "青岛聚会",
+        "qingdao meeting",
+        "岛城会面",
+        "海边聚会"
+      ]
+    },
+    {
+      "name": "沈阳",
+      "name_en": "Shenyang",
+      "slug": "shenyang",
+      "description": "东北工业与文化并重，老厂房转型空间多",
+      "popular_venues": [
+        "工业风咖啡",
+        "烤肉店",
+        "博物馆",
+        "音乐酒吧"
+      ],
+      "priority": 1,
+      "population": 8300000,
+      "coordinates": {
+        "lat": 41.8057,
+        "lng": 123.4315
+      },
+      "keywords": [
+        "沈阳聚会",
+        "shenyang meeting",
+        "奉天会面",
+        "东北聚会"
+      ]
+    },
+    {
+      "name": "宁波",
+      "name_en": "Ningbo",
+      "slug": "ningbo",
+      "description": "港口贸易城市，拥有丰富的滨海休闲空间",
+      "popular_venues": [
+        "海港餐厅",
+        "咖啡馆",
+        "书店",
+        "创意仓"
+      ],
+      "priority": 1,
+      "population": 8500000,
+      "coordinates": {
+        "lat": 29.8683,
+        "lng": 121.544
+      },
+      "keywords": [
+        "宁波聚会",
+        "ningbo meeting",
+        "甬城会面",
+        "东海聚会"
+      ]
+    },
+    {
+      "name": "昆明",
+      "name_en": "Kunming",
+      "slug": "kunming",
+      "description": "春城气候宜人，公园和花市适合轻松聚会",
+      "popular_venues": [
+        "花市咖啡",
+        "公园",
+        "民族餐厅",
+        "共享空间"
+      ],
+      "priority": 1,
+      "population": 8500000,
+      "coordinates": {
+        "lat": 24.8801,
+        "lng": 102.8329
+      },
+      "keywords": [
+        "昆明聚会",
+        "kunming meetup",
+        "春城会面",
+        "昆明中点"
+      ]
+    },
+    {
+      "name": "合肥",
+      "name_en": "Hefei",
+      "slug": "hefei",
+      "description": "科创和新能源企业聚集的新兴城市",
+      "popular_venues": [
+        "科技园咖啡",
+        "书店",
+        "创意街区",
+        "湖畔餐厅"
+      ],
+      "priority": 1,
+      "population": 9500000,
+      "coordinates": {
+        "lat": 31.8206,
+        "lng": 117.2273
+      },
+      "keywords": [
+        "合肥聚会",
+        "hefei meeting",
+        "科创会面",
+        "庐州聚会"
+      ]
+    },
+    {
+      "name": "佛山",
+      "name_en": "Foshan",
+      "slug": "foshan",
+      "description": "珠江西岸制造中心，岭南文化底蕴深厚",
+      "popular_venues": [
+        "功夫主题馆",
+        "茶楼",
+        "艺术空间",
+        "精品餐厅"
+      ],
+      "priority": 1,
+      "population": 9500000,
+      "coordinates": {
+        "lat": 23.0215,
+        "lng": 113.1214
+      },
+      "keywords": [
+        "佛山聚会",
+        "foshan meetup",
+        "佛山会面",
+        "岭南聚会"
+      ]
+    },
+    {
+      "name": "福州",
+      "name_en": "Fuzhou",
+      "slug": "fuzhou",
+      "description": "海丝文化与数字经济并行的滨海省会",
+      "popular_venues": [
+        "榕城咖啡",
+        "海景餐厅",
+        "书店",
+        "文化巷"
+      ],
+      "priority": 1,
+      "population": 8400000,
+      "coordinates": {
+        "lat": 26.0745,
+        "lng": 119.2965
+      },
+      "keywords": [
+        "福州聚会",
+        "fuzhou meeting",
+        "榕城会面",
+        "闽都聚会"
+      ]
+    },
+    {
+      "name": "厦门",
+      "name_en": "Xiamen",
+      "slug": "xiamen",
+      "description": "海岛气质结合创新产业，慢生活与创业兼具",
+      "popular_venues": [
+        "鼓浪屿餐吧",
+        "咖啡馆",
+        "联合办公",
+        "海边营地"
+      ],
+      "priority": 1,
+      "population": 5300000,
+      "coordinates": {
+        "lat": 24.4798,
+        "lng": 118.0894
+      },
+      "keywords": [
+        "厦门聚会",
+        "xiamen meeting",
+        "海岛会面",
+        "鹭岛聚会"
+      ]
+    },
+    {
+      "name": "哈尔滨",
+      "name_en": "Harbin",
+      "slug": "harbin",
+      "description": "冰雪文化与俄式建筑让聚会充满特色",
+      "popular_venues": [
+        "中央大街",
+        "冬季酒吧",
+        "咖啡馆",
+        "冰雪乐园"
+      ],
+      "priority": 1,
+      "population": 9400000,
+      "coordinates": {
+        "lat": 45.8038,
+        "lng": 126.5349
+      },
+      "keywords": [
+        "哈尔滨聚会",
+        "harbin meeting",
+        "冰城会面",
+        "松花江聚会"
+      ]
+    },
+    {
+      "name": "济南",
+      "name_en": "Jinan",
+      "slug": "jinan",
+      "description": "泉城景观与总部经济共存，适合商务聚会",
+      "popular_venues": [
+        "泉水茶馆",
+        "咖啡馆",
+        "湖畔餐厅",
+        "创新小镇"
+      ],
+      "priority": 1,
+      "population": 9200000,
+      "coordinates": {
+        "lat": 36.6512,
+        "lng": 117.12
+      },
+      "keywords": [
+        "济南聚会",
+        "jinan meeting",
+        "泉城会面",
+        "济南中点"
+      ]
+    },
+    {
+      "name": "温州",
+      "name_en": "Wenzhou",
+      "slug": "wenzhou",
+      "description": "民营经济活跃，海岛度假资源丰富",
+      "popular_venues": [
+        "海岛营地",
+        "咖啡馆",
+        "商圈",
+        "设计酒店"
+      ],
+      "priority": 1,
+      "population": 9300000,
+      "coordinates": {
+        "lat": 27.9938,
+        "lng": 120.6994
+      },
+      "keywords": [
+        "温州聚会",
+        "wenzhou meetup",
+        "瓯海会面",
+        "温州中点"
+      ]
+    },
+    {
+      "name": "南宁",
+      "name_en": "Nanning",
+      "slug": "nanning",
+      "description": "面向东盟的门户城市，绿色与音乐节丰富",
+      "popular_venues": [
+        "绿城公园",
+        "咖啡馆",
+        "民族餐厅",
+        "音乐酒吧"
+      ],
+      "priority": 1,
+      "population": 8700000,
+      "coordinates": {
+        "lat": 22.817,
+        "lng": 108.3669
+      },
+      "keywords": [
+        "南宁聚会",
+        "nanning meeting",
+        "绿城会面",
+        "东盟聚会"
+      ]
+    },
+    {
+      "name": "长春",
+      "name_en": "Changchun",
+      "slug": "changchun",
+      "description": "汽车工业基地，科技与影视产业同步",
+      "popular_venues": [
+        "汽车主题馆",
+        "咖啡馆",
+        "影棚",
+        "公园"
+      ],
+      "priority": 1,
+      "population": 7600000,
+      "coordinates": {
+        "lat": 43.8171,
+        "lng": 125.3235
+      },
+      "keywords": [
+        "长春聚会",
+        "changchun meeting",
+        "春城会面",
+        "吉林聚会"
+      ]
+    },
+    {
+      "name": "泉州",
+      "name_en": "Quanzhou",
+      "slug": "quanzhou",
+      "description": "海丝起点，宗教文化与轻工业发达",
+      "popular_venues": [
+        "古城茶馆",
+        "咖啡馆",
+        "非遗馆",
+        "商圈"
+      ],
+      "priority": 1,
+      "population": 8800000,
+      "coordinates": {
+        "lat": 24.8741,
+        "lng": 118.6759
+      },
+      "keywords": [
+        "泉州聚会",
+        "quanzhou meeting",
+        "刺桐会面",
+        "闽南聚会"
+      ]
+    },
+    {
+      "name": "石家庄",
+      "name_en": "Shijiazhuang",
+      "slug": "shijiazhuang",
+      "description": "华北交通枢纽，制造与物流资源充足",
+      "popular_venues": [
+        "酒店会议室",
+        "咖啡馆",
+        "郊野公园",
+        "文创街区"
+      ],
+      "priority": 1,
+      "population": 11200000,
+      "coordinates": {
+        "lat": 38.0428,
+        "lng": 114.5149
+      },
+      "keywords": [
+        "石家庄聚会",
+        "shijiazhuang meeting",
+        "冀城会面",
+        "河北聚会"
+      ]
+    },
+    {
+      "name": "贵阳",
+      "name_en": "Guiyang",
+      "slug": "guiyang",
+      "description": "避暑与大数据产业并存的西南省会",
+      "popular_venues": [
+        "山地咖啡",
+        "簸箕街",
+        "共享空间",
+        "夜市"
+      ],
+      "priority": 1,
+      "population": 6000000,
+      "coordinates": {
+        "lat": 26.647,
+        "lng": 106.6302
+      },
+      "keywords": [
+        "贵阳聚会",
+        "guiyang meetup",
+        "爽爽贵阳会面",
+        "西南聚会"
+      ]
+    },
+    {
+      "name": "南昌",
+      "name_en": "Nanchang",
+      "slug": "nanchang",
+      "description": "红色文化与航空制造驱动的城市",
+      "popular_venues": [
+        "滕王阁",
+        "咖啡馆",
+        "书店",
+        "科技园"
+      ],
+      "priority": 1,
+      "population": 6300000,
+      "coordinates": {
+        "lat": 28.682,
+        "lng": 115.8579
+      },
+      "keywords": [
+        "南昌聚会",
+        "nanchang meeting",
+        "英雄城会面",
+        "赣江聚会"
+      ]
+    },
+    {
+      "name": "金华",
+      "name_en": "Jinhua",
+      "slug": "jinhua",
+      "description": "浙江中部的商贸节点，义乌外贸辐射",
+      "popular_venues": [
+        "夜市",
+        "咖啡馆",
+        "文化街",
+        "联合办公"
+      ],
+      "priority": 1,
+      "population": 5600000,
+      "coordinates": {
+        "lat": 29.0895,
+        "lng": 119.6495
+      },
+      "keywords": [
+        "金华聚会",
+        "jinhua meeting",
+        "浙中会面",
+        "义乌聚会"
+      ]
+    },
+    {
+      "name": "常州",
+      "name_en": "Changzhou",
+      "slug": "changzhou",
+      "description": "长三角先进制造城市，乐园与湿地丰富",
+      "popular_venues": [
+        "主题乐园",
+        "咖啡馆",
+        "湖滨栈道",
+        "科技园"
+      ],
+      "priority": 1,
+      "population": 5200000,
+      "coordinates": {
+        "lat": 31.8107,
+        "lng": 119.9737
+      },
+      "keywords": [
+        "常州聚会",
+        "changzhou meeting",
+        "龙城会面",
+        "常州中点"
+      ]
+    },
+    {
+      "name": "惠州",
+      "name_en": "Huizhou",
+      "slug": "huizhou",
+      "description": "临海度假与电子产业并存的城市",
+      "popular_venues": [
+        "滨海营地",
+        "咖啡馆",
+        "客家餐厅",
+        "郊野公园"
+      ],
+      "priority": 1,
+      "population": 6000000,
+      "coordinates": {
+        "lat": 23.1115,
+        "lng": 114.4152
+      },
+      "keywords": [
+        "惠州聚会",
+        "huizhou meetup",
+        "惠城会面",
+        "惠湾聚会"
+      ]
+    },
+    {
+      "name": "无锡",
+      "name_en": "Wuxi",
+      "slug": "wuxi",
+      "description": "太湖之滨的新一线城市，工业现代化",
+      "popular_venues": [
+        "湖景咖啡",
+        "太湖游船",
+        "文化街区",
+        "创新园"
+      ],
+      "priority": 1,
+      "population": 7500000,
+      "coordinates": {
+        "lat": 31.4912,
+        "lng": 120.3119
+      },
+      "keywords": [
+        "无锡聚会",
+        "wuxi meeting",
+        "太湖会面",
+        "锡城聚会"
+      ]
+    },
+    {
+      "name": "嘉兴",
+      "name_en": "Jiaxing",
+      "slug": "jiaxing",
+      "description": "沪杭之间的科创节点，红船文化发源地",
+      "popular_venues": [
+        "运河咖啡",
+        "书店",
+        "创客空间",
+        "江南餐厅"
+      ],
+      "priority": 1,
+      "population": 5500000,
+      "coordinates": {
+        "lat": 30.7461,
+        "lng": 120.7555
+      },
+      "keywords": [
+        "嘉兴聚会",
+        "jiaxing meeting",
+        "嘉禾会面",
+        "江南聚会"
+      ]
+    },
+    {
+      "name": "太原",
+      "name_en": "Taiyuan",
+      "slug": "taiyuan",
+      "description": "能源与装备制造中心，山地近郊游丰富",
+      "popular_venues": [
+        "黄河餐厅",
+        "咖啡馆",
+        "博物馆",
+        "工业遗址"
+      ],
+      "priority": 1,
+      "population": 5300000,
+      "coordinates": {
+        "lat": 37.8706,
+        "lng": 112.5489
+      },
+      "keywords": [
+        "太原聚会",
+        "taiyuan meeting",
+        "并州会面",
+        "山西聚会"
+      ]
+    },
+    {
+      "name": "烟台",
+      "name_en": "Yantai",
+      "slug": "yantai",
+      "description": "胶东半岛的葡萄酒与海滨度假城市",
+      "popular_venues": [
+        "海岸咖啡",
+        "酒庄",
+        "滨海公园",
+        "渔人码头"
+      ],
+      "priority": 1,
+      "population": 7000000,
+      "coordinates": {
+        "lat": 37.4638,
+        "lng": 121.4479
+      },
+      "keywords": [
+        "烟台聚会",
+        "yantai meeting",
+        "胶东会面",
+        "海滨聚会"
+      ]
+    },
+    {
+      "name": "珠海",
+      "name_en": "Zhuhai",
+      "slug": "zhuhai",
+      "description": "琴澳合作示范城市，海岛度假氛围浓厚",
+      "popular_venues": [
+        "情侣路",
+        "咖啡馆",
+        "艺术馆",
+        "离岛营地"
+      ],
+      "priority": 1,
+      "population": 2500000,
+      "coordinates": {
+        "lat": 22.2707,
+        "lng": 113.5767
+      },
+      "keywords": [
+        "珠海聚会",
+        "zhuhai meeting",
+        "琴澳会面",
+        "海岛聚会"
+      ]
+    },
+    {
+      "name": "中山",
+      "name_en": "Zhongshan",
+      "slug": "zhongshan",
+      "description": "粤港澳大湾区制造与影视双基地",
+      "popular_venues": [
+        "影视小镇",
+        "咖啡馆",
+        "花园餐厅",
+        "文创街"
+      ],
+      "priority": 1,
+      "population": 4400000,
+      "coordinates": {
+        "lat": 22.5167,
+        "lng": 113.3926
+      },
+      "keywords": [
+        "中山聚会",
+        "zhongshan meeting",
+        "孙城会面",
+        "湾区聚会"
+      ]
+    },
+    {
+      "name": "台州",
+      "name_en": "Taizhou",
+      "slug": "taizhou",
+      "description": "浙江沿海的医药与智能制造基地",
+      "popular_venues": [
+        "滨海公园",
+        "咖啡馆",
+        "创业园",
+        "夜市"
+      ],
+      "priority": 1,
+      "population": 6100000,
+      "coordinates": {
+        "lat": 28.6614,
+        "lng": 121.4206
+      },
+      "keywords": [
+        "台州聚会",
+        "taizhou meeting",
+        "浙东会面",
+        "台州中点"
+      ]
+    },
+    {
+      "name": "兰州",
+      "name_en": "Lanzhou",
+      "slug": "lanzhou",
+      "description": "黄河穿城而过的西北中心城市",
+      "popular_venues": [
+        "黄河栈道",
+        "牛肉面馆",
+        "博物馆",
+        "咖啡店"
+      ],
+      "priority": 1,
+      "population": 4400000,
+      "coordinates": {
+        "lat": 36.0611,
+        "lng": 103.8343
+      },
+      "keywords": [
+        "兰州聚会",
+        "lanzhou meeting",
+        "金城会面",
+        "黄河聚会"
+      ]
+    },
+    {
+      "name": "保定",
+      "name_en": "Baoding",
+      "slug": "baoding",
+      "description": "京津冀协同发展的制造业城市",
+      "popular_venues": [
+        "咖啡馆",
+        "书店",
+        "古城墙",
+        "产业园"
+      ],
+      "priority": 1,
+      "population": 9200000,
+      "coordinates": {
+        "lat": 38.851,
+        "lng": 115.4902
+      },
+      "keywords": [
+        "保定聚会",
+        "baoding meeting",
+        "保府会面",
+        "京津冀聚会"
+      ]
+    },
+    {
+      "name": "镇江",
+      "name_en": "Zhenjiang",
+      "slug": "zhenjiang",
+      "description": "长江与大运河交汇的美食之城",
+      "popular_venues": [
+        "醋文化馆",
+        "咖啡店",
+        "滨江栈道",
+        "特色餐厅"
+      ],
+      "priority": 1,
+      "population": 3200000,
+      "coordinates": {
+        "lat": 32.1876,
+        "lng": 119.425
+      },
+      "keywords": [
+        "镇江聚会",
+        "zhenjiang meeting",
+        "江州会面",
+        "镇江中点"
+      ]
+    },
+    {
+      "name": "扬州",
+      "name_en": "Yangzhou",
+      "slug": "yangzhou",
+      "description": "运河文化和园林闻名，适合慢旅行聚会",
+      "popular_venues": [
+        "瘦西湖",
+        "茶社",
+        "书店",
+        "文创街"
+      ],
+      "priority": 1,
+      "population": 4500000,
+      "coordinates": {
+        "lat": 32.3936,
+        "lng": 119.4127
+      },
+      "keywords": [
+        "扬州聚会",
+        "yangzhou meeting",
+        "运河会面",
+        "淮左聚会"
+      ]
+    },
+    {
+      "name": "临沂",
+      "name_en": "Linyi",
+      "slug": "linyi",
+      "description": "物流与商贸枢纽，红色文化资源丰富",
+      "popular_venues": [
+        "书法广场",
+        "咖啡店",
+        "山地营地",
+        "会议中心"
+      ],
+      "priority": 1,
+      "population": 11000000,
+      "coordinates": {
+        "lat": 35.1047,
+        "lng": 118.3565
+      },
+      "keywords": [
+        "临沂聚会",
+        "linyi meeting",
+        "沂蒙会面",
+        "鲁南聚会"
+      ]
+    },
+    {
+      "name": "洛阳",
+      "name_en": "Luoyang",
+      "slug": "luoyang",
+      "description": "十三朝古都，牡丹与博物馆资源丰富",
+      "popular_venues": [
+        "龙门石窟",
+        "牡丹园",
+        "咖啡馆",
+        "文化街"
+      ],
+      "priority": 1,
+      "population": 7000000,
+      "coordinates": {
+        "lat": 34.6197,
+        "lng": 112.454
+      },
+      "keywords": [
+        "洛阳聚会",
+        "luoyang meeting",
+        "洛阳会面",
+        "古都聚会"
+      ]
+    },
+    {
+      "name": "唐山",
+      "name_en": "Tangshan",
+      "slug": "tangshan",
+      "description": "沿海钢铁城市，工业遗产与新兴商圈并存",
+      "popular_venues": [
+        "工业遗址",
+        "咖啡馆",
+        "商业街",
+        "滨海公园"
+      ],
+      "priority": 1,
+      "population": 7800000,
+      "coordinates": {
+        "lat": 39.6305,
+        "lng": 118.1809
+      },
+      "keywords": [
+        "唐山聚会",
+        "tangshan meeting",
+        "唐城会面",
+        "环渤海聚会"
+      ]
+    },
+    {
+      "name": "呼和浩特",
+      "name_en": "Hohhot",
+      "slug": "hohhot",
+      "description": "草原门户城市，民族文化体验丰富",
+      "popular_venues": [
+        "奶茶馆",
+        "蒙古包营地",
+        "咖啡店",
+        "博物馆"
+      ],
+      "priority": 1,
+      "population": 3600000,
+      "coordinates": {
+        "lat": 40.8426,
+        "lng": 111.7492
+      },
+      "keywords": [
+        "呼和浩特聚会",
+        "hohhot meeting",
+        "青城会面",
+        "草原聚会"
+      ]
+    }
+  ]
+}

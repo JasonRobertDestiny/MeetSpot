@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ meta_title }}</title>
+    <meta name="description" content="{{ meta_description }}">
+    <meta name="keywords" content="{{ meta_keywords }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ meta_title }}">
+    <meta property="og:description" content="{{ meta_description }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:site_name" content="MeetSpot">
+    <meta property="og:image" content="https://meetspot-irq2.onrender.com/static/images/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ meta_title }}">
+    <meta name="twitter:description" content="{{ meta_description }}">
+    <meta name="twitter:image" content="https://meetspot-irq2.onrender.com/static/images/og-image.png">
+
+    {% if schema_jsonld %}
+        {% if schema_jsonld is sequence %}
+            {% for schema in schema_jsonld %}
+            <script type="application/ld+json">{{ schema | tojson | safe }}</script>
+            {% endfor %}
+        {% else %}
+            <script type="application/ld+json">{{ schema_jsonld | tojson | safe }}</script>
+        {% endif %}
+    {% endif %}
+
+    <link rel="preconnect" href="https://restapi.amap.com">
+    <link rel="dns-prefetch" href="https://restapi.amap.com">
+
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-dark: #3730A3;
+            --text: #1F2937;
+            --muted: #6B7280;
+            --bg: #F9FAFB;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.7;
+        }
+        header, footer {
+            background: #fff;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+            font-weight: 600;
+        }
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+        }
+        nav a:hover { color: var(--primary); }
+        main { min-height: 60vh; }
+        footer {
+            margin-top: 60px;
+            border-top: 1px solid #E5E7EB;
+            padding: 32px 0;
+        }
+        .breadcrumbs {
+            font-size: 0.9rem;
+            color: var(--muted);
+            padding: 16px 0;
+        }
+        .breadcrumbs a { color: var(--muted); }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            border: 0;
+        }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 999px;
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .grid {
+            display: grid;
+            gap: 20px;
+        }
+        @media (max-width: 640px) {
+            nav ul { flex-wrap: wrap; }
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <a href="#main" class="sr-only">跳转到主内容</a>
+    <header>
+        <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:64px;">
+            <a href="/" style="font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;">MeetSpot 聚点</a>
+            <nav>
+                <ul>
+                    <li><a href="/">首页</a></li>
+                    <li><a href="/about">关于</a></li>
+                    <li><a href="/how-it-works">使用指南</a></li>
+                    <li><a href="/faq">FAQ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    {% if breadcrumbs %}
+    <div class="container breadcrumbs">
+        {% for crumb in breadcrumbs %}
+            {% if not loop.last %}
+                <a href="{{ crumb.url }}">{{ crumb.name }}</a> /
+            {% else %}
+                <span>{{ crumb.name }}</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main id="main" class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="container" style="display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;">
+            <div>
+                <strong>MeetSpot</strong>
+                <p>智能聚会地点推荐系统 · 让每次聚会公平高效</p>
+            </div>
+            <div>
+                <a href="/sitemap.xml">Sitemap</a> ·
+                <a href="/robots.txt">Robots</a>
+            </div>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

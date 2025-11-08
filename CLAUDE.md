@@ -6,17 +6,163 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 MeetSpot is an intelligent meeting point recommendation system built with FastAPI and Python 3.11+. It calculates optimal meeting locations based on multiple participants' geographical positions and recommends nearby venues using the Amap (Gaode Map) API.
 
+## Claude Code ↔ Codex Collaboration Workflow
+
+### Role Division
+
+**Claude Code (Requirements & Planning):**
+- Requirement analysis and PRD documentation
+- Architecture design and technical decisions
+- Development prompt generation for Codex
+- Code review and quality assurance
+- Complex debugging and troubleshooting
+
+**Codex (Implementation):**
+- Feature implementation based on PRD
+- Code generation and refactoring
+- Unit test writing
+- Bug fixing with clear reproduction steps
+
+### Workflow Process
+
+```
+User Request
+    ↓
+Claude Code: Requirement Analysis
+    ↓
+Claude Code: Write PRD + Codex Prompt
+    ↓
+Codex: Implement Feature
+    ↓
+Claude Code: Review & Validate
+    ↓
+Iterate if needed
+```
+
+### PRD Structure for Codex
+
+When writing PRD for Codex implementation:
+
+1. **Context**: Current system state and problem statement
+2. **Objective**: Clear, measurable goal
+3. **Technical Specifications**:
+   - File paths to modify/create
+   - API contracts (input/output schemas)
+   - Data structures
+   - Integration points
+4. **Implementation Steps**: Ordered list with specific actions
+5. **Validation Criteria**: How to test success
+6. **Edge Cases**: Known failure scenarios to handle
+
+### Handoff Protocol
+
+**Claude Code → Codex:**
+```
+# Development Prompt for Codex
+
+## Context
+[Current system state, relevant files, existing architecture]
+
+## Objective
+[What needs to be built/fixed, why it matters]
+
+## Technical Spec
+Files to modify:
+- path/to/file.py: [specific changes needed]
+
+New files to create:
+- path/to/new_file.py: [purpose and structure]
+
+API Changes:
+- Endpoint: POST /api/new_endpoint
+- Request: {...}
+- Response: {...}
+
+## Implementation Steps
+1. [Concrete action with file and line references]
+2. [Next action...]
+
+## Validation
+- [ ] Test case 1: [specific behavior to verify]
+- [ ] Test case 2: ...
+
+## Edge Cases
+- Case 1: [scenario and expected handling]
+- Case 2: ...
+```
+
+**Codex → Claude Code:**
+```
+Implementation complete. Changed files:
+- file1.py: [summary of changes]
+- file2.py: [summary of changes]
+
+Validation results:
+- [Test results or manual verification]
+
+Known issues/questions:
+- [Any uncertainties or problems encountered]
+```
+
+### Decision Matrix: Who Does What?
+
+| Task Type | Owner | Reason |
+|-----------|-------|--------|
+| PRD writing | Claude Code | Requires context analysis |
+| Feature implementation | Codex | Speed and efficiency |
+| Architecture design | Claude Code | Needs judgment and trade-off analysis |
+| Bug fixing (clear repro) | Codex | Straightforward execution |
+| Debugging (unclear cause) | Claude Code | Requires investigation |
+| Code review | Claude Code | Quality standards enforcement |
+| Refactoring | Codex (with Claude's plan) | Mechanical transformation |
+| Performance optimization | Claude Code + Codex | Analysis then implementation |
+
 ## Development Commands
 
-### Local Development
+### Environment Setup (Conda - Recommended)
+
+**First-time setup**:
 ```bash
-# Start development server
-python web_server.py
+# Create conda environment from environment.yml
+conda env create -f environment.yml
+
+# Activate environment
+conda activate meetspot
+
+# Verify installation
+python --version  # Should show Python 3.11.x
+```
+
+**Development environment** (includes testing and linting tools):
+```bash
+# Create dev environment
+conda env create -f environment-dev.yml
+
+# Activate dev environment
+conda activate meetspot-dev
+```
+
+**Alternative: pip-based setup** (if conda not available):
+```bash
+# Create virtual environment
+python3.11 -m venv venv
+source venv/bin/activate  # Linux/Mac
 # or
-npm run dev
+venv\Scripts\activate  # Windows
 
 # Install dependencies
 pip install -r requirements.txt
+```
+
+### Local Development
+```bash
+# Activate environment (do this every time)
+conda activate meetspot
+
+# Start development server
+python web_server.py
+# or
+uvicorn api.index:app --reload
 
 # Access application
 # http://127.0.0.1:8000 (main application)
@@ -26,12 +172,23 @@ pip install -r requirements.txt
 
 ### Testing
 ```bash
-# Basic import test (used in CI/CD)
-python -c "import app; print('App imports successfully')"
+# Activate dev environment
+conda activate meetspot-dev
 
-# Code style check
-pip install flake8
-flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+# Run tests with pytest
+pytest tests/
+
+# Run with coverage
+pytest --cov=app tests/
+
+# Code style check (using ruff)
+ruff check .
+
+# Format code (using black)
+black .
+
+# Type checking (using mypy)
+mypy app/
 
 # Manual API testing
 curl -X POST "http://127.0.0.1:8000/api/find_meetspot" \
@@ -41,7 +198,7 @@ curl -X POST "http://127.0.0.1:8000/api/find_meetspot" \
 
 ### Docker
 ```bash
-# Build Docker image
+# Build Docker image (using conda)
 docker build -t meetspot:test .
 
 # Run container with environment variables
@@ -53,6 +210,27 @@ docker run -d -p 8000:8000 \
 docker ps
 curl http://localhost:8000/health
 ```
+
+### Conda Environment Management
+```bash
+# List environments
+conda env list
+
+# Update environment after environment.yml changes
+conda env update -f environment.yml --prune
+
+# Export current environment
+conda env export > environment-frozen.yml
+
+# Remove environment
+conda deactivate
+conda env remove -n meetspot
+
+# Clone environment for testing
+conda create --name meetspot-test --clone meetspot
+```
+
+**Note**: See [CONDA_SETUP_GUIDE.md](./CONDA_SETUP_GUIDE.md) for detailed conda usage, troubleshooting, and best practices.
 
 ## Code Architecture
 

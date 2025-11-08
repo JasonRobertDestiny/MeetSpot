@@ -1,9 +1,11 @@
 import asyncio
+import html
 import json
 import math
 import os
 import uuid
 from datetime import datetime
+from functools import lru_cache
 from typing import Any, Dict, List, Optional, Tuple
 
 import aiofiles
@@ -274,6 +276,65 @@ class CafeRecommender(BaseTool):
     def _get_place_config(self, primary_keyword: str) -> Dict[str, str]:
         """获取指定场所类型的显示配置"""
         return self.PLACE_TYPE_CONFIG.get(primary_keyword, self.PLACE_TYPE_CONFIG["default"])
+
+    @staticmethod
+    @lru_cache(maxsize=1)
+    def _load_city_dataset() -> List[Dict]:
+        """从数据文件读取城市信息（带缓存）."""
+        try:
+            with open("data/cities.json", "r", encoding="utf-8") as fh:
+                payload = json.load(fh)
+                return payload.get("cities", [])
+        except (FileNotFoundError, json.JSONDecodeError):
+            return []
+
+    def _extract_city_from_locations(self, locations: List[Dict]) -> str:
+        """尝试从参与者地址中推断城市."""
+        city_dataset = self._load_city_dataset()
+        for loc in locations:
+            address = " ".join(
+                filter(
+                    None,
+                    [
+                        loc.get("formatted_address", ""),
+                        loc.get("name", ""),
+                        loc.get("city", ""),
+                    ],
+                )
+            )
+
+            for city in city_dataset:
+                name = city.get("name", "")
+                name_en = city.get("name_en", "")
+                if name and name in address:
+                    return name
+                if name_en and name_en.lower() in address.lower():
+                    return name
+        return locations[0].get("city", "未知城市") if locations else "未知城市"
+
+    def _format_schema_payload(self, place: Dict, city_name: str) -> Dict:
+        """构建LocalBusiness schema所需数据."""
+        lng = lat = None
+        location_str = place.get("location", "")
+        if location_str and "," in location_str:
+            lng_str, lat_str = location_str.split(",", 1)
+            try:
+                lng = float(lng_str)
+                lat = float(lat_str)
+            except ValueError:
+                lng = lat = None
+
+        biz_ext = place.get("biz_ext", {}) or {}
+        return {
+            "name": place.get("name", ""),
+            "address": place.get("address", ""),
+            "city": city_name,
+            "lat": lat,
+            "lng": lng,
+            "rating": biz_ext.get("rating", 4.5),
+            "review_count": biz_ext.get("review_count", 100),
+            "price_range": biz_ext.get("cost", "¥¥"),
+        }
 
     async def execute(
         self,
@@ -907,6 +968,58 @@ class CafeRecommender(BaseTool):
             primary_keyword = keywords.split("、")[0] if keywords else "场所"
             cfg = self._get_place_config(primary_keyword)
 
+        city_name = self._extract_city_from_locations(locations)
+        meta_tags = {
+            "title": f"{cfg['topic']} - 最佳会面{cfg['noun_singular']}推荐",
+            "description": f"MeetSpot在{city_name}为多人聚会智能推荐公平会面地点, 支持{primary_keyword}等场景。",
+            "keywords": f"{city_name},{primary_keyword},MeetSpot,聚会地点",
+        }
+        schema_graph: List[Dict] = []
+        try:
+            from api.services.seo_content import SEOContentGenerator
+
+            seo_generator = SEOContentGenerator()
+            meta_tags = seo_generator.generate_meta_tags(
+                "recommendation",
+                {
+                    "city": city_name,
+                    "keyword": primary_keyword,
+                    "locations_count": len(locations),
+                },
+            )
+            schema_graph = []
+            for place in places[:3]:
+                schema_obj = seo_generator.generate_schema_org(
+                    "local_business", self._format_schema_payload(place, city_name)
+                )
+                if schema_obj:
+                    schema_obj.pop("@context", None)
+                    schema_graph.append(schema_obj)
+        except Exception as exc:  # noqa: BLE001 - 非关键路径
+            logger.warning(f"SEO meta fallback: {exc}")
+            schema_graph = []
+
+        meta_title = html.escape(meta_tags.get("title", "")) or f"{city_name}聚会地点推荐 - MeetSpot"
+        meta_description = html.escape(
+            meta_tags.get("description", "MeetSpot帮助团队计算公平的会面地点。")
+        )
+        meta_keywords = html.escape(meta_tags.get("keywords", f"{city_name},{primary_keyword}"))
+        schema_block = ""
+        if schema_graph:
+            schema_block = json.dumps(
+                {"@context": "https://schema.org", "@graph": [g for g in schema_graph if g]},
+                ensure_ascii=False,
+                indent=2,
+            )
+        canonical_url = "https://meetspot-irq2.onrender.com/"
+        schema_script = ""
+        if schema_block:
+            schema_script = (
+                '\n    <script type="application/ld+json">\n'
+                f"{schema_block}\n"
+                "    </script>\n"
+            )
+
         search_process_html = self._generate_search_process(locations, center_point, user_requirements, keywords) 
 
         location_markers = []
@@ -1036,8 +1149,20 @@ class CafeRecommender(BaseTool):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{cfg["topic"]} - 最佳会面{cfg["noun_singular"]}推荐</title>
+    <title>{meta_title}</title>
+    <meta name="description" content="{meta_description}">
+    <meta name="keywords" content="{meta_keywords}">
+    <link rel="canonical" href="{canonical_url}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{meta_title}">
+    <meta property="og:description" content="{meta_description}">
+    <meta property="og:url" content="{canonical_url}">
+    <meta property="og:image" content="https://meetspot-irq2.onrender.com/static/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{meta_title}">
+    <meta name="twitter:description" content="{meta_description}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.9/css/boxicons.min.css">
+    {schema_script}
     <style>
         {dynamic_style} /* Inject dynamic theme colors here */
 

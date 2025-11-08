@@ -8,6 +8,9 @@ Allow: /api/find_meetspot
 Allow: /docs
 Allow: /redoc
 Allow: /health
+Allow: /about
+Allow: /how-it-works
+Allow: /faq
 Disallow: /workspace/
 Disallow: /config/
 Disallow: /__pycache__/

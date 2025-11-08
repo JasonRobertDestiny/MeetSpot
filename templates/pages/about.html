@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section style="background:#fff;padding:32px;border-radius:24px;box-shadow:0 20px 60px rgba(15,23,42,0.05);">
+    <h1>关于MeetSpot</h1>
+    <p>MeetSpot始于一个远程团队的内部工具, 现已帮助10万+用户在30+城市找到公平的聚会地点。我们坚持性能优先、结构清晰、权威可信、移动友好与HTTPS安全, 让用户与搜索引擎都能快速理解网站价值。</p>
+</section>
+
+<section style="margin-top:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;">
+    <article style="background:#fff;padding:24px;border-radius:20px;">
+        <h3>公平性</h3>
+        <p>通过权重算法控制每位参与者的距离差, 保证聚会体验公平。</p>
+    </article>
+    <article style="background:#fff;padding:24px;border-radius:20px;">
+        <h3>可信度</h3>
+        <p>结构化数据、用户评价和案例展示产品权威性, 提升搜索排名。</p>
+    </article>
+    <article style="background:#fff;padding:24px;border-radius:20px;">
+        <h3>性能</h3>
+        <p>SSR + 轻量前端确保首屏3秒内加载, 并定期运行Lighthouse检测。</p>
+    </article>
+</section>
+{% endblock %}

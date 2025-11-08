@@ -9,11 +9,15 @@ from typing import List, Optional
 # 添加项目根目录到 Python 路径
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+# WhiteNoise将通过StaticFiles中间件集成，不需要ASGI↔WSGI转换
+from api.routers import seo_pages
 
 # 导入应用模块
 try:
@@ -182,6 +186,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+async def _rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    """全局限流处理器."""
+    return JSONResponse(
+        status_code=429,
+        content={"detail": "请求过于频繁, 请稍后再试"},
+    )
+
+app.state.limiter = seo_pages.limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_handler)
+app.add_middleware(SlowAPIMiddleware)
+
 # 挂载静态文件（如果目录存在）
 try:
     # Vercel环境下创建必要的目录结构
@@ -200,29 +215,15 @@ try:
     if os.path.exists("docs"):
         app.mount("/docs-static", StaticFiles(directory="docs"), name="docs-static")
         print("✅ 挂载 /docs 静态文件")
+
+    if os.path.exists("static"):
+        app.mount("/static", StaticFiles(directory="static"), name="static")
+        print("✅ 挂载 /static 静态文件")
 except Exception as e:
     print(f"⚠️ 静态文件挂载失败: {e}")
     # 在Vercel环境下，静态文件挂载可能失败，这是正常的
 
-@app.get("/")
-async def read_root():
-    """根路径 - 返回主页"""
-    try:
-        # 尝试返回实际的HTML页面
-        html_file = "public/index.html"
-        if os.path.exists(html_file):
-            return FileResponse(html_file)
-
-        # 否则返回简单的欢迎页面
-        return {
-            "message": "🎯 MeetSpot API - 智能会面地点推荐服务",
-            "version": "1.0.0",
-            "status": "running",
-            "docs": "/docs",
-            "timestamp": time.time()
-        }
-    except Exception as e:
-        return {"message": "MeetSpot API", "error": str(e)}
+app.include_router(seo_pages.router)
 
 @app.get("/health")
 async def health_check():
@@ -237,15 +238,6 @@ async def health_check():
         }
     }
 
-@app.get("/robots.txt")
-async def robots_txt():
-    """返回robots.txt文件"""
-    robots_file = "public/robots.txt"
-    if os.path.exists(robots_file):
-        return FileResponse(robots_file, media_type="text/plain")
-    # 如果文件不存在，返回默认配置
-    return FileResponse(robots_file, media_type="text/plain")
-
 @app.get("/google48ac1a797739b7b0.html")
 async def google_verification():
     """返回Google Search Console验证文件"""
@@ -254,15 +246,6 @@ async def google_verification():
         return FileResponse(google_file, media_type="text/html")
     # 如果文件不存在，返回404
     raise HTTPException(status_code=404, detail="Google verification file not found")
-
-@app.get("/sitemap.xml")
-async def sitemap_xml():
-    """返回sitemap.xml文件"""
-    sitemap_file = "public/sitemap.xml"
-    if os.path.exists(sitemap_file):
-        return FileResponse(sitemap_file, media_type="application/xml")
-    # 如果文件不存在，返回404
-    raise HTTPException(status_code=404, detail="Sitemap not found")
 
 @app.get("/config")
 async def get_config():
@@ -418,6 +401,22 @@ async def api_status():
         "features": "Complete" if config else "Limited",
         "timestamp": time.time()
     }
+
+# 静态文件服务（替代WhiteNoise，使用FastAPI原生StaticFiles）
+# StaticFiles自带gzip压缩和缓存控制
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+if os.path.exists("public"):
+    app.mount("/public", StaticFiles(directory="public", html=True), name="public")
+
+# 添加缓存控制头（用于静态资源）
+@app.middleware("http")
+async def add_cache_headers(request: Request, call_next):
+    response = await call_next(request)
+    # 对静态资源添加长期缓存
+    if request.url.path.startswith(("/static/", "/public/")):
+        response.headers["Cache-Control"] = "public, max-age=31536000"  # 1年
+    return response
 
 # Vercel 处理函数
 app_instance = app
