@@ -1159,7 +1159,7 @@ class CafeRecommender(BaseTool):
             --transition: all 0.3s ease;
         }}"""
 
-        html = f"""<!DOCTYPE html>
+        html_content = f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -1447,7 +1447,7 @@ class CafeRecommender(BaseTool):
     </script>
 </body>
 </html>"""
-        return html
+        return html_content
 
     def _format_result_text(
         self,
