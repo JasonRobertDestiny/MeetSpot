@@ -55,8 +55,8 @@ class SEOContentGenerator:
         if page_type == "homepage":
             title = "MeetSpot - Find Meeting Location Midpoint | 智能聚会地点推荐"
             description = (
-                "MeetSpot helps you find the perfect meeting location midpoint for groups. "
-                "智能算法支持2-10人聚会, 计算公平中点并推荐咖啡馆、餐厅、共享空间等场所。"
+                "MeetSpot让2-10人团队快速找到公平会面中点, 智能推荐咖啡馆、餐厅、共享空间, 自动输出路线、"
+                "预算与结构化数据, 15秒生成可索引聚会页面; Midpoint engine saves 30% commute, fuels SEO-ready recaps with clear CTA."
             )
             keywords = (
                 "meeting location,find midpoint,group meeting,location finder,"
@@ -69,27 +69,29 @@ class SEOContentGenerator:
             venue_snippet = "、".join(venue_types[:3]) if venue_types else "热门场所"
             title = f"{city}聚会地点推荐 | {city_en} Meeting Location Finder - MeetSpot"
             description = (
-                f"MeetSpot智能推荐{city}的{venue_snippet}等聚会场所, 基于参与者位置计算最佳中点, "
-                "平均节省30%通勤时间。"
+                f"{city or '所在城市'}聚会需要公平中点? MeetSpot根据2-10人轨迹计算平衡路线, 推荐{venue_snippet}等场所, "
+                "输出中文/英文场地文案、预算与交通信息, 15秒生成可索引城市着陆页; Local insights boost trust, shareable cards unlock faster decisions."
             )
             keywords = f"{city},{city_en},meeting location,{venue_snippet},midpoint"
         elif page_type == "about":
             title = "About MeetSpot - How We Find Perfect Meeting Locations | 关于我们"
             description = (
-                "了解MeetSpot如何结合地理算法与内容策略, 帮助10万+用户找到公平的聚会地点。"
+                "MeetSpot团队由地图算法、内容运营与产品负责人组成, 公开使命、技术栈、治理方式, 分享用户案例、AMAP合规、安全策略与开源路线图; "
+                "Learn how we guarantee equitable experiences backed by ongoing UX research。"
             )
             keywords = "about meetspot,meeting algorithm,location technology,关于,聚会算法"
         elif page_type == "faq":
             title = "FAQ - Meeting Location Questions Answered | 常见问题 - MeetSpot"
             description = (
-                "解答关于聚会地点选择、中点计算和MeetSpot使用方式的所有问题, 包含结构化数据支持。"
+                "覆盖聚会地点、费用、功能等核心提问, 提供结构化答案, 支持Google FAQ Schema, 让用户与搜索引擎获得清晰指导, "
+                "并附上联系入口与下一步CTA, FAQ hub helps planners resolve objections faster and improve conversions。"
             )
             keywords = "faq,meeting questions,location help,常见问题,使用指南"
         elif page_type == "how_it_works":
             title = "How MeetSpot Works | 智能聚会地点中点计算流程"
             description = (
-                "Follow our 4-step guide to collect addresses, calculate fair midpoints, "
-                "evaluate venues, and发布SEO-ready推荐页面。"
+                "4步流程涵盖收集地址、平衡权重、筛选场地与导出SEO文案, 附带动图、清单和风控提示, 指导团队15分钟内发布可索引页面; "
+                "Learn safeguards, KPIs, stakeholder handoffs, and post-launch QA behind MeetSpot。"
             )
             keywords = "how meetspot works,midpoint guide,workflow,使用指南"
         elif page_type == "recommendation":
@@ -98,8 +100,8 @@ class SEOContentGenerator:
             count = data.get("locations_count", 2)
             title = f"{city}{keyword}推荐 - {count}人聚会最佳会面点 | MeetSpot"
             description = (
-                f"为{count}位参与者智能推荐{city}的{keyword}, 基于地理中点算法计算最公平的会面位置, "
-                "平均节省30%通勤时间并附带路线与场所详情。"
+                f"{city}{count}人{keyword}推荐由MeetSpot中点引擎生成, 结合每位参与者的路程、预算与场地偏好, "
+                "给出评分、热力图和可复制行程; Share SEO-ready cards、CTA, keep planning transparent, document-ready for clients, and measurable。"
             )
             keywords = f"{city},{keyword},聚会地点推荐,中点计算,{count}人聚会"
         else:
@@ -142,6 +144,41 @@ class SEOContentGenerator:
                     "name": "MeetSpot Team",
                 },
             }
+        if page_type == "website":
+            search_path = data.get("search_url", "/search")
+            return {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "MeetSpot",
+                "url": base_url + "/",
+                "inLanguage": "zh-CN",
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": f"{base_url}{search_path}?q={{query}}",
+                    "query-input": "required name=query",
+                },
+            }
+        if page_type == "organization":
+            return {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "name": "MeetSpot",
+                "url": base_url,
+                "logo": f"{base_url}/static/images/og-image.png",
+                "foundingDate": "2023-08-01",
+                "contactPoint": [
+                    {
+                        "@type": "ContactPoint",
+                        "contactType": "customer support",
+                        "email": "hello@meetspot.app",
+                        "availableLanguage": ["zh-CN", "en"],
+                    }
+                ],
+                "sameAs": [
+                    "https://github.com/JasonRobertDestiny/MeetSpot",
+                    "https://jasonrobert.me/",
+                ],
+            }
         if page_type == "local_business":
             venue = data
             return {
@@ -182,6 +219,31 @@ class SEOContentGenerator:
                     }
                     for faq in faqs
                 ],
+            }
+        if page_type == "how_to":
+            steps = data.get("steps", [])
+            if not steps:
+                return {}
+            return {
+                "@context": "https://schema.org",
+                "@type": "HowTo",
+                "name": data.get("name", "如何使用MeetSpot"),
+                "description": data.get(
+                    "description",
+                    "Step-by-step guide to plan a fair meetup with MeetSpot.",
+                ),
+                "totalTime": data.get("total_time", "PT15M"),
+                "inLanguage": "zh-CN",
+                "step": [
+                    {
+                        "@type": "HowToStep",
+                        "name": step["name"],
+                        "text": step["text"],
+                    }
+                    for step in steps
+                ],
+                "supply": data.get("supplies", ["参与者地址", "交通方式偏好"]),
+                "tool": data.get("tools", ["MeetSpot Dashboard"]),
             }
         if page_type == "breadcrumb":
             items = data.get("items", [])

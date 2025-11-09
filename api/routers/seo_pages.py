@@ -74,6 +74,8 @@ async def homepage(request: Request):
     )
     schema_list = _build_schema_list(
         seo_generator.generate_schema_org("webapp", {}),
+        seo_generator.generate_schema_org("website", {"search_url": "/search"}),
+        seo_generator.generate_schema_org("organization", {}),
         seo_generator.generate_schema_org(
             "breadcrumb", {"items": [{"name": "Home", "url": "/"}]}
         ),
@@ -121,6 +123,8 @@ async def city_page(request: Request, city_slug: str):
     )
     schema_list = _build_schema_list(
         seo_generator.generate_schema_org("webapp", {}),
+        seo_generator.generate_schema_org("website", {"search_url": "/search"}),
+        seo_generator.generate_schema_org("organization", {}),
         breadcrumb,
     )
     city_content = seo_generator.generate_city_content(city.get("name", ""))
@@ -149,6 +153,7 @@ async def city_page(request: Request, city_slug: str):
 async def about_page(request: Request):
     meta_tags = seo_generator.generate_meta_tags("about", {})
     schema_list = _build_schema_list(
+        seo_generator.generate_schema_org("organization", {}),
         seo_generator.generate_schema_org(
             "breadcrumb",
             {
@@ -180,7 +185,37 @@ async def about_page(request: Request):
 @limiter.limit("30/minute")
 async def how_it_works(request: Request):
     meta_tags = seo_generator.generate_meta_tags("how_it_works", {})
+    how_to_schema = seo_generator.generate_schema_org(
+        "how_to",
+        {
+            "name": "使用MeetSpot规划公平会面",
+            "description": "4步流程, 从收集地址到导出SEO-ready页面, 15分钟内完成。",
+            "total_time": "PT15M",
+            "steps": [
+                {
+                    "name": "收集参与者地址",
+                    "text": "邀请2-10位成员输入常用地址或地标, 系统自动校验经纬度与交通方式。",
+                },
+                {
+                    "name": "设置场景与权重",
+                    "text": "选择咖啡馆/餐厅/共享空间等场景, 调整预算与通勤权重保持公平。",
+                },
+                {
+                    "name": "审核推荐结果",
+                    "text": "查看多候选场所、评分、热力图与结构化数据, 与团队实时协作确认。",
+                },
+                {
+                    "name": "导出与监控",
+                    "text": "导出SEO-ready推荐页面, 上传至Search Console并追踪表现。",
+                },
+            ],
+            "tools": ["MeetSpot Dashboard", "AMap API"],
+            "supplies": ["成员清单", "交通偏好", "预算上限"],
+        },
+    )
     schema_list = _build_schema_list(
+        seo_generator.generate_schema_org("website", {"search_url": "/search"}),
+        seo_generator.generate_schema_org("organization", {}),
         seo_generator.generate_schema_org(
             "breadcrumb",
             {
@@ -189,7 +224,8 @@ async def how_it_works(request: Request):
                     {"name": "How it Works", "url": "/how-it-works"},
                 ]
             },
-        )
+        ),
+        how_to_schema,
     )
     return templates.TemplateResponse(
         "pages/how_it_works.html",
@@ -231,6 +267,8 @@ async def faq_page(request: Request):
         },
     ]
     schema_list = _build_schema_list(
+        seo_generator.generate_schema_org("website", {"search_url": "/search"}),
+        seo_generator.generate_schema_org("organization", {}),
         seo_generator.generate_schema_org("faq", {"faqs": faqs}),
         seo_generator.generate_schema_org(
             "breadcrumb",
