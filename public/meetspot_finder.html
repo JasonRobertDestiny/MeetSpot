@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MeetSpot (聚点) - 智能会面点推荐</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv name="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <!-- Design Token System -->
+    <link rel="stylesheet" href="/static/css/design-tokens.css">
+
     <style>
         * {
             margin: 0;
@@ -16,10 +20,10 @@
         }
 
         body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: var(--font-family-sans);
+            background: var(--brand-gradient);
             min-height: 100vh;
-            line-height: 1.6;
+            line-height: var(--font-leading-normal);
         }
 
         .container {
@@ -360,9 +364,9 @@
 
         /* 场景主题颜色系统 */
         :root {
-            --default-primary: #667eea;
-            --default-secondary: #764ba2;
-            --default-accent: #4a5de6;
+            --default-primary: var(--brand-primary);
+            --default-secondary: var(--brand-primary-dark);
+            --default-accent: var(--brand-primary-light);
         }
 
         /* 咖啡馆主题 - 温暖棕色 */

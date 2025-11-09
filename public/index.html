@@ -130,14 +130,18 @@
     <link rel="dns-prefetch" href="https://unpkg.com">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
+    <!-- Design Token System -->
+    <link rel="stylesheet" href="/static/css/design-tokens.css">
+
     <style>
         :root {
-            --primary: #5c6ac4;
-            --primary-dark: #3b46a1;
-            --accent: #50c1a3;
-            --gray-100: #f5f7fb;
-            --gray-400: #7c8aab;
-            --gray-700: #2f3556;
+            /* 向后兼容别名 - 映射到设计token */
+            --primary: var(--brand-primary);
+            --primary-dark: var(--brand-primary-dark);
+            --accent: var(--brand-success);
+            --gray-100: var(--bg-secondary);
+            --gray-400: var(--text-tertiary);
+            --gray-700: var(--text-primary);
         }
         * { box-sizing: border-box; }
         body {
@@ -149,7 +153,7 @@
         }
         a { color: var(--primary); text-decoration: none; }
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--brand-gradient);
             color: white;
             padding: 24px 0 80px;
         }
@@ -166,7 +170,7 @@
             gap: 24px;
             font-weight: 500;
         }
-        .nav-links a { color: #f7f8ff; }
+        .nav-links a { color: var(--text-inverse); }
         .hero {
             max-width: 1100px;
             margin: 60px auto 0;
@@ -195,13 +199,13 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .btn-primary {
-            background: #fff;
+            background: var(--bg-primary);
             color: var(--primary);
             box-shadow: 0 10px 25px rgba(0,0,0,0.12);
         }
         .btn-secondary {
             background: transparent;
-            color: #fff;
+            color: var(--text-inverse);
             border: 1px solid rgba(255,255,255,0.6);
         }
         .stats {
@@ -218,15 +222,15 @@
         }
         .stat-card h3 { margin: 0; font-size: 2rem; }
         main { max-width: 1100px; margin: -40px auto 80px; padding: 0 24px; }
-        section { background: #fff; border-radius: 24px; padding: 32px; margin-top: 32px; box-shadow: 0 20px 60px rgba(15,23,42,0.08); }
+        section { background: var(--bg-primary); border-radius: var(--radius-2xl); padding: 32px; margin-top: 32px; box-shadow: var(--shadow-lg); }
         section h2 { margin-top: 0; font-size: 2rem; }
         .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
-        .feature-card { padding: 20px; border: 1px solid #e4e7fb; border-radius: 16px; }
+        .feature-card { padding: 20px; border: 1px solid var(--border-default); border-radius: var(--radius-xl); }
         .feature-card h3 { margin-top: 0; }
         .list-check li { margin-bottom: 12px; list-style: none; position: relative; padding-left: 28px; }
         .list-check li::before { content: "✔"; position: absolute; left: 0; color: var(--accent); }
         .testimonials { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .testimonial { border: 1px solid #e4e7fb; border-radius: 16px; padding: 24px; background: #fdfdff; }
+        .testimonial { border: 1px solid var(--border-default); border-radius: var(--radius-xl); padding: 24px; background: var(--bg-secondary); }
         .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; background: rgba(80,193,163,0.12); color: var(--primary-dark); font-weight: 600; }
         footer { text-align: center; font-size: 0.9rem; color: var(--gray-400); margin: 60px 0 20px; }
         @media (max-width: 640px) {

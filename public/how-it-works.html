@@ -7,21 +7,25 @@
     <meta name="description" content="Follow this 4-step playbook to collect locations, calculate a meeting midpoint, evaluate venues, and publish SEO-ready recap pages.">
     <link rel="canonical" href="https://meetspot-irq2.onrender.com/how-it-works">
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+
+    <!-- Design Token System -->
+    <link rel="stylesheet" href="/static/css/design-tokens.css">
+
     <style>
-        body { font-family:"Inter",Arial,sans-serif; margin:0; background:#f7f8fc; color:#172033; line-height:1.7; }
-        header { background:linear-gradient(135deg,#50c1a3,#5c6ac4); color:#fff; padding:40px 0 60px; }
+        body { font-family: var(--font-family-sans); margin:0; background: var(--bg-secondary); color: var(--text-primary); line-height: var(--font-leading-relaxed); }
+        header { background: var(--brand-gradient); color: var(--text-inverse); padding:40px 0 60px; }
         .container { max-width:1000px; margin:0 auto; padding:0 24px; }
         nav { display:flex; justify-content:space-between; align-items:center; }
-        nav a { color:#eff5ff; text-decoration:none; margin-left:16px; font-weight:500; }
+        nav a { color: var(--bg-secondary); text-decoration:none; margin-left:16px; font-weight:500; }
         h1 { font-size:2.5rem; margin-bottom:12px; }
-        section { background:#fff; border-radius:24px; padding:32px; margin-top:-40px; box-shadow:0 20px 60px rgba(15,23,42,0.08); }
+        section { background: var(--bg-primary); border-radius: var(--radius-2xl); padding:32px; margin-top:-40px; box-shadow: var(--shadow-lg); }
         h2 { margin-top:0; }
         .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; margin-top:24px; }
-        .step { border:1px solid #e4e7fb; border-radius:18px; padding:20px; background:#fdfdff; }
-        .step span { font-weight:700; color:#5c6ac4; }
+        .step { border:1px solid var(--border-default); border-radius: var(--radius-xl); padding:20px; background: var(--bg-secondary); }
+        .step span { font-weight:700; color: var(--brand-primary); }
         ol { padding-left:18px; }
-        .tip { background:#f2fbf8; border-left:4px solid #50c1a3; padding:16px; border-radius:12px; }
-        footer { text-align:center; padding:40px 0; color:#6b7289; font-size:0.9rem; }
+        .tip { background: var(--bg-secondary); border-left:4px solid var(--brand-success); padding:16px; border-radius: var(--radius-lg); }
+        footer { text-align:center; padding:40px 0; color: var(--text-tertiary); font-size:0.9rem; }
         @media(max-width:640px){ nav{flex-direction:column; gap:12px;} }
     </style>
 </head>

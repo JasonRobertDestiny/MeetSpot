@@ -36,31 +36,19 @@
     <link rel="preconnect" href="https://unpkg.com">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
+    <!-- Design Token System - 单一真相来源 -->
+    <link rel="stylesheet" href="/static/css/design-tokens.css">
+
     <style>
+        /* 向后兼容别名 (保持与旧代码一致) */
         :root {
-            /* 统一紫蓝渐变配色系统 */
-            --gradient-primary: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
-            --primary: #667EEA;
-            --primary-dark: #764BA2;
-            --success: #50C1A3;
-            --info: #4F46E5;
-            --warning: #F59E0B;
-
-            /* 文字 */
-            --text-primary: #1F2937;
-            --text-secondary: #6B7280;
-            --text-muted: #9CA3AF;
-
-            /* 背景 */
-            --bg-primary: #FFFFFF;
-            --bg-secondary: #F9FAFB;
-            --bg-tertiary: #F3F4F6;
-
-            /* 阴影 */
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            /* 将旧变量名映射到新设计token */
+            --gradient-primary: var(--brand-gradient);
+            --primary: var(--brand-primary);
+            --primary-dark: var(--brand-primary-dark);
+            --success: var(--brand-success);
+            --info: var(--brand-info);
+            --warning: var(--brand-warning);
         }
 
         * { box-sizing: border-box; }

@@ -7,18 +7,22 @@
     <meta name="description" content="Answers to the most common MeetSpot questions: midpoint logic, structured data, SEO keywords, pricing, embedding, and monitoring.">
     <link rel="canonical" href="https://meetspot-irq2.onrender.com/faq">
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+
+    <!-- Design Token System -->
+    <link rel="stylesheet" href="/static/css/design-tokens.css">
+
     <style>
-        body { margin:0; font-family:"Inter",Arial,sans-serif; background:#f4f6fb; color:#121830; line-height:1.7; }
-        header { background:#121830; color:#fff; padding:40px 0; }
+        body { margin:0; font-family: var(--font-family-sans); background: var(--bg-secondary); color: var(--text-primary); line-height: var(--font-leading-relaxed); }
+        header { background: var(--text-primary); color: var(--text-inverse); padding:40px 0; }
         .container { max-width:960px; margin:0 auto; padding:0 24px; }
         nav { display:flex; justify-content:space-between; align-items:center; }
-        nav a { color:#e3e9ff; text-decoration:none; margin-left:16px; }
+        nav a { color: var(--bg-secondary); text-decoration:none; margin-left:16px; }
         h1 { font-size:2.4rem; }
-        section { background:#fff; border-radius:24px; padding:32px; margin-top:-40px; box-shadow:0 30px 60px rgba(12,15,33,0.12); }
-        .faq-item { border-bottom:1px solid #e5e8f5; padding:18px 0; }
+        section { background: var(--bg-primary); border-radius: var(--radius-2xl); padding:32px; margin-top:-40px; box-shadow: var(--shadow-xl); }
+        .faq-item { border-bottom:1px solid var(--border-default); padding:18px 0; }
         .faq-item:last-child { border-bottom:none; }
         .faq-item h3 { margin-bottom:8px; }
-        footer { text-align:center; padding:40px 0; color:#6b6f88; font-size:0.9rem; }
+        footer { text-align:center; padding:40px 0; color: var(--text-tertiary); font-size:0.9rem; }
         @media(max-width:640px){ nav{flex-direction:column; gap:12px;} }
     </style>
 </head>

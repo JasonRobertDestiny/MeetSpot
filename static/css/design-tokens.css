@@ -1,0 +1,181 @@
+/* ============================================
+ * MeetSpot Design Tokens
+ * 自动生成 - 请勿手动编辑
+ * 生成源: app/design_tokens.py
+ * ==========================================*/
+
+:root {
+    --brand-primary: #5563D4;
+    --brand-primary-dark: #764BA2;
+    --brand-primary-light: #6B7BE8;
+    --brand-gradient: linear-gradient(135deg, #5563D4 0%, #764BA2 100%);
+    --brand-success: #0C8A5D;
+    --brand-info: #2563EB;
+    --brand-warning: #CA7205;
+    --brand-error: #DC2626;
+    --text-primary: #111827;
+    --text-secondary: #4B5563;
+    --text-tertiary: #6B7280;
+    --text-muted: #6B7280;
+    --text-disabled: #9CA3AF;
+    --text-inverse: #FFFFFF;
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F9FAFB;
+    --bg-tertiary: #F3F4F6;
+    --bg-elevated: #FFFFFF;
+    --bg-overlay: rgba(0, 0, 0, 0.5);
+    --border-default: #E5E7EB;
+    --border-medium: #D1D5DB;
+    --border-strong: #9CA3AF;
+    --border-focus: #667EEA;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --spacing-0: 0;
+    --spacing-1: 4px;
+    --spacing-2: 8px;
+    --spacing-3: 12px;
+    --spacing-4: 16px;
+    --spacing-5: 20px;
+    --spacing-6: 24px;
+    --spacing-8: 32px;
+    --spacing-10: 40px;
+    --spacing-12: 48px;
+    --spacing-16: 64px;
+    --spacing-20: 80px;
+    --radius-none: 0;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+    --font-family-sans: "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    --font-family-mono: "SF Mono", "Consolas", "Monaco", monospace;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-leading-tight: 1.25;
+    --font-leading-normal: 1.5;
+    --font-leading-relaxed: 1.7;
+    --font-leading-loose: 2;
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+}
+
+/* Compatibility fallbacks for older browsers */
+.no-cssvar {
+    /* Fallback for browsers without CSS variable support */
+    color: #111827;
+    background-color: #FFFFFF;
+}
+
+
+/* ========== 交互动画系统 (Interaction Animations) ========== */
+
+/* Button动画 - 200ms ease-out过渡 */
+button, .btn, input[type="submit"], a.button {
+    transition: all 0.2s ease-out;
+}
+
+button:hover, .btn:hover, input[type="submit"]:hover, a.button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+button:active, .btn:active, input[type="submit"]:active, a.button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-md);
+}
+
+button:focus, .btn:focus, input[type="submit"]:focus, a.button:focus {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+}
+
+/* Loading Spinner动画 */
+.loading::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    border: 2px solid var(--brand-primary);
+    border-top-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Card悬停效果 - 微妙的缩放和阴影提升 */
+.card, .venue-card, .recommendation-card {
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.card:hover, .venue-card:hover, .recommendation-card:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-xl);
+}
+
+/* Fade-in渐显动画 - 400ms */
+.fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide-in滑入动画 */
+.slide-in {
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* WCAG 2.1无障碍支持 - 尊重用户的动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

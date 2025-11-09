@@ -1129,18 +1129,33 @@ class CafeRecommender(BaseTool):
         if hasattr(config, 'amap') and hasattr(config.amap, 'security_js_code') and config.amap.security_js_code:
             amap_security_js_code = config.amap.security_js_code
 
+        # 读取设计token CSS内容，用于自包含HTML
+        design_tokens_css = ""
+        try:
+            from pathlib import Path
+            tokens_css_path = Path("static/css/design-tokens.css")
+            if tokens_css_path.exists():
+                design_tokens_css = tokens_css_path.read_text(encoding='utf-8')
+        except Exception as e:
+            logger.warning(f"无法读取design-tokens.css: {e}")
+
         # Dynamically set CSS variables for theme colors
+        # 这里保留venue-specific颜色，与设计token并存
         dynamic_style = f"""
+        /* Design Tokens - Embedded for offline capability */
+        {design_tokens_css}
+
+        /* Venue-Specific Theme Overrides */
         :root {{
-            --primary: {cfg.get("theme_primary", "#9c6644")}; 
+            --primary: {cfg.get("theme_primary", "#9c6644")};
             --primary-light: {cfg.get("theme_primary_light", "#c68b59")};
             --primary-dark: {cfg.get("theme_primary_dark", "#7f5539")};
             --secondary: {cfg.get("theme_secondary", "#c9ada7")};
             --light: {cfg.get("theme_light", "#f2e9e4")};
             --dark: {cfg.get("theme_dark", "#22223b")};
-            --success: #4a934a; /* Success color can remain static or be themed */
-            --border-radius: 12px;
-            --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --success: var(--brand-success, #4a934a);
+            --border-radius: var(--radius-lg, 12px);
+            --box-shadow: var(--shadow-lg, 0 8px 30px rgba(0, 0, 0, 0.12));
             --transition: all 0.3s ease;
         }}"""
 
@@ -1167,7 +1182,7 @@ class CafeRecommender(BaseTool):
         {dynamic_style} /* Inject dynamic theme colors here */
 
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        body {{ font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; line-height: 1.6; background-color: var(--light); color: var(--dark); padding-bottom: 50px; }}
+        body {{ font-family: var(--font-family-sans, 'PingFang SC', 'Microsoft YaHei', sans-serif); line-height: var(--font-leading-normal, 1.6); background-color: var(--light); color: var(--dark); padding-bottom: 50px; }}
         .container {{ max-width: 1200px; margin: 0 auto; padding: 0 20px; }}
         header {{ background-color: var(--primary); color: white; padding: 60px 0 100px; text-align: center; position: relative; margin-bottom: 80px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); }}
         header::after {{ content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 60"><path fill="{cfg.get("theme_light", "#f2e9e4")}" fill-opacity="1" d="M0,32L80,42.7C160,53,320,75,480,64C640,53,800,11,960,5.3C1120,0,1280,32,1360,48L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path></svg>'); background-size: cover; background-position: center; }}

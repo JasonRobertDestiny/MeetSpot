@@ -177,6 +177,23 @@ app = FastAPI(
     version="1.0.0"
 )
 
+
+# ============================================================================
+# 应用启动事件 - 生成设计token CSS文件
+# ============================================================================
+@app.on_event("startup")
+async def startup_event():
+    """应用启动时生成设计token CSS文件"""
+    try:
+        from app.design_tokens import generate_design_tokens_css
+
+        generate_design_tokens_css()
+        logger.info("✅ Design tokens CSS generated successfully")
+    except Exception as e:
+        logger.error(f"❌ Failed to generate design tokens CSS: {e}")
+        # 不阻止应用启动,即使CSS生成失败
+
+
 # 配置CORS
 app.add_middleware(
     CORSMiddleware,
