@@ -226,6 +226,12 @@ This project is open source under the MIT License - see [LICENSE](LICENSE) file 
 - 🐛 Bug Reports: [GitHub Issues](https://github.com/JasonRobertDestiny/MeetSpot/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/JasonRobertDestiny/MeetSpot/discussions)
 
+### WeChat Group
+
+Join our WeChat group for discussions and updates:
+
+<img src="vx_chat.png" alt="WeChat Group QR Code" width="200"/>
+
 ## 🙏 Acknowledgments
 
 - [Amap](https://lbs.amap.com/) - Providing geocoding and POI search services

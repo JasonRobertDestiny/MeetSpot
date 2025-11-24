@@ -278,6 +278,12 @@ curl http://127.0.0.1:8000/health
 - 🐛 问题反馈：[GitHub Issues](https://github.com/JasonRobertDestiny/MeetSpot/issues)
 - 💬 讨论：[GitHub Discussions](https://github.com/JasonRobertDestiny/MeetSpot/discussions)
 
+### 微信交流群
+
+扫描二维码加入微信交流群，获取最新动态和技术讨论：
+
+<img src="vx_chat.png" alt="微信群二维码" width="200"/>
+
 ## 🙏 致谢
 
 - [高德地图](https://lbs.amap.com/) - 提供地理编码和 POI 搜索服务
