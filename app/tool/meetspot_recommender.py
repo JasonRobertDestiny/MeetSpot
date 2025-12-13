@@ -1155,24 +1155,34 @@ class CafeRecommender(BaseTool):
         except Exception as e:
             logger.warning(f"无法读取design-tokens.css: {e}")
 
-        # Dynamically set CSS variables for theme colors
-        # 这里保留venue-specific颜色，与设计token并存
+        # Dynamically set CSS variables using MeetSpot brand colors
+        # 使用品牌色系统而非场所特定配色，确保一致性
         dynamic_style = f"""
         /* Design Tokens - Embedded for offline capability */
         {design_tokens_css}
 
-        /* Venue-Specific Theme Overrides */
+        /* MeetSpot Brand Color System - 深海蓝+日落橙主题 */
         :root {{
-            --primary: {cfg.get("theme_primary", "#9c6644")};
-            --primary-light: {cfg.get("theme_primary_light", "#c68b59")};
-            --primary-dark: {cfg.get("theme_primary_dark", "#7f5539")};
-            --secondary: {cfg.get("theme_secondary", "#c9ada7")};
-            --light: {cfg.get("theme_light", "#f2e9e4")};
-            --dark: {cfg.get("theme_dark", "#22223b")};
-            --success: var(--brand-success, #4a934a);
+            /* 主色：深海蓝系 - 沉稳、可信赖 */
+            --primary: var(--brand-primary, #0A4D68);
+            --primary-light: var(--brand-primary-light, #088395);
+            --primary-dark: var(--brand-primary-dark, #05445E);
+            /* 强调色：日落橙 - 温暖、活力 */
+            --accent: var(--brand-accent, #FF6B35);
+            --accent-light: var(--brand-accent-light, #FF8C61);
+            /* 次要色：薄荷绿 - 清新、平衡 */
+            --secondary: var(--brand-secondary, #06D6A0);
+            /* 中性色 */
+            --light: var(--neutral-50, #F8FAFC);
+            --dark: var(--neutral-900, #0F172A);
+            /* 功能色 */
+            --success: var(--brand-success, #0C8A5D);
             --border-radius: var(--radius-lg, 12px);
             --box-shadow: var(--shadow-lg, 0 8px 30px rgba(0, 0, 0, 0.12));
             --transition: all 0.3s ease;
+
+            /* 场所特定装饰色（保留图标色，但不影响主色调） */
+            --venue-icon-bg: {cfg.get("theme_primary", "#0A4D68")};
         }}"""
 
         html_content = f"""<!DOCTYPE html>
@@ -1192,6 +1202,12 @@ class CafeRecommender(BaseTool):
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{meta_title}">
     <meta name="twitter:description" content="{meta_description}">
+
+    <!-- MeetSpot 品牌字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.9/css/boxicons.min.css">
 
     <!-- Modern UI Components -->
@@ -1202,7 +1218,8 @@ class CafeRecommender(BaseTool):
         {dynamic_style} /* Inject dynamic theme colors here */
 
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        body {{ font-family: var(--font-family-sans, 'PingFang SC', 'Microsoft YaHei', sans-serif); line-height: var(--font-leading-normal, 1.6); background-color: var(--light); color: var(--dark); padding-bottom: 50px; }}
+        body {{ font-family: var(--font-family-sans, 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif); line-height: var(--font-leading-normal, 1.6); background-color: var(--light); color: var(--dark); padding-bottom: 50px; }}
+        h1, h2, h3, h4, h5, h6 {{ font-family: var(--font-family-heading, 'Poppins', 'PingFang SC', sans-serif); }}
         .container {{ max-width: 1200px; margin: 0 auto; padding: 0 20px; }}
         header {{ background-color: var(--primary); color: white; padding: 60px 0 100px; text-align: center; position: relative; margin-bottom: 80px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); }}
         header::after {{ content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 60"><path fill="{cfg.get("theme_light", "#f2e9e4")}" fill-opacity="1" d="M0,32L80,42.7C160,53,320,75,480,64C640,53,800,11,960,5.3C1120,0,1280,32,1360,48L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path></svg>'); background-size: cover; background-position: center; }}
@@ -1223,9 +1240,9 @@ class CafeRecommender(BaseTool):
         .map-legend {{ position: absolute; bottom: 15px; left: 15px; background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); z-index: 100; }}
         .legend-item {{ display: flex; align-items: center; margin-bottom: 8px; }}
         .legend-color {{ width: 20px; height: 20px; margin-right: 10px; border-radius: 50%; }}
-        .legend-center {{ background-color: #2ecc71; }} 
-        .legend-location {{ background-color: #3498db; }} 
-        .legend-place {{ background-color: #e74c3c; }} 
+        .legend-center {{ background-color: var(--brand-secondary, #06D6A0); }}  /* 薄荷绿 - 中心点 */
+        .legend-location {{ background-color: var(--brand-primary, #0A4D68); }}  /* 深海蓝 - 参与地点 */
+        .legend-place {{ background-color: var(--brand-accent, #FF6B35); }}  /* 日落橙 - 推荐场所 */ 
         .location-table {{ width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); }}
         .location-table th, .location-table td {{ padding: 15px; text-align: left; border-bottom: 1px solid #eee; }}
         .location-table th {{ background-color: var(--primary-light); color: white; font-weight: 600; }}
@@ -1274,15 +1291,15 @@ class CafeRecommender(BaseTool):
         .step-title {{ font-size: 1.3rem; color: var(--primary-dark); margin-bottom: 10px; }}
         .step-details {{ background-color: white; border-radius: 10px; padding: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); }}
         .code-block {{ background-color: #2c3e50; color: #e6e6e6; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.9rem; margin: 15px 0; white-space: pre; overflow-x: auto; }}
-        .highlight-text {{ background-color: rgba(46, 204, 113, 0.2); color: #2c3e50; padding: 3px 6px; border-radius: 4px; font-weight: bold; }}
+        .highlight-text {{ background-color: rgba(6, 214, 160, 0.2); color: var(--brand-primary-dark, #05445E); padding: 3px 6px; border-radius: 4px; font-weight: bold; }}  /* 薄荷绿高亮 */
         .search-animation {{ height: 200px; position: relative; display: flex; align-items: center; justify-content: center; margin: 20px 0; }}
-        .radar-circle {{ position: absolute; width: 50px; height: 50px; border-radius: 50%; background-color: rgba(52, 152, 219, 0.1); animation: radar 3s infinite; }}
+        .radar-circle {{ position: absolute; width: 50px; height: 50px; border-radius: 50%; background-color: rgba(10, 77, 104, 0.1); animation: radar 3s infinite; }}  /* 深海蓝脉冲 */
         .radar-circle:nth-child(1) {{ animation-delay: 0s; }} .radar-circle:nth-child(2) {{ animation-delay: 1s; }} .radar-circle:nth-child(3) {{ animation-delay: 2s; }}
-        .center-point {{ width: 15px; height: 15px; border-radius: 50%; background-color: #e74c3c; z-index: 2; box-shadow: 0 0 0 5px rgba(231, 76, 60, 0.3); }}
+        .center-point {{ width: 15px; height: 15px; border-radius: 50%; background-color: var(--brand-accent, #FF6B35); z-index: 2; box-shadow: 0 0 0 5px rgba(255, 107, 53, 0.3); }}  /* 日落橙中心点 */
         .map-operation-animation {{ height: 200px; position: relative; border-radius: 8px; overflow: hidden; background-color: #f5f5f5; margin: 20px 0; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }}
         .map-bg {{ position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f0f0f0"/><path d="M0,0 L100,0 L100,100 L0,100 Z" fill="none" stroke="%23ccc" stroke-width="0.5"/><path d="M50,0 L50,100 M0,50 L100,50" stroke="%23ccc" stroke-width="0.5"/></svg>'); background-size: 50px 50px; opacity: 0.7; }}
-        .map-cursor {{ position: absolute; width: 20px; height: 20px; background-color: rgba(231, 76, 60, 0.7); border-radius: 50%; top: 50%; left: 30%; transform: translate(-50%, -50%); animation: mapCursor 4s infinite ease-in-out; z-index: 2; }}
-        .map-search-indicator {{ position: absolute; width: 80px; height: 80px; border: 2px dashed rgba(52, 152, 219, 0.6); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); animation: mapSearch 3s infinite ease-in-out; z-index: 1; }}
+        .map-cursor {{ position: absolute; width: 20px; height: 20px; background-color: rgba(255, 107, 53, 0.7); border-radius: 50%; top: 50%; left: 30%; transform: translate(-50%, -50%); animation: mapCursor 4s infinite ease-in-out; z-index: 2; }}  /* 日落橙光标 */
+        .map-search-indicator {{ position: absolute; width: 80px; height: 80px; border: 2px dashed rgba(10, 77, 104, 0.6); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); animation: mapSearch 3s infinite ease-in-out; z-index: 1; }}  /* 深海蓝搜索圈 */
         @keyframes mapCursor {{ 0% {{ left: 30%; top: 30%; }} 30% {{ left: 60%; top: 40%; }} 60% {{ left: 40%; top: 70%; }} 100% {{ left: 30%; top: 30%; }} }}
         @keyframes mapSearch {{ 0% {{ width: 30px; height: 30px; opacity: 1; }} 100% {{ width: 150px; height: 150px; opacity: 0; }} }}
         @keyframes radar {{ 0% {{ width: 40px; height: 40px; opacity: 1; }} 100% {{ width: 300px; height: 300px; opacity: 0; }} }}
