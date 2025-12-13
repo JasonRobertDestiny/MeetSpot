@@ -133,6 +133,9 @@
     <!-- Design Token System -->
     <link rel="stylesheet" href="/static/css/design-tokens.css">
 
+    <!-- Modern UI Components -->
+    <link rel="stylesheet" href="/css/components.css">
+
     <style>
         :root {
             /* 向后兼容别名 - 映射到设计token */
@@ -190,6 +193,7 @@
             gap: 16px;
             flex-wrap: wrap;
         }
+        /* Modern buttons are now in components.css */
         .btn {
             padding: 12px 24px;
             border-radius: 999px;
@@ -197,16 +201,11 @@
             border: none;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .btn-primary {
-            background: var(--bg-primary);
-            color: var(--primary);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-        }
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-inverse);
-            border: 1px solid rgba(255,255,255,0.6);
+            min-height: 48px; /* 移动端触摸目标 */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .stats {
             display: grid;
@@ -222,8 +221,18 @@
         }
         .stat-card h3 { margin: 0; font-size: 2rem; }
         main { max-width: 1100px; margin: -40px auto 80px; padding: 0 24px; }
-        section { background: var(--bg-primary); border-radius: var(--radius-2xl); padding: 32px; margin-top: 32px; box-shadow: var(--shadow-lg); }
-        section h2 { margin-top: 0; font-size: 2rem; }
+        section {
+            padding: 32px;
+            margin-top: 32px;
+        }
+        section h2 {
+            margin-top: 0;
+            font-size: 2rem;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
         .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
         .feature-card { padding: 20px; border: 1px solid var(--border-default); border-radius: var(--radius-xl); }
         .feature-card h3 { margin-top: 0; }
@@ -257,8 +266,14 @@
                 <h1>Find the fairest meeting location midpoint for every group.</h1>
                 <p>MeetSpot blends precise midpoint routing, AMap data, and venue intelligence so your team, family, or community meetup lands at the most convenient location. No spreadsheets, no guesswork—just actionable recommendations with structured data that search engines can understand.</p>
                 <div class="cta-buttons">
-                    <a class="btn btn-primary" href="/how-it-works">See how it works</a>
-                    <a class="btn btn-secondary" href="/faq">Explore FAQs</a>
+                    <a class="btn btn-modern btn-primary-modern" href="/how-it-works">
+                        <i class='bx bx-compass'></i>
+                        See how it works
+                    </a>
+                    <a class="btn btn-modern btn-secondary-modern" href="/faq">
+                        <i class='bx bx-help-circle'></i>
+                        Explore FAQs
+                    </a>
                 </div>
                 <div class="stats">
                     <div class="stat-card">
@@ -282,7 +297,7 @@
     </header>
 
     <main>
-        <section id="features">
+        <section id="features" class="glass-card">
             <h2>Why teams choose MeetSpot</h2>
             <div class="grid-2">
                 <div class="feature-card">
@@ -306,7 +321,7 @@
             </div>
         </section>
 
-        <section id="how-it-works">
+        <section id="how-it-works" class="glass-card">
             <h2>How it works</h2>
             <div class="grid-2">
                 <div>
@@ -325,7 +340,7 @@
             </div>
         </section>
 
-        <section id="use-cases">
+        <section id="use-cases" class="glass-card">
             <h2>Use cases & playbooks</h2>
             <div class="grid-2">
                 <div class="feature-card">
@@ -347,7 +362,7 @@
             </div>
         </section>
 
-        <section>
+        <section class="glass-card">
             <h2>Testimonials & proof</h2>
             <div class="testimonials">
                 <div class="testimonial">
@@ -365,7 +380,7 @@
             </div>
         </section>
 
-        <section id="faq">
+        <section id="faq" class="glass-card">
             <h2>Quick FAQ</h2>
             <div class="grid-2">
                 <div>
@@ -384,12 +399,18 @@
             <p>Need more answers? Visit the full <a href="/faq">FAQ library</a>.</p>
         </section>
 
-        <section>
+        <section class="glass-card">
             <h2>Ready to optimize every meetup?</h2>
             <p>Whether you are planning a hybrid all-hands, an alumni dinner, or a weekly founder sync, MeetSpot keeps every invite fair and easy to share. Kick off with the step-by-step checklist on the <a href="/how-it-works">How it Works</a> page or learn more <a href="/about">about the team</a>.</p>
             <div class="cta-buttons">
-                <a class="btn btn-primary" href="/docs">Open API docs</a>
-                <a class="btn btn-secondary" href="/recommend">Try the recommender</a>
+                <a class="btn btn-modern btn-primary-modern" href="/docs">
+                    <i class='bx bx-book-open'></i>
+                    Open API docs
+                </a>
+                <a class="btn btn-modern btn-secondary-modern" href="/recommend">
+                    <i class='bx bx-search-alt'></i>
+                    Try the recommender
+                </a>
             </div>
         </section>
     </main>
@@ -401,5 +422,8 @@
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
     </script>
+
+    <!-- Modern Toast Notification System -->
+    <script src="/js/toast.js"></script>
 </body>
 </html>

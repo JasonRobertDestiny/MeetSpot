@@ -1177,6 +1177,10 @@ class CafeRecommender(BaseTool):
     <meta name="twitter:title" content="{meta_title}">
     <meta name="twitter:description" content="{meta_description}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.9/css/boxicons.min.css">
+
+    <!-- Modern UI Components -->
+    <link rel="stylesheet" href="/css/components.css">
+
     {schema_script}
     <style>
         {dynamic_style} /* Inject dynamic theme colors here */
@@ -1445,6 +1449,9 @@ class CafeRecommender(BaseTool):
             }}
         }}
     </script>
+
+    <!-- Modern Toast Notification System -->
+    <script src="/js/toast.js"></script>
 </body>
 </html>"""
         return html_content
