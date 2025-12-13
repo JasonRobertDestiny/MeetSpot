@@ -17,13 +17,14 @@ from pydantic import BaseModel
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 # WhiteNoise将通过StaticFiles中间件集成，不需要ASGI↔WSGI转换
-from api.routers import seo_pages
+from api.routers import auth, seo_pages
 
 # 导入应用模块
 try:
     from app.config import config
     from app.tool.meetspot_recommender import CafeRecommender
     from app.logger import logger
+    from app.db.database import init_db
     print("✅ 成功导入所有必要模块")
     config_available = True
 except ImportError as e:
@@ -194,6 +195,17 @@ async def startup_event():
         # 不阻止应用启动,即使CSS生成失败
 
 
+@app.on_event("startup")
+async def startup_database():
+    """确保MVP所需的数据库表已创建。"""
+    try:
+        await init_db()
+        logger.info("✅ Database initialized")
+    except Exception as e:
+        logger.error(f"❌ Database init failed: {e}")
+        raise
+
+
 # 配置CORS
 app.add_middleware(
     CORSMiddleware,
@@ -240,6 +252,7 @@ except Exception as e:
     print(f"⚠️ 静态文件挂载失败: {e}")
     # 在Vercel环境下，静态文件挂载可能失败，这是正常的
 
+app.include_router(auth.router)
 app.include_router(seo_pages.router)
 
 @app.get("/health")
