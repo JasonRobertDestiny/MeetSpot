@@ -1123,6 +1123,22 @@ class CafeRecommender(BaseTool):
                     </div>
                 </div>
             </div>'''
+
+        # 空状态设计：如果没有找到推荐结果
+        if not places:
+            place_cards_html = f'''
+            <div class="empty-state">
+                <i class='bx bx-coffee empty-state-icon'></i>
+                <h3 class="empty-state-title">暂无推荐{cfg["noun_plural"]}</h3>
+                <p class="empty-state-description">
+                    很抱歉，在您指定的区域内未能找到符合条件的{cfg["noun_plural"]}。<br>
+                    建议扩大搜索范围或调整搜索关键词。
+                </p>
+                <a href="/workspace/meetspot_finder.html" class="btn-modern btn-primary-modern">
+                    <i class='bx bx-redo'></i>重新搜索
+                </a>
+            </div>'''
+
         markers_json = json.dumps(all_markers)
 
         amap_security_js_code = ""
@@ -1288,7 +1304,7 @@ class CafeRecommender(BaseTool):
     </header>
 
     <div class="container main-content">
-        <div class="card">
+        <div class="card glass-card">
             <h2 class="section-title"><i class='bx bx-info-circle'></i>推荐摘要</h2>
             <div class="summary-card">
                 <div class="summary-item">
@@ -1306,14 +1322,14 @@ class CafeRecommender(BaseTool):
             </div>
         </div>
         {search_process_html}
-        <div class="card">
+        <div class="card glass-card">
             <h2 class="section-title"><i class='bx bx-map-pin'></i>地点信息</h2>
             <table class="location-table">
                 <thead><tr><th>序号</th><th>地点名称</th><th>详细地址</th></tr></thead>
                 <tbody>{location_rows_html}</tbody>
             </table>
         </div>
-        <div class="card">
+        <div class="card glass-card">
             <h2 class="section-title"><i class='bx bx-map-alt'></i>地图展示</h2>
             <div class="map-container">
                 <div id="map"></div>
@@ -1324,13 +1340,13 @@ class CafeRecommender(BaseTool):
                 </div>
             </div>
         </div>
-        <div class="card">
+        <div class="card glass-card">
             <h2 class="section-title"><i class='bx {cfg["icon_section"]}'></i>推荐{cfg["noun_plural"]}</h2>
             <div class="cafe-grid">
                 {place_cards_html}
             </div>
         </div>
-        <div class="card">
+        <div class="card glass-card">
             <h2 class="section-title"><i class='bx bx-car'></i>交通与停车建议</h2>
             <div class="transportation-info">
                 <div class="transport-card">
@@ -1348,7 +1364,7 @@ class CafeRecommender(BaseTool):
                     </ul>
                 </div>
             </div>
-            <a href="/workspace/meetspot_finder.html" class="back-button"> 
+            <a href="/workspace/meetspot_finder.html" class="btn-modern btn-primary-modern">
                 <i class='bx bx-left-arrow-alt'></i>返回首页
             </a>
         </div>
@@ -1571,7 +1587,7 @@ class CafeRecommender(BaseTool):
         });
         </script>"""
         return f"""
-        <div class="card search-process-card">
+        <div class="card glass-card search-process-card">
             <h2 class="section-title"><i class='bx bx-bot'></i>AI 搜索过程</h2>
             <div class="search-process">{search_process_html}</div>
             {search_process_javascript}

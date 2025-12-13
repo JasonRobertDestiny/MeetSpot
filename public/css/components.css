@@ -1,0 +1,500 @@
+/**
+ * MeetSpot Modern UI Components Library
+ * 基于 design_tokens.py 的现代化组件系统
+ *
+ * 特性:
+ * - Glassmorphism (毛玻璃效果)
+ * - 微交互动画
+ * - Toast 通知系统
+ * - 骨架屏加载
+ * - WCAG AA 可访问性
+ */
+
+/* ============================================
+ * Toast 通知系统
+ * ============================================ */
+.toast-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: var(--z-tooltip, 1070);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 400px;
+}
+
+.toast {
+    background: var(--bg-elevated, #FFFFFF);
+    border-radius: var(--radius-xl, 16px);
+    padding: 16px 20px;
+    box-shadow: var(--shadow-2xl, 0 25px 50px -12px rgba(0, 0, 0, 0.25));
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    border-left: 4px solid;
+    animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.toast::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: currentColor;
+    animation: toastProgress 5s linear forwards;
+}
+
+.toast.toast-success {
+    border-left-color: var(--brand-success, #0C8A5D);
+}
+
+.toast.toast-error {
+    border-left-color: var(--brand-error, #DC2626);
+}
+
+.toast.toast-info {
+    border-left-color: var(--brand-info, #2563EB);
+}
+
+.toast.toast-warning {
+    border-left-color: var(--brand-warning, #CA7205);
+}
+
+.toast-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.toast-success .toast-icon { color: var(--brand-success, #0C8A5D); }
+.toast-error .toast-icon { color: var(--brand-error, #DC2626); }
+.toast-info .toast-icon { color: var(--brand-info, #2563EB); }
+.toast-warning .toast-icon { color: --brand-warning, #CA7205); }
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--text-primary, #111827);
+    margin-bottom: 4px;
+    font-size: var(--font-size-base, 1rem);
+}
+
+.toast-message {
+    font-size: var(--font-size-sm, 0.875rem);
+    color: var(--text-secondary, #4B5563);
+    line-height: var(--font-leading-normal, 1.5);
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: var(--text-tertiary, #6B7280);
+    cursor: pointer;
+    padding: 4px;
+    font-size: 20px;
+    line-height: 1;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.toast-close:hover {
+    color: var(--text-primary, #111827);
+    transform: rotate(90deg);
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes toastProgress {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+/* ============================================
+ * 骨架屏加载组件
+ * ============================================ */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--bg-tertiary, #F3F4F6) 25%,
+        var(--bg-secondary, #F9FAFB) 50%,
+        var(--bg-tertiary, #F3F4F6) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-md, 8px);
+}
+
+.skeleton-text {
+    height: 16px;
+    margin-bottom: 8px;
+}
+
+.skeleton-text:last-child {
+    width: 60%;
+}
+
+.skeleton-title {
+    height: 28px;
+    width: 50%;
+    margin-bottom: 16px;
+}
+
+.skeleton-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full, 9999px);
+}
+
+.skeleton-card {
+    padding: 24px;
+    background: var(--bg-elevated, #FFFFFF);
+    border-radius: var(--radius-xl, 16px);
+    box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* ============================================
+ * Glassmorphism 卡片
+ * ============================================ */
+.glass-card {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-2xl, 24px);
+    box-shadow:
+        0 8px 32px 0 rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 16px 48px 0 rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+.glass-card-dark {
+    background: rgba(17, 24, 39, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-inverse, #FFFFFF);
+}
+
+/* ============================================
+ * 现代化按钮系统
+ * ============================================ */
+.btn-modern {
+    position: relative;
+    padding: 14px 28px;
+    font-size: var(--font-size-base, 1rem);
+    font-weight: var(--font-weight-semibold, 600);
+    border-radius: var(--radius-xl, 16px);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    min-height: 48px; /* 移动端触摸目标 */
+}
+
+.btn-modern::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-modern:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-modern:active {
+    transform: scale(0.98);
+}
+
+.btn-modern:focus-visible {
+    outline: 2px solid var(--brand-primary, #5563D4);
+    outline-offset: 4px;
+}
+
+.btn-primary-modern {
+    background: var(--brand-gradient, linear-gradient(135deg, #5563D4 0%, #764BA2 100%));
+    color: var(--text-inverse, #FFFFFF);
+    box-shadow:
+        0 4px 14px 0 rgba(85, 99, 212, 0.4),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary-modern:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 20px 0 rgba(85, 99, 212, 0.5),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary-modern {
+    background: var(--bg-elevated, #FFFFFF);
+    color: var(--brand-primary, #5563D4);
+    border: 2px solid var(--brand-primary, #5563D4);
+    box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+}
+
+.btn-secondary-modern:hover {
+    background: var(--brand-primary, #5563D4);
+    color: var(--text-inverse, #FFFFFF);
+}
+
+/* ============================================
+ * 输入框增强
+ * ============================================ */
+.input-modern {
+    width: 100%;
+    padding: 14px 16px 14px 48px;
+    font-size: var(--font-size-base, 1rem);
+    border: 2px solid var(--border-default, #E5E7EB);
+    border-radius: var(--radius-xl, 16px);
+    background: var(--bg-elevated, #FFFFFF);
+    transition: all 0.3s ease;
+    min-height: 48px; /* 移动端触摸目标 */
+}
+
+.input-modern:hover {
+    border-color: var(--border-medium, #D1D5DB);
+}
+
+.input-modern:focus {
+    outline: none;
+    border-color: var(--brand-primary, #5563D4);
+    box-shadow: 0 0 0 4px rgba(85, 99, 212, 0.1);
+    transform: translateY(-1px);
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--brand-primary, #5563D4);
+    font-size: 20px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.input-modern:focus ~ .input-icon {
+    color: var(--brand-primary-dark, #764BA2);
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* ============================================
+ * 进度指示器
+ * ============================================ */
+.progress-steps {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 32px 0;
+    padding: 0 24px;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    position: relative;
+}
+
+.progress-step::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: var(--border-default, #E5E7EB);
+    z-index: -1;
+}
+
+.progress-step:last-child::after {
+    display: none;
+}
+
+.progress-step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full, 9999px);
+    background: var(--bg-secondary, #F9FAFB);
+    border: 2px solid var(--border-default, #E5E7EB);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--text-tertiary, #6B7280);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    background: var(--bg-elevated, #FFFFFF);
+}
+
+.progress-step.active .progress-step-circle {
+    background: var(--brand-gradient, linear-gradient(135deg, #5563D4 0%, #764BA2 100%));
+    border-color: var(--brand-primary, #5563D4);
+    color: var(--text-inverse, #FFFFFF);
+    box-shadow: 0 0 0 4px rgba(85, 99, 212, 0.2);
+}
+
+.progress-step.completed .progress-step-circle {
+    background: var(--brand-success, #0C8A5D);
+    border-color: var(--brand-success, #0C8A5D);
+    color: var(--text-inverse, #FFFFFF);
+}
+
+.progress-step.completed::after {
+    background: var(--brand-success, #0C8A5D);
+}
+
+.progress-step-label {
+    font-size: var(--font-size-sm, 0.875rem);
+    color: var(--text-secondary, #4B5563);
+    text-align: center;
+}
+
+.progress-step.active .progress-step-label {
+    color: var(--brand-primary, #5563D4);
+    font-weight: var(--font-weight-semibold, 600);
+}
+
+/* ============================================
+ * 空状态设计
+ * ============================================ */
+.empty-state {
+    text-align: center;
+    padding: 64px 24px;
+}
+
+.empty-state-icon {
+    font-size: 80px;
+    color: var(--text-tertiary, #6B7280);
+    margin-bottom: 24px;
+    opacity: 0.6;
+}
+
+.empty-state-title {
+    font-size: var(--font-size-2xl, 1.5rem);
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--text-primary, #111827);
+    margin-bottom: 12px;
+}
+
+.empty-state-description {
+    font-size: var(--font-size-base, 1rem);
+    color: var(--text-secondary, #4B5563);
+    margin-bottom: 32px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ============================================
+ * 移动端优化
+ * ============================================ */
+@media (max-width: 768px) {
+    .toast-container {
+        right: 16px;
+        left: 16px;
+        max-width: none;
+    }
+
+    .toast {
+        padding: 14px 16px;
+    }
+
+    .glass-card {
+        border-radius: var(--radius-xl, 16px);
+    }
+
+    .progress-steps {
+        padding: 0 8px;
+    }
+
+    .progress-step-label {
+        font-size: var(--font-size-xs, 0.75rem);
+    }
+}
+
+/* ============================================
+ * 可访问性增强
+ * ============================================ */
+@media (prefers-reduced-motion: reduce) {
+    .toast,
+    .skeleton,
+    .btn-modern::before,
+    .glass-card,
+    .input-modern,
+    .progress-step-circle {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* 键盘导航焦点环 */
+*:focus-visible {
+    outline: 2px solid var(--brand-primary, #5563D4);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm, 4px);
+}
+
+/* 跳转到主内容链接 */
+.skip-to-content {
+    position: absolute;
+    left: -9999px;
+    z-index: 999;
+    padding: 12px 24px;
+    background: var(--brand-primary, #5563D4);
+    color: var(--text-inverse, #FFFFFF);
+    text-decoration: none;
+    border-radius: var(--radius-md, 8px);
+}
+
+.skip-to-content:focus {
+    left: 16px;
+    top: 16px;
+}
