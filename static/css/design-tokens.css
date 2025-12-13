@@ -5,10 +5,13 @@
  * ==========================================*/
 
 :root {
-    --brand-primary: #5563D4;
-    --brand-primary-dark: #764BA2;
-    --brand-primary-light: #6B7BE8;
-    --brand-gradient: linear-gradient(135deg, #5563D4 0%, #764BA2 100%);
+    --brand-primary: #0A4D68;
+    --brand-primary-dark: #05445E;
+    --brand-primary-light: #088395;
+    --brand-gradient: linear-gradient(135deg, #05445E 0%, #0A4D68 50%, #088395 100%);
+    --brand-accent: #FF6B35;
+    --brand-accent-light: #FF8C61;
+    --brand-secondary: #06D6A0;
     --brand-success: #0C8A5D;
     --brand-info: #2563EB;
     --brand-warning: #CA7205;
@@ -52,8 +55,9 @@
     --radius-xl: 16px;
     --radius-2xl: 24px;
     --radius-full: 9999px;
-    --font-family-sans: "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-    --font-family-mono: "SF Mono", "Consolas", "Monaco", monospace;
+    --font-family-heading: "Poppins", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-family-sans: "Nunito", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-family-mono: "JetBrains Mono", "Fira Code", "SF Mono", "Consolas", "Monaco", monospace;
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
     --font-size-base: 1rem;

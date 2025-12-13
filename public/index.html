@@ -130,6 +130,11 @@
     <link rel="dns-prefetch" href="https://unpkg.com">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
+    <!-- MeetSpot 品牌字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+
     <!-- Design Token System -->
     <link rel="stylesheet" href="/static/css/design-tokens.css">
 
@@ -149,12 +154,68 @@
         * { box-sizing: border-box; }
         body {
             margin: 0;
-            font-family: "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-            background: var(--gray-100);
-            color: var(--gray-700);
-            line-height: 1.7;
+            font-family: var(--font-family-sans);
+            background: var(--brand-primary-dark);
+            color: var(--text-primary);
+            line-height: var(--font-leading-relaxed);
+            position: relative;
+        }
+
+        /* 路线图案背景 - 地图主题 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                /* 虚线网格 */
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 20px,
+                    rgba(255,255,255,0.02) 20px,
+                    rgba(255,255,255,0.02) 22px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 20px,
+                    rgba(255,255,255,0.02) 20px,
+                    rgba(255,255,255,0.02) 22px
+                ),
+                /* 地标光晕 */
+                radial-gradient(
+                    circle at 25% 25%,
+                    rgba(255,107,53,0.08) 0%,
+                    transparent 25%
+                ),
+                radial-gradient(
+                    circle at 75% 75%,
+                    rgba(6,214,160,0.08) 0%,
+                    transparent 25%
+                );
+            z-index: 0;
+            pointer-events: none;
+            animation: mapFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes mapFloat {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-15px, -15px); }
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family-heading);
         }
         a { color: var(--primary); text-decoration: none; }
+
+        /* 确保内容在背景图案之上 */
+        header, main, footer {
+            position: relative;
+            z-index: 1;
+        }
+
         header {
             background: var(--brand-gradient);
             color: white;
@@ -185,6 +246,43 @@
         .hero h1 {
             font-size: 2.7rem;
             margin-bottom: 20px;
+            /* 地图展开动画 - 避免 AI 审美陷阱 */
+            background: linear-gradient(
+                90deg,
+                var(--brand-primary-dark) 0%,
+                var(--brand-primary) 40%,
+                var(--brand-accent) 100%
+            );
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: mapReveal 2s ease-out forwards;
+        }
+
+        @keyframes mapReveal {
+            from {
+                background-position: -100% center;
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                background-position: 0% center;
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 支持减少动画偏好 */
+        @media (prefers-reduced-motion: reduce) {
+            .hero h1 {
+                animation: fadeIn 0.5s ease-out forwards;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
         }
         .hero p { font-size: 1.1rem; opacity: 0.95; }
         .cta-buttons {

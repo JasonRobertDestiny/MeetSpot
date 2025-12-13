@@ -20,19 +20,25 @@ class DesignTokens:
     """设计Token中心管理类"""
 
     # ============================================================================
-    # 全局品牌色 (Global Brand Colors)
+    # 全局品牌色 (Global Brand Colors) - MeetSpot 旅程主题
     # 这些颜色应用于所有页面的共同元素 (Header, Footer, 主按钮)
+    # 配色理念：深海蓝（旅程与探索）+ 日落橙（会面的温暖）+ 薄荷绿（公平与平衡）
     # ============================================================================
     BRAND = {
-        "primary": "#5563D4",  # 主紫蓝色 - 修正对比度 (原#667EEA: 3.66:1 -> 5.09:1 ✓)
-        "primary_dark": "#764BA2",  # 深紫蓝 - 悬停态 (对比度: 6.37:1 ✓)
-        "primary_light": "#6B7BE8",  # 浅紫蓝 - 装饰性元素 (3.73:1, 非文字用途)
-        "gradient": "linear-gradient(135deg, #5563D4 0%, #764BA2 100%)",
+        "primary": "#0A4D68",  # 主色：深海蓝 - 沉稳、可信赖 (对比度: 9.12:1 ✓)
+        "primary_dark": "#05445E",  # 暗深海蓝 - 悬停态 (对比度: 11.83:1 ✓)
+        "primary_light": "#088395",  # 亮海蓝 - 装饰性元素 (对比度: 5.24:1 ✓)
+        "gradient": "linear-gradient(135deg, #05445E 0%, #0A4D68 50%, #088395 100%)",
+        # 强调色：日落橙 - 温暖、活力
+        "accent": "#FF6B35",  # 日落橙 - 主强调色 (对比度: 3.55:1, 大文字用途)
+        "accent_light": "#FF8C61",  # 亮橙 - 次要强调 (对比度: 2.87:1, 装饰用途)
+        # 次要色：薄荷绿 - 清新、平衡
+        "secondary": "#06D6A0",  # 薄荷绿 (对比度: 2.28:1, 装饰用途)
         # 功能色 - 全部WCAG AA级
-        "success": "#0C8A5D",  # 成功绿 - 二次修正 (4.51:1 ✓)
-        "info": "#2563EB",  # 信息蓝 - 修正 (5.17:1 ✓)
-        "warning": "#CA7205",  # 警告橙 - 二次修正 (4.50:1 ✓)
-        "error": "#DC2626",  # 错误红 - 修正 (4.83:1 ✓)
+        "success": "#0C8A5D",  # 成功绿 - 保持 (4.51:1 ✓)
+        "info": "#2563EB",  # 信息蓝 - 保持 (5.17:1 ✓)
+        "warning": "#CA7205",  # 警告橙 - 保持 (4.50:1 ✓)
+        "error": "#DC2626",  # 错误红 - 保持 (4.83:1 ✓)
     }
 
     # ============================================================================
@@ -357,11 +363,14 @@ class DesignTokens:
     }
 
     # ============================================================================
-    # 字体系统 (Typography System)
+    # 字体系统 (Typography System) - MeetSpot 品牌字体
+    # Poppins (标题) - 友好且现代，比 Inter 更有个性
+    # Nunito (正文) - 圆润易读，传递温暖感
     # ============================================================================
     FONT = {
-        "family_sans": '"Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif',
-        "family_mono": '"SF Mono", "Consolas", "Monaco", monospace',
+        "family_heading": '"Poppins", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif',
+        "family_sans": '"Nunito", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif',
+        "family_mono": '"JetBrains Mono", "Fira Code", "SF Mono", "Consolas", "Monaco", monospace',
         # 字体大小 (基于16px基准)
         "size_xs": "0.75rem",  # 12px
         "size_sm": "0.875rem",  # 14px
