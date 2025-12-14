@@ -32,6 +32,15 @@ except ImportError as e:
     config = None
     config_available = False
 
+# 导入 Agent 模块
+agent_available = False
+try:
+    from app.agent import MeetSpotAgent, create_meetspot_agent
+    agent_available = True
+    print("✅ 成功导入 Agent 模块")
+except ImportError as e:
+    print(f"⚠️ Agent 模块导入失败: {e}")
+
     # 在Vercel环境下创建最小化配置类
     class MinimalConfig:
         class AMapSettings:
@@ -433,6 +442,88 @@ async def find_meetspot(request: MeetSpotRequest):
 
         print(f"📤 返回错误响应: {error_response['message']}")
         return error_response
+
+
+@app.post("/api/find_meetspot_agent")
+async def find_meetspot_agent(request: MeetSpotRequest):
+    """Agent 模式的会面地点推荐功能
+
+    使用 AI Agent 进行智能推荐，支持：
+    - 自主规划推荐流程
+    - 智能分析场所特点
+    - 生成个性化推荐理由
+    """
+    start_time = time.time()
+
+    try:
+        print(f"🤖 [Agent] 收到请求: {request.model_dump()}")
+
+        # 检查 Agent 是否可用
+        if not agent_available:
+            print("⚠️ Agent 模块不可用，回退到规则模式")
+            return await find_meetspot(request)
+
+        # 检查配置
+        if not config or not config.amap or not config.amap.api_key:
+            print("❌ API 密钥未配置")
+            raise HTTPException(
+                status_code=500,
+                detail="高德地图API密钥未配置"
+            )
+
+        print("🔧 [Agent] 初始化 MeetSpotAgent...")
+        agent = create_meetspot_agent()
+
+        print("🚀 [Agent] 开始执行推荐任务...")
+        result = await agent.recommend(
+            locations=request.locations,
+            keywords=request.keywords or "咖啡馆",
+            requirements=request.user_requirements or ""
+        )
+
+        processing_time = time.time() - start_time
+        print(f"⏱️  [Agent] 推荐完成，耗时: {processing_time:.2f}秒")
+
+        # 构建响应
+        response_data = {
+            "success": result.get("success", False),
+            "mode": "agent",
+            "recommendation": result.get("recommendation", ""),
+            "geocode_results": result.get("geocode_results", []),
+            "center_point": result.get("center_point"),
+            "search_results": result.get("search_results", []),
+            "steps_executed": result.get("steps_executed", 0),
+            "locations_count": len(request.locations),
+            "processing_time": processing_time,
+            "message": "Agent 推荐生成成功" if result.get("success") else "推荐失败"
+        }
+
+        print(f"📤 [Agent] 返回响应: success={response_data['success']}")
+        return response_data
+
+    except Exception as e:
+        print(f"💥 [Agent] 异常发生: {str(e)}")
+        import traceback
+        traceback.print_exc()
+
+        processing_time = time.time() - start_time
+
+        # 尝试回退到规则模式
+        print("⚠️ [Agent] 尝试回退到规则模式...")
+        try:
+            fallback_result = await find_meetspot(request)
+            fallback_result["mode"] = "rule_fallback"
+            fallback_result["agent_error"] = str(e)
+            return fallback_result
+        except Exception as fallback_error:
+            return {
+                "success": False,
+                "mode": "agent",
+                "error": str(e),
+                "processing_time": processing_time,
+                "message": f"Agent 推荐失败: {str(e)}"
+            }
+
 
 @app.post("/recommend")
 async def get_recommendations(request: LocationRequest):

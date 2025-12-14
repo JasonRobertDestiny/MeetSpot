@@ -78,3 +78,24 @@ class CLIResult(ToolResult):
 
 class ToolFailure(ToolResult):
     """A ToolResult that represents a failure."""
+
+
+# 为 BaseTool 添加辅助方法
+def _success_response(data) -> ToolResult:
+    """创建成功的工具结果"""
+    import json
+    if isinstance(data, str):
+        text = data
+    else:
+        text = json.dumps(data, ensure_ascii=False, indent=2)
+    return ToolResult(output=text)
+
+
+def _fail_response(msg: str) -> ToolResult:
+    """创建失败的工具结果"""
+    return ToolResult(error=msg)
+
+
+# 将辅助方法添加到 BaseTool
+BaseTool.success_response = staticmethod(_success_response)
+BaseTool.fail_response = staticmethod(_fail_response)
