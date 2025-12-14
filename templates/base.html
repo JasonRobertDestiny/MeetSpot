@@ -33,137 +33,267 @@
 
     <link rel="preconnect" href="https://restapi.amap.com">
     <link rel="dns-prefetch" href="https://restapi.amap.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://unpkg.com">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-    <!-- Design Token System - 单一真相来源 -->
-    <link rel="stylesheet" href="/static/css/design-tokens.css">
-
     <style>
-        /* 向后兼容别名 (保持与旧代码一致) */
+        /* Navigation Theme - Design System */
         :root {
-            /* 将旧变量名映射到新设计token */
-            --gradient-primary: var(--brand-gradient);
-            --primary: var(--brand-primary);
-            --primary-dark: var(--brand-primary-dark);
-            --success: var(--brand-success);
-            --info: var(--brand-info);
-            --warning: var(--brand-warning);
+            /* Navigation Color Palette */
+            --nav-primary: #0A4D68;
+            --nav-accent: #FF6B35;
+            --nav-secondary: #06D6A0;
+            --nav-dark: #001524;
+            --nav-light: #F0F7F4;
+            --nav-fog: #E8F3F1;
+
+            /* Semantic Colors */
+            --text-primary: #001524;
+            --text-secondary: #2C5F77;
+            --text-muted: #6B8E9F;
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F0F7F4;
+            --bg-tertiary: #E8F3F1;
+
+            /* Status Colors */
+            --success: #06D6A0;
+            --warning: #FFB84D;
+            --error: #FF6B6B;
+            --info: #4A90E2;
+
+            /* Shadows */
+            --shadow-sm: 0 2px 8px rgba(10, 77, 104, 0.08);
+            --shadow-md: 0 4px 16px rgba(10, 77, 104, 0.12);
+            --shadow-lg: 0 8px 32px rgba(10, 77, 104, 0.16);
+            --shadow-xl: 0 16px 48px rgba(10, 77, 104, 0.2);
+
+            /* Backward Compatibility */
+            --primary: var(--nav-primary);
+            --primary-dark: var(--nav-dark);
+            --gradient-primary: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-dark) 100%);
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
-            margin: 0;
-            font-family: "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+            font-family: "DM Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
             color: var(--text-primary);
-            background: var(--bg-secondary);
+            background: linear-gradient(155deg, var(--nav-primary) 0%, var(--nav-dark) 60%, var(--nav-primary) 100%);
+            background-attachment: fixed;
             line-height: 1.7;
+            position: relative;
+            min-height: 100vh;
         }
 
-        a { color: var(--primary); text-decoration: none; }
-        a:hover { color: var(--primary-dark); }
+        /* Topographic Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-radial-gradient(circle at 30% 40%, transparent 0, transparent 40px, rgba(10, 77, 104, 0.08) 40px, rgba(10, 77, 104, 0.08) 42px),
+                repeating-radial-gradient(circle at 70% 60%, transparent 0, transparent 60px, rgba(6, 214, 160, 0.06) 60px, rgba(6, 214, 160, 0.06) 62px),
+                repeating-radial-gradient(circle at 50% 80%, transparent 0, transparent 80px, rgba(255, 107, 53, 0.04) 80px, rgba(255, 107, 53, 0.04) 82px),
+                linear-gradient(135deg, transparent 48%, rgba(6, 214, 160, 0.02) 50%, transparent 52%),
+                linear-gradient(45deg, transparent 48%, rgba(255, 107, 53, 0.02) 50%, transparent 52%);
+            background-size: 200px 200px, 300px 300px, 400px 400px, 100px 100px, 100px 100px;
+            animation: topographicShift 60s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-        /* Header 样式 */
+        @keyframes topographicShift {
+            0% { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+            100% { background-position: 200px 200px, -300px -300px, 400px -400px, -100px 100px, 100px -100px; }
+        }
+
+        a {
+            color: var(--nav-accent);
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        a:hover {
+            color: var(--nav-primary);
+            transform: translateY(-1px);
+        }
+
+        /* Header - Navigation Theme */
         .site-header {
-            background: var(--gradient-primary);
+            background: rgba(0, 21, 36, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
             color: white;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 107, 53, 0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 2px solid rgba(255, 107, 53, 0.2);
         }
 
         .header-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 24px;
-            max-width: 1200px;
+            padding: 18px 32px;
+            max-width: 1400px;
             margin: 0 auto;
-            gap: 20px;
+            gap: 24px;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             text-decoration: none;
             color: white;
-            font-weight: 700;
-            font-size: 1.25rem;
+            font-weight: 900;
+            font-size: 1.4rem;
+            font-family: "Outfit", sans-serif;
+            letter-spacing: -0.02em;
+            transition: all 0.3s ease;
+        }
+
+        .brand:hover {
+            transform: translateY(0) scale(1.05);
+            color: var(--nav-accent);
         }
 
         .logo-icon {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.5));
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.5)); }
+            50% { filter: drop-shadow(0 0 16px rgba(255, 107, 53, 0.8)); }
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, #FFFFFF 0%, var(--nav-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .tagline {
-            font-size: 0.875rem;
-            opacity: 0.9;
-            font-weight: 400;
+            font-size: 0.75rem;
+            opacity: 0.8;
+            font-weight: 500;
             margin-left: 8px;
+            font-family: "Space Mono", monospace;
+            color: var(--nav-secondary);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
 
         .main-nav {
             display: flex;
-            gap: 24px;
+            gap: 32px;
             font-weight: 600;
+            font-family: "Outfit", sans-serif;
         }
 
         .main-nav a {
-            color: rgba(255, 255, 255, 0.9);
-            transition: all 0.2s;
-            padding: 8px 0;
+            color: rgba(255, 255, 255, 0.85);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 12px;
+            right: 12px;
+            height: 2px;
+            background: var(--nav-accent);
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease;
         }
 
         .main-nav a:hover {
             color: white;
-            transform: translateY(-2px);
+            background: rgba(255, 107, 53, 0.15);
+            transform: translateY(0);
+        }
+
+        .main-nav a:hover::after {
+            transform: scaleX(1);
         }
 
         .github-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            background: linear-gradient(135deg, rgba(6, 214, 160, 0.2) 0%, rgba(255, 107, 53, 0.2) 100%);
+            border: 1px solid rgba(255, 107, 53, 0.4);
             border-radius: 999px;
             color: white;
             text-decoration: none;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(10px);
-            font-weight: 500;
+            font-weight: 600;
+            font-family: "Outfit", sans-serif;
         }
 
         .github-badge:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, rgba(6, 214, 160, 0.3) 0%, rgba(255, 107, 53, 0.3) 100%);
+            border-color: rgba(255, 107, 53, 0.6);
             transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
         }
 
         .github-badge i {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
         }
 
-        /* Main Content */
+        /* Main Content Container */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 32px;
+            position: relative;
+            z-index: 1;
         }
 
         main {
             min-height: 60vh;
-            padding: 40px 0;
+            padding: 48px 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            margin: 32px auto;
+            box-shadow: var(--shadow-xl);
         }
 
         .breadcrumbs {
             font-size: 0.9rem;
             color: var(--text-muted);
-            padding: 16px 0;
+            padding: 20px 0;
+            font-family: "Space Mono", monospace;
         }
 
-        .breadcrumbs a { color: var(--text-muted); }
+        .breadcrumbs a {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+        .breadcrumbs a:hover {
+            color: var(--nav-accent);
+        }
 
         .sr-only {
             position: absolute;
@@ -176,133 +306,167 @@
             border: 0;
         }
 
-        /* Footer 样式 */
+        /* Footer - Navigation Theme */
         .enhanced-footer {
-            background: linear-gradient(to bottom, var(--bg-secondary), #E5E7EB);
-            padding: 48px 0 24px;
+            background: linear-gradient(to bottom, rgba(0, 21, 36, 0.95), rgba(0, 21, 36, 0.98));
+            backdrop-filter: blur(20px);
+            padding: 64px 0 32px;
             margin-top: 80px;
-            border-top: 1px solid #E5E7EB;
+            border-top: 2px solid rgba(255, 107, 53, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 1;
         }
 
         .footer-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 32px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 40px;
-            margin-bottom: 32px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 48px;
+            margin-bottom: 48px;
         }
 
         .footer-container h3 {
-            margin: 0 0 16px 0;
-            color: var(--text-primary);
-            font-size: 1.125rem;
+            margin: 0 0 20px 0;
+            color: white;
+            font-size: 1.2rem;
+            font-family: "Outfit", sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.01em;
         }
 
         .footer-container p {
-            color: var(--text-secondary);
-            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.7;
         }
 
         .author-info {
-            margin-top: 12px;
+            margin-top: 16px;
             font-size: 0.9rem;
         }
 
         .author-info p {
-            margin: 4px 0;
+            margin: 6px 0;
+        }
+
+        .author-info a {
+            color: var(--nav-secondary);
+            font-weight: 600;
         }
 
         .project-stat {
-            color: var(--success);
-            font-weight: 500;
+            color: var(--nav-secondary);
+            font-weight: 600;
         }
 
-        .social-links, .footer-links a {
+        .social-links, .footer-links {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
 
         .social-btn {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 18px;
-            border-radius: 8px;
-            border: 1px solid #E5E7EB;
-            background: white;
-            color: var(--text-primary);
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
+            font-family: "Outfit", sans-serif;
             justify-content: center;
         }
 
         .social-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--primary);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
+            border-color: rgba(255, 107, 53, 0.6);
+            background: rgba(255, 107, 53, 0.15);
+            color: white;
         }
 
         .social-btn i {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
         }
 
-        .wechat-btn:hover { background: #EEF2FF; }
-        .github-btn:hover { background: #F3F4F6; }
-        .blog-btn:hover { background: #FFF7ED; }
+        .wechat-btn:hover {
+            background: rgba(6, 214, 160, 0.15);
+            border-color: var(--nav-secondary);
+        }
+        .github-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .blog-btn:hover {
+            background: rgba(255, 184, 77, 0.15);
+            border-color: var(--warning);
+        }
 
         .footer-links a {
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.75);
             text-decoration: none;
-            transition: color 0.2s;
+            transition: all 0.3s ease;
+            padding: 6px 0;
         }
 
         .footer-links a:hover {
-            color: var(--primary);
+            color: var(--nav-accent);
+            transform: translateX(4px);
         }
 
         .support-text {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-top: 8px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 12px;
+            font-style: italic;
         }
 
         .support-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 12px 24px;
-            border-radius: 8px;
-            background: var(--gradient-primary);
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--nav-accent) 0%, #D84315 100%);
             color: white;
             border: none;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
+            font-weight: 700;
+            font-family: "Outfit", sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             width: 100%;
+            box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
         }
 
         .support-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(255, 107, 53, 0.6);
         }
 
         .footer-bottom {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 24px 24px 0;
+            padding: 32px 32px 0;
             text-align: center;
-            border-top: 1px solid #D1D5DB;
-            color: var(--text-secondary);
+            border-top: 1px solid rgba(255, 107, 53, 0.2);
+            color: rgba(255, 255, 255, 0.6);
             font-size: 0.875rem;
+            font-family: "Space Mono", monospace;
         }
 
-        /* Modal 样式 */
+        .footer-bottom a {
+            color: var(--nav-secondary);
+            font-weight: 600;
+        }
+
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -310,8 +474,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
+            background: rgba(0, 21, 36, 0.85);
+            backdrop-filter: blur(8px);
             z-index: 9999;
             align-items: center;
             justify-content: center;
@@ -322,51 +486,59 @@
         .modal-content {
             background: white;
             border-radius: 24px;
-            padding: 32px;
-            max-width: 480px;
+            padding: 40px;
+            max-width: 520px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: var(--shadow-xl);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
             position: relative;
-            animation: modalSlideUp 0.3s ease-out;
+            animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(255, 107, 53, 0.2);
         }
 
         @keyframes modalSlideUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(40px) scale(0.95);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
         .modal-content h3 {
-            margin: 0 0 20px 0;
-            color: var(--text-primary);
-            font-size: 1.5rem;
+            margin: 0 0 16px 0;
+            color: var(--nav-primary);
+            font-size: 1.75rem;
+            font-family: "Outfit", sans-serif;
+            font-weight: 900;
         }
 
         .modal-close {
             position: absolute;
-            top: 16px;
-            right: 16px;
-            background: none;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 107, 53, 0.1);
             border: none;
-            font-size: 2rem;
+            font-size: 1.75rem;
             cursor: pointer;
-            color: var(--text-secondary);
+            color: var(--nav-accent);
             line-height: 1;
-            padding: 0;
-            width: 32px;
-            height: 32px;
-            transition: color 0.2s;
+            padding: 8px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-close:hover {
-            color: var(--text-primary);
+            background: rgba(255, 107, 53, 0.2);
+            transform: rotate(90deg) scale(1.1);
         }
 
         .qr-container {
@@ -375,82 +547,88 @@
         }
 
         .qr-container img {
-            max-width: 280px;
+            max-width: 300px;
             width: 100%;
-            border-radius: 12px;
+            border-radius: 16px;
             box-shadow: var(--shadow-lg);
+            border: 3px solid rgba(10, 77, 104, 0.1);
         }
 
         .qr-notice {
-            margin-top: 16px;
-            padding: 12px;
-            background: #FFF7ED;
+            margin-top: 20px;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(255, 184, 77, 0.1) 0%, rgba(255, 107, 53, 0.1) 100%);
             border-left: 4px solid var(--warning);
             color: #92400E;
-            font-weight: 500;
-            border-radius: 8px;
+            font-weight: 600;
+            border-radius: 12px;
             text-align: left;
         }
 
         .qr-fallback {
-            margin-top: 16px;
-            padding: 12px;
+            margin-top: 20px;
+            padding: 16px;
             background: var(--bg-tertiary);
-            border-radius: 8px;
-            font-size: 0.875rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
             color: var(--text-secondary);
             text-align: left;
+            border: 1px solid rgba(10, 77, 104, 0.2);
         }
 
         .qr-fallback a {
-            color: var(--primary);
-            font-weight: 500;
+            color: var(--nav-accent);
+            font-weight: 600;
         }
 
         .support-message {
-            margin: 20px 0;
+            margin: 24px 0;
             color: var(--text-secondary);
             font-size: 1rem;
         }
 
         .other-support {
-            margin-top: 24px;
-            padding: 20px;
-            background: var(--bg-secondary);
-            border-radius: 12px;
+            margin-top: 28px;
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(10, 77, 104, 0.05) 0%, rgba(6, 214, 160, 0.05) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(10, 77, 104, 0.15);
         }
 
         .other-support p {
-            margin: 0 0 12px 0;
-            font-weight: 600;
-            color: var(--text-primary);
+            margin: 0 0 16px 0;
+            font-weight: 700;
+            color: var(--nav-primary);
+            font-family: "Outfit", sans-serif;
         }
 
         .other-support ul {
             margin: 0;
-            padding-left: 20px;
+            padding-left: 24px;
         }
 
         .other-support li {
-            margin: 8px 0;
+            margin: 10px 0;
             color: var(--text-secondary);
         }
 
-        /* 响应式设计 */
+        /* Responsive Design */
         @media (max-width: 768px) {
             .header-content {
                 flex-wrap: wrap;
+                padding: 16px 20px;
             }
 
             .main-nav {
                 order: 3;
                 width: 100%;
                 justify-content: center;
+                gap: 20px;
             }
 
             .github-badge {
                 font-size: 0.875rem;
-                padding: 6px 12px;
+                padding: 8px 14px;
             }
 
             .github-badge span {
@@ -459,25 +637,47 @@
 
             .footer-container {
                 grid-template-columns: 1fr;
-                gap: 32px;
+                gap: 40px;
             }
 
             .modal-content {
-                padding: 24px;
+                padding: 28px;
             }
 
             .tagline {
                 display: none;
             }
+
+            .container {
+                padding: 0 20px;
+            }
+
+            main {
+                margin: 20px 16px;
+                border-radius: 16px;
+            }
         }
 
         @media (max-width: 480px) {
             .brand {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
 
             .main-nav {
-                gap: 16px;
+                gap: 12px;
+                font-size: 0.9rem;
+            }
+
+            .footer-container {
+                padding: 0 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
@@ -487,13 +687,13 @@
 <body>
     <a href="#main" class="sr-only">跳转到主内容</a>
 
-    <!-- Header -->
+    <!-- Header - Navigation Theme -->
     <header class="site-header">
         <div class="header-content">
             <a href="/" class="brand">
                 <span class="logo-icon">📍</span>
                 <span class="logo-text">MeetSpot</span>
-                <span class="tagline">让聚会更公平</span>
+                <span class="tagline">Fair Meetups</span>
             </a>
             <nav class="main-nav">
                 <a href="/">首页</a>
@@ -526,15 +726,15 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
+    <!-- Footer - Navigation Theme -->
     <footer class="enhanced-footer">
         <div class="footer-container">
             <div class="footer-about">
                 <h3>MeetSpot 聚点</h3>
-                <p>智能聚会地点推荐系统，让每次聚会都公平高效</p>
+                <p>智能聚会地点推荐系统，基于地理算法计算公平中点，让每次聚会都高效便捷。</p>
                 <div class="author-info">
                     <p>作者：<a href="https://jasonrobert.me/" target="_blank" rel="noopener">Jason Robert</a></p>
-                    <p class="project-stat">🌟 开源项目 · 持续更新中</p>
+                    <p class="project-stat">开源项目 · 持续更新中</p>
                 </div>
             </div>
 
@@ -568,7 +768,7 @@
                 <h3>支持项目</h3>
                 <p>如果MeetSpot对你有帮助</p>
                 <button class="support-btn" onclick="showSupportModal()">
-                    ☕ 请我喝杯咖啡
+                    请我喝杯咖啡
                 </button>
                 <p class="support-text">MeetSpot是开源项目，您的支持是最大动力</p>
             </div>
@@ -583,12 +783,12 @@
     <div id="wechat-modal" class="modal" onclick="closeModal(event, 'wechat-modal')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeModal(event, 'wechat-modal')" aria-label="关闭">&times;</button>
-            <h3>加入MeetSpot交流群 💬</h3>
+            <h3>加入MeetSpot交流群</h3>
             <p>与数千名用户一起交流使用心得，获取最新功能更新</p>
             <div class="qr-container">
                 <img src="/public/docs/vx_chat.png" alt="微信群二维码" title="扫描二维码加入MeetSpot社区" loading="lazy">
                 <div class="qr-notice">
-                    ⏰ 该二维码7天内（11月15日前）有效，重新进入将更新
+                    该二维码7天内有效，重新进入将更新
                 </div>
                 <div class="qr-fallback">
                     <strong>如二维码过期，请通过以下方式联系：</strong>
@@ -605,19 +805,19 @@
     <div id="support-modal" class="modal" onclick="closeModal(event, 'support-modal')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeModal(event, 'support-modal')" aria-label="关闭">&times;</button>
-            <h3>感谢你的支持 💖</h3>
+            <h3>感谢你的支持</h3>
             <p>MeetSpot是完全免费的开源项目，你的赞赏将帮助项目持续改进</p>
             <div class="qr-container">
                 <img src="/public/docs/vx_payment.png" alt="微信支付码" title="使用微信赞赏MeetSpot" loading="lazy">
-                <p class="support-message">你的每一份支持都是最大的动力 ☕</p>
+                <p class="support-message">你的每一份支持都是最大的动力</p>
             </div>
             <div class="other-support">
                 <p>也可以通过以下方式支持：</p>
                 <ul>
-                    <li>⭐ 在GitHub上给项目点Star</li>
-                    <li>📢 分享给需要的朋友</li>
-                    <li>🐛 提交Issue帮助改进</li>
-                    <li>💡 贡献代码和想法</li>
+                    <li>在GitHub上给项目点Star</li>
+                    <li>分享给需要的朋友</li>
+                    <li>提交Issue帮助改进</li>
+                    <li>贡献代码和想法</li>
                 </ul>
             </div>
         </div>

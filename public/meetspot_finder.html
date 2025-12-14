@@ -9,16 +9,17 @@
     <meta http-equiv="Expires" content="0">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-    <!-- MeetSpot 品牌字体 -->
+    <!-- MeetSpot Navigation Theme Fonts - Distinctive Choices -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- Design Token System -->
     <link rel="stylesheet" href="/static/css/design-tokens.css">
 
     <!-- Modern UI Components -->
-    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/public/css/components.css">
 
     <style>
         * {
@@ -28,20 +29,51 @@
         }
 
         body {
-            font-family: var(--font-family-sans);
-            background: var(--brand-gradient);
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(155deg, #0A4D68 0%, #001524 60%, #0A4D68 100%);
             min-height: 100vh;
-            line-height: var(--font-leading-normal);
+            line-height: 1.65;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Topographic background - consistent with homepage */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-radial-gradient(circle at 30% 40%, transparent 0, transparent 40px, rgba(10, 77, 104, 0.08) 40px, rgba(10, 77, 104, 0.08) 42px),
+                repeating-radial-gradient(circle at 70% 60%, transparent 0, transparent 60px, rgba(10, 77, 104, 0.08) 60px, rgba(10, 77, 104, 0.08) 62px),
+                linear-gradient(90deg, rgba(10, 77, 104, 0.08) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(10, 77, 104, 0.08) 1px, transparent 1px);
+            background-size: 800px 800px, 800px 800px, 80px 80px, 80px 80px;
+            background-position: 0 0, 200px 200px, 0 0, 0 0;
+            opacity: 0.4;
+            z-index: 0;
+            animation: topographicShift 60s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes topographicShift {
+            0% { background-position: 0 0, 200px 200px, 0 0, 0 0; }
+            100% { background-position: 400px 400px, 600px 600px, 40px 40px, 40px 40px; }
         }
 
         h1, h2, h3, h4, h5, h6 {
-            font-family: var(--font-family-heading);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
         }
 
         .container {
             max-width: 900px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .header {
@@ -88,7 +120,7 @@
         }
 
         .section h3 i {
-            color: #667eea;
+            color: #FF6B35;
             font-size: 1.6rem;
         }
 
@@ -113,8 +145,9 @@
 
         .location-input input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.15);
+            transform: translateY(-2px);
         }
 
         .location-input i {
@@ -122,28 +155,29 @@
             left: 18px;
             top: 50%;
             transform: translateY(-50%);
-            color: #667eea;
+            color: #FF6B35;
             font-size: 1.2rem;
         }
 
         .add-location-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #FF6B35 0%, #D84315 100%);
             color: white;
             border: none;
             padding: 12px 24px;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.35);
         }
 
         .add-location-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(255, 107, 53, 0.45);
         }
 
         .place-types {
@@ -281,25 +315,28 @@
         }
 
         .submit-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #FF6B35 0%, #D84315 100%);
             color: white;
             border: none;
             padding: 18px 40px;
-            border-radius: 15px;
+            border-radius: 16px;
             font-size: 1.2rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.02em;
         }
 
         .submit-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(255, 107, 53, 0.5);
         }
 
         .submit-btn:disabled {
@@ -311,7 +348,7 @@
             display: none;
             text-align: center;
             margin: 20px 0;
-            color: #667eea;
+            color: #06D6A0;
         }
 
         .loading i {
@@ -325,11 +362,12 @@
         }
 
         .suggestions {
-            background: #f0f4ff;
-            border-radius: 12px;
-            padding: 20px;
+            background: rgba(6, 214, 160, 0.08);
+            border-radius: 16px;
+            padding: 24px;
             margin-top: 20px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #06D6A0;
+            border: 1px solid rgba(6, 214, 160, 0.2);
         }
 
         .suggestions h4 {
@@ -338,10 +376,11 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-weight: 700;
         }
 
         .suggestions h4 i {
-            color: #667eea;
+            color: #06D6A0;
         }
 
         .suggestion-tags {
@@ -349,29 +388,32 @@
             flex-wrap: wrap;
             gap: 8px;
         }        .suggestion-tag {
-            background: #667eea;
+            background: #0A4D68;
             color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
+            padding: 8px 16px;
+            border-radius: 24px;
             font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 2px solid transparent;
         }
 
         .suggestion-tag:hover {
-            background: #764ba2;
-            transform: translateY(-1px);
+            background: #FF6B35;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
         }
 
         .suggestion-tag.selected {
-            background: #27ae60;
-            border-color: #1e8449;
-            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+            background: #06D6A0;
+            border-color: #04B381;
+            box-shadow: 0 4px 12px rgba(6, 214, 160, 0.4);
+            transform: translateY(-2px);
         }
 
         .suggestion-tag.selected:hover {
-            background: #219a52;
+            background: #05C094;
         }
 
         /* 场景主题颜色系统 */
@@ -1183,6 +1225,6 @@
     </script>
 
     <!-- Modern Toast Notification System -->
-    <script src="/js/toast.js"></script>
+    <script src="/public/js/toast.js"></script>
 </body>
 </html>

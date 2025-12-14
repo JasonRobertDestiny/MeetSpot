@@ -1,85 +1,546 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- 新增醒目的Hero区块 -->
-<div style="background:linear-gradient(135deg, #667EEA 0%, #764BA2 100%);color:#fff;padding:40px;border-radius:24px;text-align:center;margin-bottom:40px;box-shadow:0 20px 60px rgba(102,126,234,0.3);">
-    <h2 style="font-size:2rem;margin-bottom:12px;">🎯 智能聚会地点推荐系统</h2>
-    <p style="font-size:1.2rem;opacity:0.95;margin-bottom:24px;">输入多人位置，一键找到最公平的中点会面地点</p>
-    <a href="/public/meetspot_finder.html" style="display:inline-block;background:#fff;color:#667EEA;padding:16px 48px;border-radius:12px;text-decoration:none;font-size:1.2rem;font-weight:bold;box-shadow:0 8px 24px rgba(0,0,0,0.1);transition:transform 0.2s;">
-        ⚡ 立即开始使用（完全免费）
-    </a>
-    <p style="margin-top:16px;font-size:0.9rem;opacity:0.9;">无需注册 · 支持2-10人 · 智能推荐咖啡馆/餐厅</p>
+<style>
+    /* Home Page Specific Styles - Navigation Theme */
+    .hero-section {
+        background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-dark) 100%);
+        color: white;
+        padding: 56px;
+        border-radius: 24px;
+        text-align: center;
+        margin-bottom: 48px;
+        box-shadow: 0 20px 60px rgba(10, 77, 104, 0.3);
+        position: relative;
+        overflow: hidden;
+        border: 2px solid rgba(255, 107, 53, 0.2);
+    }
 
-    <!-- 社交CTA区域 -->
-    <div style="margin-top:32px;padding:24px;background:rgba(255,255,255,0.15);border-radius:16px;backdrop-filter:blur(10px);">
-        <h3 style="margin:0 0 12px 0;font-size:1.3rem;">加入MeetSpot用户社区 🎉</h3>
-        <p style="margin:0 0 16px 0;opacity:0.95;">与数千名用户一起交流使用心得，获取最新功能更新</p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
-            <button onclick="showWeChatGroupModal()" style="display:flex;align-items:center;gap:8px;padding:12px 24px;background:white;color:#667EEA;border:none;border-radius:999px;font-size:1rem;font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 12px rgba(0,0,0,0.1);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'">
-                <i class='bx bxl-wechat' style="font-size:1.3rem;"></i>
-                加入微信群
-            </button>
-            <a href="https://github.com/JasonRobertDestiny/MeetSpot" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;padding:12px 24px;background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4);border-radius:999px;font-size:1rem;font-weight:600;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(255,255,255,0.2)';this.style.transform=''">
-                <i class='bx bxl-github' style="font-size:1.3rem;"></i>
-                GitHub Stars
-            </a>
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            repeating-radial-gradient(circle at 20% 30%, transparent 0, transparent 30px, rgba(6, 214, 160, 0.08) 30px, rgba(6, 214, 160, 0.08) 32px),
+            repeating-radial-gradient(circle at 80% 70%, transparent 0, transparent 40px, rgba(255, 107, 53, 0.06) 40px, rgba(255, 107, 53, 0.06) 42px);
+        animation: heroPattern 30s linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes heroPattern {
+        0% { background-position: 0 0, 0 0; }
+        100% { background-position: 100px 100px, -100px -100px; }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-section h2 {
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+        font-family: "Outfit", sans-serif;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-section p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+        margin-bottom: 32px;
+        font-family: "DM Sans", sans-serif;
+    }
+
+    .hero-cta {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--nav-accent) 0%, #D84315 100%);
+        color: white;
+        padding: 18px 52px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 1.25rem;
+        font-weight: 700;
+        font-family: "Outfit", sans-serif;
+        box-shadow: 0 8px 32px rgba(255, 107, 53, 0.4);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hero-cta:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 16px 48px rgba(255, 107, 53, 0.6);
+        color: white;
+    }
+
+    .hero-meta {
+        margin-top: 20px;
+        font-size: 0.95rem;
+        opacity: 0.9;
+        font-family: "Space Mono", monospace;
+    }
+
+    .community-section {
+        margin-top: 40px;
+        padding: 32px;
+        background: rgba(6, 214, 160, 0.1);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(6, 214, 160, 0.3);
+    }
+
+    .community-section h3 {
+        margin: 0 0 16px 0;
+        font-size: 1.5rem;
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+    }
+
+    .community-section p {
+        margin: 0 0 20px 0;
+        opacity: 0.95;
+    }
+
+    .community-buttons {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .community-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 28px;
+        background: white;
+        color: var(--nav-primary);
+        border: none;
+        border-radius: 999px;
+        font-size: 1rem;
+        font-weight: 700;
+        font-family: "Outfit", sans-serif;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        text-decoration: none;
+    }
+
+    .community-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        color: var(--nav-primary);
+    }
+
+    .community-btn i {
+        font-size: 1.4rem;
+    }
+
+    .main-content-grid {
+        padding: 72px 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 40px;
+        align-items: start;
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(10, 77, 104, 0.1);
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 6px 14px;
+        background: linear-gradient(135deg, rgba(10, 77, 104, 0.1) 0%, rgba(6, 214, 160, 0.1) 100%);
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--nav-primary);
+        margin-bottom: 16px;
+        font-family: "Space Mono", monospace;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    .main-heading {
+        font-size: 2.8rem;
+        margin-bottom: 20px;
+        font-family: "Outfit", sans-serif;
+        font-weight: 900;
+        color: var(--nav-dark);
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        padding: 14px 32px;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        font-family: "Outfit", sans-serif;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-primary-filled {
+        background: linear-gradient(135deg, var(--nav-accent) 0%, #D84315 100%);
+        color: white;
+        box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
+    }
+
+    .btn-primary-filled:hover {
+        box-shadow: 0 8px 32px rgba(255, 107, 53, 0.6);
+        color: white;
+    }
+
+    .btn-primary-outline {
+        background: white;
+        color: var(--nav-primary);
+        border-color: var(--nav-primary);
+    }
+
+    .btn-primary-outline:hover {
+        background: rgba(10, 77, 104, 0.05);
+        color: var(--nav-primary);
+    }
+
+    .stats-grid {
+        margin-top: 32px;
+        display: flex;
+        gap: 24px;
+    }
+
+    .stat-item strong {
+        font-size: 2.4rem;
+        display: block;
+        color: var(--nav-accent);
+        font-family: "Outfit", sans-serif;
+        font-weight: 900;
+    }
+
+    .stat-item span {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+    }
+
+    .city-card {
+        background: white;
+        border-radius: 24px;
+        padding: 28px;
+        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(10, 77, 104, 0.1);
+    }
+
+    .city-card h2 {
+        margin: 0 0 8px 0;
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-dark);
+    }
+
+    .city-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .city-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .city-link {
+        display: block;
+        padding: 14px;
+        border: 1px solid rgba(10, 77, 104, 0.15);
+        border-radius: 12px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        background: rgba(240, 247, 244, 0.5);
+    }
+
+    .city-link:hover {
+        border-color: var(--nav-accent);
+        background: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(255, 107, 53, 0.2);
+    }
+
+    .city-name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+    }
+
+    .city-name strong {
+        font-size: 1.05rem;
+        color: var(--nav-primary);
+        font-family: "Outfit", sans-serif;
+    }
+
+    .city-name span {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-family: "Space Mono", monospace;
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.06);
+        margin-top: 40px;
+        border: 1px solid rgba(10, 77, 104, 0.1);
+    }
+
+    .section-card h2 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 900;
+        color: var(--nav-dark);
+        margin-bottom: 20px;
+        font-size: 2rem;
+    }
+
+    .section-card h3 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-primary);
+        margin-bottom: 12px;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 28px;
+    }
+
+    .feature-grid article {
+        padding: 24px;
+        border-radius: 16px;
+        border: 1px solid rgba(10, 77, 104, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .feature-grid article:hover {
+        border-color: var(--nav-secondary);
+        box-shadow: 0 8px 24px rgba(6, 214, 160, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .cta-section {
+        margin-top: 40px;
+        background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-dark) 100%);
+        border-radius: 24px;
+        padding: 48px;
+        color: white;
+        box-shadow: 0 24px 70px rgba(10, 77, 104, 0.3);
+        position: relative;
+        overflow: hidden;
+        border: 2px solid rgba(255, 107, 53, 0.2);
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            repeating-radial-gradient(circle at 30% 40%, transparent 0, transparent 40px, rgba(6, 214, 160, 0.08) 40px, rgba(6, 214, 160, 0.08) 42px);
+        animation: ctaPattern 25s linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes ctaPattern {
+        0% { background-position: 0 0; }
+        100% { background-position: 100px -100px; }
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .cta-section h2 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 900;
+        margin-bottom: 16px;
+        font-size: 2.2rem;
+    }
+
+    .cta-section a {
+        color: white;
+        text-decoration: underline;
+    }
+
+    .cta-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 24px;
+    }
+
+    .cta-btn {
+        flex: 1;
+        min-width: 240px;
+        text-align: center;
+        padding: 16px 32px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-family: "Outfit", sans-serif;
+        font-size: 1.1rem;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .cta-btn-primary {
+        background: white;
+        color: var(--nav-primary);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .cta-btn-primary:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 16px 48px rgba(255, 255, 255, 0.3);
+    }
+
+    .cta-btn-secondary {
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        color: white;
+    }
+
+    .cta-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: white;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 40px 24px;
+        }
+
+        .hero-section h2 {
+            font-size: 2rem;
+        }
+
+        .main-heading {
+            font-size: 2.2rem;
+        }
+
+        .city-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            flex-direction: column;
+            gap: 16px;
+        }
+    }
+</style>
+
+<!-- Hero Section - Navigation Theme -->
+<div class="hero-section">
+    <div class="hero-content">
+        <h2>智能聚会地点推荐系统</h2>
+        <p>输入多人位置，一键找到最公平的中点会面地点</p>
+        <a href="/public/meetspot_finder.html" class="hero-cta">
+            立即开始使用（完全免费）
+        </a>
+        <p class="hero-meta">无需注册 · 支持2-10人 · 智能推荐咖啡馆/餐厅</p>
+
+        <!-- Social CTA -->
+        <div class="community-section">
+            <h3>加入MeetSpot用户社区</h3>
+            <p>与数千名用户一起交流使用心得，获取最新功能更新</p>
+            <div class="community-buttons">
+                <button class="community-btn" onclick="showWeChatGroupModal()">
+                    <i class='bx bxl-wechat'></i>
+                    加入微信群
+                </button>
+                <a href="https://github.com/JasonRobertDestiny/MeetSpot" target="_blank" rel="noopener" class="community-btn">
+                    <i class='bx bxl-github'></i>
+                    GitHub Stars
+                </a>
+            </div>
         </div>
     </div>
 </div>
 
-<section style="padding:60px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;align-items:start;">
+<!-- Main Content Grid -->
+<section class="main-content-grid">
     <div>
-        <p class="badge" style="color:#6B7280;font-weight:600;">SEO Ready · Mobile First</p>
-        <h1 style="font-size:2.6rem;margin-bottom:16px;">Find the fairest meeting location midpoint for every group.</h1>
+        <p class="badge">SEO Ready · Mobile First</p>
+        <h1 class="main-heading">Find the fairest meeting location midpoint for every group.</h1>
         <p>MeetSpot结合地理算法、结构化数据和内容策略, 让团队、家庭与社区聚会都能快速找到公平的会面地点, 并自动生成可被搜索引擎理解的推荐页面。</p>
-        <div style="margin-top:24px;display:flex;gap:16px;flex-wrap:wrap;">
-            <a class="btn-primary" href="/public/meetspot_finder.html" style="background:#4F46E5;color:#fff;padding:14px 32px;font-size:1.1rem;box-shadow:0 4px 14px rgba(79, 70, 229, 0.4);">🚀 立即免费使用</a>
-            <a class="btn-primary" style="background:#fff;color:var(--primary);border:1px solid var(--primary);" href="/how-it-works">查看使用指南</a>
-            <a class="btn-primary" style="background:#fff;color:var(--primary);border:1px solid var(--primary);" href="/faq">FAQ</a>
+        <div style="margin-top:28px;display:flex;gap:16px;flex-wrap:wrap;">
+            <a class="btn-primary btn-primary-filled" href="/public/meetspot_finder.html">立即免费使用</a>
+            <a class="btn-primary btn-primary-outline" href="/how-it-works">查看使用指南</a>
+            <a class="btn-primary btn-primary-outline" href="/faq">FAQ</a>
         </div>
-        <div style="margin-top:24px;display:flex;gap:16px;">
-            <div>
-                <strong style="font-size:2rem;display:block;">10k+</strong>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <strong>10k+</strong>
                 <span>已服务聚会</span>
             </div>
-            <div>
-                <strong style="font-size:2rem;display:block;">30%</strong>
+            <div class="stat-item">
+                <strong>30%</strong>
                 <span>平均节省通勤时间</span>
             </div>
         </div>
     </div>
 
-    <!-- 优化后的热门城市卡片 - 横向滚动 -->
-    <div style="background:#fff;border-radius:24px;padding:24px;box-shadow:0 20px 60px rgba(15,23,42,0.08);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <!-- City Cards -->
+    <div class="city-card">
+        <div class="city-card-header">
             <div>
-                <h2 style="margin:0;">热门城市</h2>
-                <p style="margin:4px 0 0 0;color:var(--muted);font-size:0.9rem;">选择一个城市, 获取本地化的聚会地点推荐</p>
+                <h2>热门城市</h2>
+                <p style="margin:4px 0 0 0;color:var(--text-muted);font-size:0.9rem;">选择一个城市, 获取本地化的聚会地点推荐</p>
             </div>
-            <a href="#all-cities" style="color:var(--primary);text-decoration:none;font-size:0.9rem;" onclick="toggleAllCities(event)">
+            <a href="#all-cities" style="color:var(--nav-accent);text-decoration:none;font-size:0.9rem;font-weight:600;" onclick="toggleAllCities(event)">
                 <span id="toggle-text">查看全部 ▼</span>
             </a>
         </div>
 
-        <!-- 初始显示：横向滚动的前8个城市 -->
-        <div id="featured-cities" style="display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;margin-bottom:12px;">
+        <div id="featured-cities" class="city-grid">
             {% for city in cities[:8] %}
-            <a href="/meetspot/{{ city.slug }}" style="display:block;padding:12px;border:1px solid #E5E7EB;border-radius:12px;text-decoration:none;color:inherit;transition:all 0.2s;background:#FAFAFA;" onmouseover="this.style.borderColor='#667EEA';this.style.background='#F9FAFB'" onmouseout="this.style.borderColor='#E5E7EB';this.style.background='#FAFAFA'">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-                    <strong style="font-size:1.05rem;">{{ city.name }}</strong>
-                    <span style="font-size:0.75rem;color:#9CA3AF;">{{ city.name_en }}</span>
+            <a href="/meetspot/{{ city.slug }}" class="city-link">
+                <div class="city-name">
+                    <strong>{{ city.name }}</strong>
+                    <span>{{ city.name_en }}</span>
                 </div>
-                <p style="margin:0;font-size:0.85rem;color:var(--muted);line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">{{ city.description[:40] }}...</p>
+                <p style="margin:0;font-size:0.85rem;color:var(--text-muted);line-height:1.4;">{{ city.description[:40] }}...</p>
             </a>
             {% endfor %}
         </div>
 
-        <!-- 折叠的所有城市 -->
-        <div id="all-cities" style="display:none;max-height:400px;overflow-y:auto;border-top:1px solid #E5E7EB;padding-top:12px;">
-            <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:8px;">
+        <div id="all-cities" style="display:none;max-height:400px;overflow-y:auto;border-top:1px solid rgba(10, 77, 104, 0.1);padding-top:16px;margin-top:16px;">
+            <div class="city-grid">
                 {% for city in cities[8:] %}
-                <a href="/meetspot/{{ city.slug }}" style="display:block;padding:8px 12px;border-radius:8px;text-decoration:none;color:inherit;transition:background 0.2s;font-size:0.9rem;" onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='transparent'">
-                    <strong>{{ city.name }}</strong> <span style="color:#9CA3AF;font-size:0.8rem;">{{ city.name_en }}</span>
+                <a href="/meetspot/{{ city.slug }}" class="city-link">
+                    <div class="city-name">
+                        <strong>{{ city.name }}</strong>
+                        <span>{{ city.name_en }}</span>
+                    </div>
                 </a>
                 {% endfor %}
             </div>
@@ -87,9 +548,10 @@
     </div>
 </section>
 
-<section style="background:#fff;border-radius:24px;padding:32px;box-shadow:0 20px 60px rgba(15,23,42,0.05);">
+<!-- Features Section -->
+<section class="section-card">
     <h2>Why teams choose MeetSpot</h2>
-    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));">
+    <div class="feature-grid">
         <article>
             <h3>🎯 Midpoint intelligence</h3>
             <p>球面几何 + 权重算法确保每个人的路程都在可接受范围内, 并自动平衡多种场景。</p>
@@ -105,93 +567,100 @@
     </div>
 </section>
 
-<section style="margin-top:40px;background:#fff;border-radius:24px;padding:32px;box-shadow:0 20px 60px rgba(15,23,42,0.05);">
+<!-- Workflow Section -->
+<section class="section-card">
     <h2>🚀 Workflow overview</h2>
-    <ol style="padding-left:18px;line-height:1.8;">
-        <li><strong>输入地址</strong> - 输入参与者地址或地标, 系统自动校验并扩展简写。</li>
-        <li><strong>选择场景</strong> - 选择聚会场景与关键词, 服务端生成Meta与Schema。</li>
-        <li><strong>获取推荐</strong> - 生成推荐列表与静态HTML, 可直接分享或提交索引。</li>
-        <li><strong>监控效果</strong> - 通过Sitemap与Search Console监控收录与排名。</li>
+    <ol style="padding-left:24px;line-height:1.9;color:var(--text-secondary);">
+        <li><strong style="color:var(--nav-primary);">输入地址</strong> - 输入参与者地址或地标, 系统自动校验并扩展简写。</li>
+        <li><strong style="color:var(--nav-primary);">选择场景</strong> - 选择聚会场景与关键词, 服务端生成Meta与Schema。</li>
+        <li><strong style="color:var(--nav-primary);">获取推荐</strong> - 生成推荐列表与静态HTML, 可直接分享或提交索引。</li>
+        <li><strong style="color:var(--nav-primary);">监控效果</strong> - 通过Sitemap与Search Console监控收录与排名。</li>
     </ol>
 </section>
 
-<section style="margin-top:40px;background:#fff;border-radius:24px;padding:32px;box-shadow:0 24px 70px rgba(15,23,42,0.07);">
+<!-- Content Blueprint Section -->
+<section class="section-card">
     <h2>深度内容蓝图 · Content Blueprint</h2>
     <p>
-        为了突破“内容仅有84字”的瓶颈, 我们在首页直接植入500+字的长文档, 拆解团队在筹备线下会面时面临的真实痛点。
+        为了突破"内容仅有84字"的瓶颈, 我们在首页直接植入500+字的长文档, 拆解团队在筹备线下会面时面临的真实痛点。
         这段说明同步覆盖中文与英文关键词, 解释算法原理、数据安全、以及如何通过 <a href="/how-it-works">4步流程</a> 输出可索引页面。
         内容遵循Google E-E-A-T 指南, 在段落中引用可验证的数据点, 让搜索引擎与读者都能迅速理解我们的价值主张。
     </p>
     <p>
-        MeetSpot并不仅是“地图工具”, 更是一个带有治理策略的运营系统。
+        MeetSpot并不仅是"地图工具", 更是一个带有治理策略的运营系统。
         每个推荐都结合AMap道路约束、历史使用数据以及人工审核列表, 并以结构化数据的形式落地。
-        通过这样的解释性文案, 搜索引擎可以明确判定本站与“midpoint planning”、“聚会地点推荐”相关, 也能让潜在客户在首屏就看到可信的业务承诺。
+        通过这样的解释性文案, 搜索引擎可以明确判定本站与"midpoint planning"、"聚会地点推荐"相关, 也能让潜在客户在首屏就看到可信的业务承诺。
     </p>
-    <ul style="line-height:1.9;color:var(--text-secondary);">
-        <li><strong>痛点一: 距离不公平</strong> — 传统群聊投票容易偏向单一用户, MeetSpot在算法层面限制距离差异 &lt; 15%。</li>
-        <li><strong>痛点二: 内容重复</strong> — 系统会自动生成城市故事、路线亮点与FAQ, 避免“模板化空话”。</li>
-        <li><strong>痛点三: 复盘困难</strong> — 输出的静态HTML包含开放数据口径, 方便交付给老板或客户做合规存档。</li>
+    <ul style="line-height:1.9;color:var(--text-secondary);padding-left:24px;">
+        <li><strong style="color:var(--nav-primary);">痛点一: 距离不公平</strong> — 传统群聊投票容易偏向单一用户, MeetSpot在算法层面限制距离差异 &lt; 15%。</li>
+        <li><strong style="color:var(--nav-primary);">痛点二: 内容重复</strong> — 系统会自动生成城市故事、路线亮点与FAQ, 避免"模板化空话"。</li>
+        <li><strong style="color:var(--nav-primary);">痛点三: 复盘困难</strong> — 输出的静态HTML包含开放数据口径, 方便交付给老板或客户做合规存档。</li>
     </ul>
     <p>
-        当你点击“立即免费使用”按钮时, 后端会落库匿名指标, 并将推荐记录到 <a href="/faq">FAQ</a> 中提到的可观察指标。
-        这既让用户对服务透明, 也为SEO文本提供可引用的事实, 真正做到“内容深度 + 行动指引”合一。
+        当你点击"立即免费使用"按钮时, 后端会落库匿名指标, 并将推荐记录到 <a href="/faq">FAQ</a> 中提到的可观察指标。
+        这既让用户对服务透明, 也为SEO文本提供可引用的事实, 真正做到"内容深度 + 行动指引"合一。
     </p>
 </section>
 
-<section style="margin-top:32px;background:#fff;border-radius:24px;padding:32px;box-shadow:0 24px 70px rgba(15,23,42,0.06);">
+<!-- Use Cases Section -->
+<section class="section-card">
     <h2>Use cases &amp; Proof</h2>
-    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;">
-        <article style="border:1px solid #E5E7EB;border-radius:16px;padding:20px;">
+    <div class="feature-grid">
+        <article style="border:1px solid rgba(10, 77, 104, 0.15);border-radius:16px;padding:24px;">
             <h3>Remote squad sync</h3>
             <p>
                 一家跨国远程团队将北京、上海、深圳三地成员拉入MeetSpot, 系统建议在杭州城西科创大走廊附近会面。
                 通过Midpoint热力图, 他们把平均通勤时间从94分钟降到58分钟, 并把这段故事整理为客户成功案例, 直接提升了自然曝光。
             </p>
         </article>
-        <article style="border:1px solid #E5E7EB;border-radius:16px;padding:20px;">
+        <article style="border:1px solid rgba(10, 77, 104, 0.15);border-radius:16px;padding:24px;">
             <h3>Community meetup</h3>
             <p>
-                线下产品社区需要容纳50人的Workshop, 选择“共享空间+投影设备”场景后, 推荐列表自动附上预算区间、交通换乘和无障碍信息,
+                线下产品社区需要容纳50人的Workshop, 选择"共享空间+投影设备"场景后, 推荐列表自动附上预算区间、交通换乘和无障碍信息,
                 主理人用导出的HTML提交至Search Console, 一周内就收录并带来120+自然访问。
             </p>
         </article>
-        <article style="border:1px solid #E5E7EB;border-radius:16px;padding:20px;">
+        <article style="border:1px solid rgba(10, 77, 104, 0.15);border-radius:16px;padding:24px;">
             <h3>Client presentation</h3>
             <p>
                 代理商在MeetSpot生成的城市落地页中插入自有品牌CTA, 通过Schema中的Breadcrumb与FAQ提升可见度。
-                他们把页面当作交付物给企业客户, 让“为何选择此处会面”不再只是口头承诺, 而是有据可查的操作手册。
+                他们把页面当作交付物给企业客户, 让"为何选择此处会面"不再只是口头承诺, 而是有据可查的操作手册。
             </p>
         </article>
     </div>
 </section>
 
-<section style="margin-top:32px;background:#fff;border-radius:24px;padding:32px;box-shadow:0 24px 70px rgba(15,23,42,0.06);">
+<!-- Deliverables Section -->
+<section class="section-card">
     <h2>可交付成果 &amp; SEO就绪内容</h2>
     <p>
         我们按照SEO审计报告制定了五段式内容骨架, 任何人都能据此扩写成800+字的城市专属文案, 并保持可维护性：
     </p>
-    <ol style="line-height:1.9;font-weight:500;color:var(--text-primary);padding-left:18px;">
+    <ol style="line-height:1.9;font-weight:500;color:var(--text-primary);padding-left:24px;">
         <li>Problem / Context — 说明城市特性、交通难题与聚会需求。</li>
         <li>Solution Narrative — 描述MeetSpot算法、权重设置与公平性保障。</li>
         <li>Venue Intelligence — 引用热门场所、评分、运营时间与可达性。</li>
         <li>Social Proof — 嵌入用户故事、数据点、引用或合作伙伴背书。</li>
-        <li>CTA &amp; Next Step — 明确告诉用户“立即生成推荐”或“阅读指南”。</li>
+        <li>CTA &amp; Next Step — 明确告诉用户"立即生成推荐"或"阅读指南"。</li>
     </ol>
     <p>
         该结构与 <a href="/about">关于页面</a>、<a href="/meetspot/shanghai">城市页</a> 的动态内容保持一致, 极大降低重复维护成本。
-        同时我们在文案里植入“SEO-ready, structured data, CTR”等语义, 方便搜索引擎理解页面类型, 让策略对业务和技术团队都可追踪。
+        同时我们在文案里植入"SEO-ready, structured data, CTR"等语义, 方便搜索引擎理解页面类型, 让策略对业务和技术团队都可追踪。
     </p>
 </section>
 
-<section style="margin-top:32px;background:var(--gradient-primary);border-radius:24px;padding:32px;color:#fff;box-shadow:0 24px 70px rgba(15,23,42,0.2);">
-    <h2>Ready to plan your next meetup?</h2>
-    <p>
-        MeetSpot提供免费账号、无需注册体验与完整的 <a href="/sitemap.xml" style="color:#fff;text-decoration:underline;">Sitemap</a>。
-        我们的团队会在48小时内为提交反馈的用户提供改进建议, 并在公开Changelog记录。
-    </p>
-    <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;">
-        <a href="/public/meetspot_finder.html" style="flex:1;min-width:220px;text-align:center;background:#fff;color:#4F46E5;padding:14px 24px;border-radius:999px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,0.15);">立即创建聚会计划</a>
-        <a href="/about" style="flex:1;min-width:220px;text-align:center;border:1px solid rgba(255,255,255,0.6);color:#fff;padding:14px 24px;border-radius:999px;font-weight:700;">认识MeetSpot团队</a>
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2>Ready to plan your next meetup?</h2>
+        <p>
+            MeetSpot提供免费账号、无需注册体验与完整的 <a href="/sitemap.xml">Sitemap</a>。
+            我们的团队会在48小时内为提交反馈的用户提供改进建议, 并在公开Changelog记录。
+        </p>
+        <div class="cta-buttons">
+            <a href="/public/meetspot_finder.html" class="cta-btn cta-btn-primary">立即创建聚会计划</a>
+            <a href="/about" class="cta-btn cta-btn-secondary">认识MeetSpot团队</a>
+        </div>
     </div>
 </section>
 
