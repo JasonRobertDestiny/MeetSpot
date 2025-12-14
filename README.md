@@ -1,251 +1,195 @@
 <div align="center">
 
-# MeetSpot 🗺️
+# MeetSpot
 
 <img src="docs/logo.png" alt="MeetSpot Logo" width="200"/>
 
-**Intelligent Meeting Point Recommendation System - Find the Perfect Place for Every Gathering**
+**Intelligent Meeting Point Recommendation System**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-green.svg)](https://fastapi.tiangolo.com/)
 [![Build Status](https://github.com/JasonRobertDestiny/MeetSpot/actions/workflows/ci.yml/badge.svg)](https://github.com/JasonRobertDestiny/MeetSpot/actions)
 
-🎯 **[Live Demo](https://meetspot-irq2.onrender.com)** | 📺 **[Demo Video](https://www.bilibili.com/video/BV1aUK7zNEvo/)** | English | [简体中文](README_ZH.md)
+[Live Demo](https://meetspot-irq2.onrender.com) | [Demo Video](https://www.bilibili.com/video/BV1aUK7zNEvo/) | English | [简体中文](README_ZH.md)
 
 </div>
 
-## 📱 Screenshots
+## What is MeetSpot?
 
-<div align="center">
+MeetSpot calculates the optimal meeting location based on multiple participants' positions and recommends nearby venues. Whether you need a quiet cafe for business talks, a lively restaurant for friends, or a library for study groups - MeetSpot finds the fairest meeting point for everyone.
 
-### Main Interface
-<img src="docs/show1.png" alt="Main Interface" width="800"/>
+## Features
 
-### Multi-Venue Selection
-<img src="docs/show2.png" alt="Multi-Venue Selection" width="800"/>
+- **Smart Center Point**: Geometric center calculation ensures fairness for all participants
+- **Multi-Scenario Search**: Search cafes + restaurants + libraries simultaneously
+- **2-10 Participants**: Support multiple locations in one search
+- **Intelligent Ranking**: Sort by rating, distance, and user requirements
+- **60+ University Shortcuts**: "PKU" auto-expands to "Peking University"
+- **350+ Cities**: Coverage across major Chinese cities via Amap API
+- **Navigation Theme UI**: Modern cartography-inspired design
+- **SEO-Optimized Pages**: Built-in FAQ, About, and city landing pages
 
-### Recommendation Results
-<img src="docs/show3.png" alt="Recommendation Results" width="800"/>
-
-### Detailed Information
-<img src="docs/show4.png" alt="Detailed Information" width="800"/>
-
-</div>
-
-## 🌟 Features
-
-MeetSpot is an intelligent meeting point recommendation system that calculates optimal meeting locations based on multiple participants' geographical positions and recommends nearby venues.
-
-### ✨ Core Features
-
-- 🎯 **Smart Center Point Calculation**: Calculate geometric center based on multiple locations for fairness
-- 🏢 **Multi-Scenario Recommendations**: Search multiple venue types simultaneously (cafes + restaurants + libraries)
-- 📍 **Multi-Location Support**: Support 2-10 participant locations
-- 🎨 **Intuitive User Interface**: Modern responsive design
-- 🚀 **Real-time Recommendations**: Generate personalized recommendations quickly
-- 📊 **Intelligent Ranking**: Comprehensive sorting based on ratings, distance, and user requirements
-
-### 🔥 Latest Optimizations
-
-- ✅ **Multi-Scenario Recommendations**: Support simultaneous selection of multiple venue types
-- ✅ **Frontend Multi-Selection**: Intuitive venue type selection interface
-- ✅ **Smart Ranking Algorithm**: Scenario matching reward mechanism
-- ✅ **Performance Monitoring**: Complete performance statistics and health checks
-- ✅ **Error Handling**: Robust exception handling mechanism
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Requirements
 
 - Python 3.11+
-- Amap (Gaode Map) API Key
-- Modern browsers (Chrome, Firefox, Safari, Edge)
+- Amap API Key ([Get one here](https://lbs.amap.com/))
 
 ### Installation
 
-1. **Clone Repository**
 ```bash
 git clone https://github.com/JasonRobertDestiny/MeetSpot.git
 cd MeetSpot
-```
-
-2. **Install Dependencies**
-```bash
 pip install -r requirements.txt
-```
 
-3. **Configure API Key**
-```bash
+# Configure API key
 cp config/config.toml.example config/config.toml
-```
+# Edit config/config.toml and add your Amap API key
 
-Edit `config/config.toml` and add your Amap API key:
-```toml
-[amap]
-api_key = "your_amap_api_key_here"
-```
-
-4. **Start Service**
-```bash
+# Start server
 python web_server.py
 ```
 
-5. **Access Application**
-Open browser and visit: http://127.0.0.1:8000
+Open browser: http://127.0.0.1:8000
 
-## 📱 Usage
+## Usage
 
-### Basic Usage
+1. **Enter Locations**: Add 2-10 participant addresses (supports shortcuts like "PKU", "THU")
+2. **Select Venue Types**: Choose 1-3 types (cafe, restaurant, library, KTV, gym, etc.)
+3. **Set Requirements**: Optional - parking, quiet environment, private rooms
+4. **Get Results**: Click search, results in 0.3-0.8 seconds
 
-1. **Input Locations**: Add 2-10 participant locations
-2. **Select Scenarios**: Choose 1-3 venue types (cafes, restaurants, libraries, etc.)
-3. **Set Requirements**: Add special requirements (convenient parking, quiet environment, etc.)
-4. **Get Recommendations**: Click search to get intelligent recommendations
+## API
 
-### Advanced Features
+### Main Endpoint
 
-- **Multi-Scenario Combination**: Search "cafe restaurant" simultaneously for more options
-- **Custom Keywords**: Enter special venue types like "escape room"
-- **Filter Conditions**: Filter by rating, distance, price
-- **Special Requirements**: Support parking, Wi-Fi, private rooms, etc.
+```bash
+POST /api/find_meetspot
+```
 
-## 🏗️ Technology Architecture
-
-### Backend Stack
-
-- **FastAPI**: High-performance web framework
-- **Pydantic**: Data validation and settings management
-- **aiohttp**: Async HTTP client
-- **Amap API**: Geocoding and POI search
-
-### Frontend Stack
-
-- **HTML5 + CSS3**: Responsive design
-- **Vanilla JavaScript**: Lightweight interaction
-- **Boxicons**: Icon library
-- **Modern UI Design**: Gradients and glass effects
-
-### Core Algorithms
-
-- **Geometric Center Calculation**: Multi-point centroid algorithm
-- **Intelligent Ranking**: Multi-factor scoring system
-- **Scenario Matching**: Keyword matching reward
-- **Deduplication Algorithm**: Smart deduplication based on name and address
-
-## 📊 API Documentation
-
-### Main Endpoints
-
-- `GET /` - Homepage redirect
-- `POST /api/find_meetspot` - Meeting point recommendation
-- `GET /health` - Health check
-- `GET /workspace/js_src/{filename}` - Generated recommendation pages
-
-### Request Example
+### Request
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/api/find_meetspot" \
   -H "Content-Type: application/json" \
   -d '{
-    "locations": ["Beijing University", "Tsinghua University"],
+    "locations": ["Peking University", "Tsinghua University"],
     "keywords": "cafe restaurant",
-    "user_requirements": "convenient parking"
+    "user_requirements": "parking"
   }'
 ```
 
-### Response Example
+### Response
 
 ```json
 {
   "success": true,
-  "html_url": "/workspace/js_src/place_recommendation_20250624_12345678.html",
+  "html_url": "/workspace/js_src/place_recommendation_20250614_abc123.html",
   "locations_count": 2,
   "keywords": "cafe restaurant",
   "processing_time": 0.52
 }
 ```
 
-## 🧪 Testing
+### Other Endpoints
 
-Complete test suite included:
+| Endpoint | Description |
+|----------|-------------|
+| `GET /` | Homepage |
+| `GET /health` | Health check |
+| `GET /about` | About page |
+| `GET /faq` | FAQ page |
+| `GET /how-it-works` | Usage guide |
+| `GET /meetspot/{city}` | City landing page |
+
+## Tech Stack
+
+**Backend**: FastAPI, Pydantic, aiohttp, SQLAlchemy
+**Frontend**: HTML5, CSS3, Vanilla JS, Boxicons
+**Map API**: Amap (Gaode Map)
+**Design**: Navigation/Cartography theme with Outfit, DM Sans, Space Mono fonts
+
+## Performance
+
+| Scenario | Response Time |
+|----------|---------------|
+| Single venue type | 0.3-0.4s |
+| Dual venue types | 0.5-0.6s |
+| Triple venue types | 0.7-0.8s |
+
+## Testing
 
 ```bash
-# Run all tests
-python test_optimizations.py      # System optimization tests
-python test_multi_scenario.py     # Multi-scenario feature tests
-python comprehensive_test.py      # Comprehensive feature tests
-
 # Health check
 curl http://127.0.0.1:8000/health
+
+# SEO validation
+python verify_seo.py
+
+# Integration test
+curl -X POST "http://127.0.0.1:8000/api/find_meetspot" \
+  -H "Content-Type: application/json" \
+  -d '{"locations": ["北京大学", "清华大学"], "keywords": "咖啡馆"}'
 ```
 
-## 📈 Performance Metrics
+## Project Structure
 
-- **Response Time**:
-  - Single scenario: 0.3-0.4 seconds
-  - Dual scenario: 0.5-0.6 seconds
-  - Triple scenario: 0.7-0.8 seconds
+```
+MeetSpot/
+├── api/
+│   ├── index.py              # FastAPI app and main endpoints
+│   ├── routers/
+│   │   ├── seo_pages.py      # SEO pages (/, /about, /faq, etc.)
+│   │   └── auth.py           # Authentication endpoints
+│   └── services/
+│       └── seo_content.py    # SEO content generation
+├── app/
+│   ├── tool/
+│   │   └── meetspot_recommender.py  # Core recommendation engine
+│   ├── config.py             # Configuration models
+│   └── design_tokens.py      # Design system tokens
+├── templates/                # Jinja2 templates
+│   ├── base.html
+│   └── pages/
+├── public/                   # Static files
+│   └── meetspot_finder.html  # Demo page
+├── config/
+│   └── config.toml.example   # Config template
+└── web_server.py             # Entry point
+```
 
-- **Support Scale**:
-  - Locations: 2-10
-  - Scenarios: 1-3
-  - Concurrent users: 100+
+## Contributing
 
-## 🛣️ Roadmap
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing`)
+5. Open Pull Request
 
-### v1.1.0 (Planned)
-- [ ] User account system
-- [ ] History saving
-- [ ] Favorites feature
-- [ ] Share recommendations
+## License
 
-### v1.2.0 (Planned)
-- [ ] Machine learning recommendations
-- [ ] Real-time traffic information
-- [ ] Weather data integration
-- [ ] Mobile app
+MIT License - see [LICENSE](LICENSE)
 
-### v2.0.0 (Long-term)
-- [ ] AR navigation
-- [ ] Voice interaction
-- [ ] Internationalization
-- [ ] Enterprise features
+## Contact
 
-## 🤝 Contributing
+- Email: Johnrobertdestiny@gmail.com
+- Issues: [GitHub Issues](https://github.com/JasonRobertDestiny/MeetSpot/issues)
+- WeChat Group: <img src="vx_chat.png" alt="WeChat" width="150"/>
 
-We welcome all forms of contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+## Acknowledgments
 
-## 📄 License
-
-This project is open source under the MIT License - see [LICENSE](LICENSE) file for details.
-
-## 📞 Contact
-
-- 📧 Email: Johnrobertdestiny@gmail.com
-- 🐛 Bug Reports: [GitHub Issues](https://github.com/JasonRobertDestiny/MeetSpot/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/JasonRobertDestiny/MeetSpot/discussions)
-
-### WeChat Group
-
-Join our WeChat group for discussions and updates:
-
-<img src="vx_chat.png" alt="WeChat Group QR Code" width="200"/>
-
-## 🙏 Acknowledgments
-
-- [Amap](https://lbs.amap.com/) - Providing geocoding and POI search services
-- [FastAPI](https://fastapi.tiangolo.com/) - Excellent web framework
-- [Boxicons](https://boxicons.com/) - Beautiful icon library
+- [Amap](https://lbs.amap.com/) - Geocoding and POI search
+- [FastAPI](https://fastapi.tiangolo.com/) - Web framework
+- [Boxicons](https://boxicons.com/) - Icon library
 
 ---
 
 <div align="center">
 
-**If this project helps you, please give it a ⭐ Star!**
+**Star this repo if it helps!**
 
-Made with ❤️ by [JasonRobertDestiny](https://github.com/JasonRobertDestiny)
+Made by [JasonRobertDestiny](https://github.com/JasonRobertDestiny)
 
 </div>
-
-[![Star History Chart](https://api.star-history.com/svg?repos=JasonRobertDestiny/MeetSpot&type=Date)](https://www.star-history.com/#JasonRobertDestiny/MeetSpot&Date)
