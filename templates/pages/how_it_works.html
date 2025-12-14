@@ -1,14 +1,321 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section style="background:#fff;padding:32px;border-radius:24px;box-shadow:0 20px 60px rgba(15,23,42,0.05);">
-    <h1>How MeetSpot Works</h1>
-    <p>使用以下四个步骤, 即可生成对搜索引擎友好的聚会地点推荐页面。</p>
-    <ol style="padding-left:18px;">
-        <li>收集参与者地址并进行地理编码, 支持中文/英文混输。</li>
-        <li>选择关键词与场景, 由SEO服务生成Meta、Schema与FAQ。</li>
-        <li>运行推荐引擎, 生成带有结构化数据的静态HTML。</li>
-        <li>通过Sitemap提交至Search Console, 持续监控排名与收录。</li>
-    </ol>
+<style>
+    .guide-hero {
+        background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-dark) 100%);
+        color: white;
+        padding: 48px;
+        border-radius: 24px;
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .guide-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            repeating-radial-gradient(circle at 20% 30%, transparent 0, transparent 30px, rgba(6, 214, 160, 0.08) 30px, rgba(6, 214, 160, 0.08) 32px);
+        animation: heroPattern 30s linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes heroPattern {
+        0% { background-position: 0 0; }
+        100% { background-position: 100px 100px; }
+    }
+
+    .guide-hero h1 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 900;
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .guide-hero p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .steps-container {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .step-card {
+        background: white;
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.06);
+        border: 1px solid rgba(10, 77, 104, 0.1);
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+        transition: all 0.3s ease;
+    }
+
+    .step-card:hover {
+        border-color: var(--nav-secondary);
+        transform: translateY(-2px);
+    }
+
+    .step-number {
+        flex-shrink: 0;
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, var(--nav-accent) 0%, #D84315 100%);
+        color: white;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Outfit", sans-serif;
+        font-weight: 900;
+        font-size: 1.5rem;
+    }
+
+    .step-content h3 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-dark);
+        margin-bottom: 12px;
+        font-size: 1.4rem;
+    }
+
+    .step-content p {
+        color: var(--text-secondary);
+        line-height: 1.8;
+        margin-bottom: 12px;
+    }
+
+    .step-tips {
+        background: rgba(240, 247, 244, 0.8);
+        padding: 16px;
+        border-radius: 12px;
+        margin-top: 16px;
+        border-left: 4px solid var(--nav-secondary);
+    }
+
+    .step-tips strong {
+        color: var(--nav-primary);
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .step-tips ul {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--text-secondary);
+    }
+
+    .step-tips li {
+        margin-bottom: 6px;
+    }
+
+    .advanced-section {
+        background: white;
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.06);
+        margin-top: 40px;
+        border: 1px solid rgba(10, 77, 104, 0.1);
+    }
+
+    .advanced-section h2 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-dark);
+        margin-bottom: 24px;
+        font-size: 1.8rem;
+    }
+
+    .feature-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .feature-item {
+        padding: 20px;
+        background: rgba(240, 247, 244, 0.5);
+        border-radius: 16px;
+        border: 1px solid rgba(10, 77, 104, 0.1);
+    }
+
+    .feature-item h4 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-primary);
+        margin-bottom: 8px;
+    }
+
+    .feature-item p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-dark) 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 24px;
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .cta-section h2 {
+        color: white;
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+
+    .cta-section p {
+        opacity: 0.95;
+        margin-bottom: 24px;
+    }
+
+    .cta-btn {
+        display: inline-block;
+        padding: 16px 40px;
+        background: linear-gradient(135deg, var(--nav-accent) 0%, #D84315 100%);
+        color: white;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-family: "Outfit", sans-serif;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+    }
+
+    .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(255, 107, 53, 0.5);
+        color: white;
+    }
+
+    @media (max-width: 640px) {
+        .step-card {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="guide-hero">
+    <h1>使用指南</h1>
+    <p>只需四个简单步骤，即可找到最公平的聚会地点</p>
+</div>
+
+<div class="steps-container">
+    <div class="step-card">
+        <div class="step-number">1</div>
+        <div class="step-content">
+            <h3>输入参与者地址</h3>
+            <p>添加 2-10 个参与者的位置。可以输入详细地址、地标名称或大学简称。</p>
+            <div class="step-tips">
+                <strong>小提示</strong>
+                <ul>
+                    <li>支持简写："北大" 会自动识别为 "北京大学"</li>
+                    <li>支持地标：直接输入 "国贸"、"东方明珠" 等</li>
+                    <li>支持中英文混输</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="step-card">
+        <div class="step-number">2</div>
+        <div class="step-content">
+            <h3>选择场所类型</h3>
+            <p>选择 1-3 种场所类型，系统会同时搜索所有选中的类型，提供更多选择。</p>
+            <div class="step-tips">
+                <strong>支持的场所类型</strong>
+                <ul>
+                    <li>咖啡馆 - 适合商务会谈、朋友小聚</li>
+                    <li>餐厅 - 适合聚餐、庆祝活动</li>
+                    <li>图书馆 - 适合学习、安静讨论</li>
+                    <li>更多：KTV、健身房、密室逃脱等</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="step-card">
+        <div class="step-number">3</div>
+        <div class="step-content">
+            <h3>设置特殊需求（可选）</h3>
+            <p>根据实际情况添加特殊需求，系统会优先推荐符合条件的场所。</p>
+            <div class="step-tips">
+                <strong>常用需求</strong>
+                <ul>
+                    <li>停车方便 - 适合自驾出行</li>
+                    <li>环境安静 - 适合商务会议</li>
+                    <li>有包间 - 适合私密聚会</li>
+                    <li>靠近地铁 - 适合公共交通出行</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="step-card">
+        <div class="step-number">4</div>
+        <div class="step-content">
+            <h3>获取推荐结果</h3>
+            <p>点击 "查找聚会地点" 按钮，系统会在 0.3-0.8 秒内返回推荐结果。每个推荐都包含：</p>
+            <div class="step-tips">
+                <strong>结果包含</strong>
+                <ul>
+                    <li>场所名称、地址、评分</li>
+                    <li>距离中心点的距离</li>
+                    <li>一键导航按钮</li>
+                    <li>可直接分享给朋友的链接</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="advanced-section">
+    <h2>高级功能</h2>
+    <div class="feature-list">
+        <div class="feature-item">
+            <h4>多场景组合搜索</h4>
+            <p>同时搜索 "咖啡馆 餐厅"，一次获得两种场所的推荐，方便比较选择。</p>
+        </div>
+        <div class="feature-item">
+            <h4>自定义关键词</h4>
+            <p>输入特殊场所类型如 "密室逃脱"、"剧本杀" 等，搜索更精准。</p>
+        </div>
+        <div class="feature-item">
+            <h4>智能排序</h4>
+            <p>结果按评分、距离、需求匹配度综合排序，最优推荐排在前面。</p>
+        </div>
+        <div class="feature-item">
+            <h4>结果分享</h4>
+            <p>生成的推荐页面可直接分享给朋友，方便集体决策。</p>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <h2>准备好开始了吗？</h2>
+    <p>立即体验智能聚会地点推荐，找到对所有人都公平的会面地点</p>
+    <a href="/public/meetspot_finder.html" class="cta-btn">立即开始使用</a>
 </section>
 {% endblock %}

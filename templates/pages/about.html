@@ -1,23 +1,237 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section style="background:#fff;padding:32px;border-radius:24px;box-shadow:0 20px 60px rgba(15,23,42,0.05);">
-    <h1>关于MeetSpot</h1>
-    <p>MeetSpot始于一个远程团队的内部工具, 现已帮助10万+用户在30+城市找到公平的聚会地点。我们坚持性能优先、结构清晰、权威可信、移动友好与HTTPS安全, 让用户与搜索引擎都能快速理解网站价值。</p>
+<style>
+    .about-hero {
+        background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-dark) 100%);
+        color: white;
+        padding: 48px;
+        border-radius: 24px;
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            repeating-radial-gradient(circle at 20% 30%, transparent 0, transparent 30px, rgba(6, 214, 160, 0.08) 30px, rgba(6, 214, 160, 0.08) 32px);
+        animation: heroPattern 30s linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes heroPattern {
+        0% { background-position: 0 0; }
+        100% { background-position: 100px 100px; }
+    }
+
+    .about-hero h1 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 900;
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .about-hero p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+        max-width: 700px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+        line-height: 1.8;
+    }
+
+    .about-section {
+        background: white;
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.06);
+        margin-bottom: 32px;
+        border: 1px solid rgba(10, 77, 104, 0.1);
+    }
+
+    .about-section h2 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-dark);
+        margin-bottom: 20px;
+        font-size: 1.8rem;
+    }
+
+    .about-section p {
+        color: var(--text-secondary);
+        line-height: 1.8;
+        margin-bottom: 16px;
+    }
+
+    .value-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 24px;
+        margin-top: 24px;
+    }
+
+    .value-card {
+        background: rgba(240, 247, 244, 0.5);
+        padding: 24px;
+        border-radius: 16px;
+        border: 1px solid rgba(10, 77, 104, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .value-card:hover {
+        border-color: var(--nav-secondary);
+        transform: translateY(-2px);
+    }
+
+    .value-card h3 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-primary);
+        margin-bottom: 12px;
+        font-size: 1.2rem;
+    }
+
+    .value-card p {
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    .tech-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .tech-tag {
+        display: inline-block;
+        padding: 8px 16px;
+        background: linear-gradient(135deg, rgba(10, 77, 104, 0.1) 0%, rgba(6, 214, 160, 0.1) 100%);
+        border-radius: 999px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--nav-primary);
+        font-family: "Space Mono", monospace;
+    }
+
+    .contact-section {
+        background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-dark) 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 24px;
+        text-align: center;
+    }
+
+    .contact-section h2 {
+        color: white;
+        margin-bottom: 16px;
+    }
+
+    .contact-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        justify-content: center;
+        margin-top: 24px;
+    }
+
+    .contact-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: white;
+        color: var(--nav-primary);
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-family: "Outfit", sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    .contact-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .contact-btn i {
+        font-size: 1.3rem;
+    }
+</style>
+
+<div class="about-hero">
+    <h1>关于 MeetSpot</h1>
+    <p>MeetSpot（聚点）是一个智能会面地点推荐系统，帮助用户根据多个参与者的位置和特定需求，快速找到最合适的会面场所。</p>
+</div>
+
+<section class="about-section">
+    <h2>我们的故事</h2>
+    <p>MeetSpot 始于一个简单的问题：当多个朋友分散在城市不同角落时，如何找到对所有人都公平的聚会地点？</p>
+    <p>传统方式往往是让某一个人跑最远，或者随意选一个"中间"的地方。我们认为应该有更好的解决方案——一个基于算法的、公平的中点计算系统。</p>
+    <p>于是，MeetSpot 诞生了。从最初的内部工具，到现在覆盖 350+ 城市的在线服务，我们始终坚持一个原则：让每个人的路程都在合理范围内。</p>
 </section>
 
-<section style="margin-top:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;">
-    <article style="background:#fff;padding:24px;border-radius:20px;">
-        <h3>公平性</h3>
-        <p>通过权重算法控制每位参与者的距离差, 保证聚会体验公平。</p>
-    </article>
-    <article style="background:#fff;padding:24px;border-radius:20px;">
-        <h3>可信度</h3>
-        <p>结构化数据、用户评价和案例展示产品权威性, 提升搜索排名。</p>
-    </article>
-    <article style="background:#fff;padding:24px;border-radius:20px;">
-        <h3>性能</h3>
-        <p>SSR + 轻量前端确保首屏3秒内加载, 并定期运行Lighthouse检测。</p>
-    </article>
+<section class="about-section">
+    <h2>核心价值</h2>
+    <div class="value-grid">
+        <div class="value-card">
+            <h3>🎯 公平性</h3>
+            <p>通过几何中心算法确保每位参与者的距离差在合理范围内，没有人需要跑特别远。</p>
+        </div>
+        <div class="value-card">
+            <h3>🚀 便捷性</h3>
+            <p>无需注册、完全免费，输入地址即可获得推荐，0.3-0.8秒内返回结果。</p>
+        </div>
+        <div class="value-card">
+            <h3>🏢 多样性</h3>
+            <p>支持同时搜索多种场所类型（咖啡馆+餐厅+图书馆），满足不同聚会场景需求。</p>
+        </div>
+        <div class="value-card">
+            <h3>📊 智能化</h3>
+            <p>基于评分、距离、用户需求的综合排序，优先推荐高质量场所。</p>
+        </div>
+    </div>
+</section>
+
+<section class="about-section">
+    <h2>技术架构</h2>
+    <p>MeetSpot 采用现代化的技术栈，确保高性能和稳定性：</p>
+    <div class="tech-list">
+        <span class="tech-tag">FastAPI</span>
+        <span class="tech-tag">Python 3.11+</span>
+        <span class="tech-tag">高德地图 API</span>
+        <span class="tech-tag">异步处理</span>
+        <span class="tech-tag">响应式设计</span>
+    </div>
+    <p style="margin-top: 20px;">项目完全开源，欢迎在 GitHub 上查看源代码、提交问题或贡献代码。</p>
+</section>
+
+<section class="contact-section">
+    <h2>联系我们</h2>
+    <p>有问题、建议或合作意向？欢迎通过以下方式联系：</p>
+    <div class="contact-links">
+        <a href="mailto:Johnrobertdestiny@gmail.com" class="contact-btn">
+            <i class='bx bx-envelope'></i>
+            邮箱联系
+        </a>
+        <a href="https://github.com/JasonRobertDestiny/MeetSpot" target="_blank" rel="noopener" class="contact-btn">
+            <i class='bx bxl-github'></i>
+            GitHub
+        </a>
+        <a href="https://github.com/JasonRobertDestiny/MeetSpot/issues" target="_blank" rel="noopener" class="contact-btn">
+            <i class='bx bx-bug'></i>
+            问题反馈
+        </a>
+    </div>
 </section>
 {% endblock %}

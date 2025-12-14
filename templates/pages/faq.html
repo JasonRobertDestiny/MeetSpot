@@ -1,15 +1,182 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section style="background:#fff;padding:32px;border-radius:24px;box-shadow:0 20px 60px rgba(15,23,42,0.05);">
+<style>
+    .faq-hero {
+        background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-dark) 100%);
+        color: white;
+        padding: 48px;
+        border-radius: 24px;
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .faq-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            repeating-radial-gradient(circle at 20% 30%, transparent 0, transparent 30px, rgba(6, 214, 160, 0.08) 30px, rgba(6, 214, 160, 0.08) 32px);
+        animation: heroPattern 30s linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes heroPattern {
+        0% { background-position: 0 0; }
+        100% { background-position: 100px 100px; }
+    }
+
+    .faq-hero h1 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 900;
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .faq-hero p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .faq-container {
+        background: white;
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.06);
+        border: 1px solid rgba(10, 77, 104, 0.1);
+    }
+
+    .faq-item {
+        border-bottom: 1px solid rgba(10, 77, 104, 0.1);
+        padding: 24px 0;
+    }
+
+    .faq-item:last-child {
+        border-bottom: none;
+    }
+
+    .faq-item h3 {
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-primary);
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .faq-item h3::before {
+        content: 'Q';
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, var(--nav-accent) 0%, #D84315 100%);
+        color: white;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 900;
+    }
+
+    .faq-item p {
+        color: var(--text-secondary);
+        line-height: 1.8;
+        margin: 0;
+        padding-left: 40px;
+    }
+
+    .contact-section {
+        background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-dark) 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 24px;
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .contact-section h2 {
+        color: white;
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+
+    .contact-section p {
+        opacity: 0.95;
+        margin-bottom: 24px;
+    }
+
+    .contact-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        justify-content: center;
+    }
+
+    .contact-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: white;
+        color: var(--nav-primary);
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-family: "Outfit", sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    .contact-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .contact-btn i {
+        font-size: 1.3rem;
+    }
+</style>
+
+<div class="faq-hero">
     <h1>常见问题</h1>
-    <div style="margin-top:24px;">
-        {% for faq in faqs %}
-        <article style="border-bottom:1px solid #E5E7EB;padding:16px 0;">
-            <h3>{{ faq.question }}</h3>
-            <p>{{ faq.answer }}</p>
-        </article>
-        {% endfor %}
+    <p>关于 MeetSpot 的常见问题解答</p>
+</div>
+
+<div class="faq-container">
+    {% for faq in faqs %}
+    <article class="faq-item">
+        <h3>{{ faq.question }}</h3>
+        <p>{{ faq.answer }}</p>
+    </article>
+    {% endfor %}
+</div>
+
+<section class="contact-section">
+    <h2>还有其他问题？</h2>
+    <p>如果以上内容没有解答你的疑问，欢迎通过以下方式联系我们</p>
+    <div class="contact-links">
+        <a href="mailto:Johnrobertdestiny@gmail.com" class="contact-btn">
+            <i class='bx bx-envelope'></i>
+            邮箱联系
+        </a>
+        <a href="https://github.com/JasonRobertDestiny/MeetSpot/issues" target="_blank" rel="noopener" class="contact-btn">
+            <i class='bx bx-bug'></i>
+            GitHub Issues
+        </a>
     </div>
 </section>
 {% endblock %}
