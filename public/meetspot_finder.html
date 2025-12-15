@@ -1164,9 +1164,11 @@
                 }
 
                 const result = await response.json();
-                
+
                 const processingTime = Date.now() - startTime;
-                console.log(`API调用完成，客户端耗时: ${processingTime}ms, 服务器耗时: ${result.processing_time * 1000}ms`);                if (result.success && result.html_url) {
+                console.log(`API调用完成，客户端耗时: ${processingTime}ms, 服务器耗时: ${result.processing_time * 1000}ms`);
+
+                if (result.success && result.html_url) {
                     // 关闭加载 toast
                     toastManager.dismiss(loadingToastId);
 
@@ -1179,8 +1181,22 @@
 
                     // 更新状态显示
                     showSuccess('推荐生成成功', `${keywords}推荐已生成，请查看新页面`);
+                } else if (result.success && !result.html_url && result.output) {
+                    // 搜索成功但没有找到结果的情况
+                    toastManager.dismiss(loadingToastId);
+
+                    // 从 output 中提取关键信息
+                    const outputText = result.output;
+                    let userMessage = '在该区域未找到相关场所';
+
+                    if (outputText.includes('找不到')) {
+                        userMessage = '在计算的中心点附近未找到相关场所，请尝试更换关键词或使用更详细的地址';
+                    }
+
+                    showWarning('未找到结果', userMessage);
+                    console.log('搜索结果详情:', outputText);
                 } else {
-                    throw new Error(result.error || '数据处理异常，请检查地点信息是否正确，输入详细的地址信息（如：北京市朝阳区三里屯太古里）');
+                    throw new Error(result.error || result.message || '数据处理异常，请检查地点信息是否正确，输入详细的地址信息（如：北京市朝阳区三里屯太古里）');
                 }
             } catch (error) {
                 console.error('请求失败:', error);

@@ -361,11 +361,13 @@ class CafeRecommender(BaseTool):
         try:
             coordinates = []
             location_info = []
+            geocode_results = []  # 存储原始 geocode 结果用于后续分析
+
             for i, location in enumerate(locations):
                 # 在多个地址查询之间添加延迟，避免API限制
                 if i > 0:
                     await asyncio.sleep(0.5)  # 500ms延迟
-                
+
                 geocode_result = await self._geocode(location)
                 if not geocode_result:
                     # 检查是否为大学简称但地理编码失败
@@ -376,6 +378,20 @@ class CafeRecommender(BaseTool):
                         # 提供更详细的地址输入指导
                         suggestions = self._get_address_suggestions(location)
                         return ToolResult(output=f"❌ 无法找到地点: {location}\n\n🔍 **地址解析失败**\n系统无法识别您输入的地址，请检查以下几点：\n\n💡 **具体建议：**\n{suggestions}\n\n📍 **标准地址格式示例：**\n• **完整地址**：'北京市海淀区中关村大街27号'\n• **知名地标**：'北京大学'、'天安门广场'、'上海外滩'\n• **商圈区域**：'三里屯'、'王府井'、'南京路步行街'\n• **交通枢纽**：'北京南站'、'上海虹桥机场'\n\n⚠️ **常见错误避免：**\n• 避免过于简短：'大学' → '北京大学'\n• 避免拼写错误：'北大' → '北京大学'\n• 避免模糊描述：'那个商场' → '王府井百货大楼'\n\n🔧 **如果仍有问题：**\n• 检查网络连接是否正常\n• 尝试使用地址的官方全称\n• 确认地点确实存在且对外开放")
+
+                geocode_results.append({
+                    "original_location": location,
+                    "result": geocode_result
+                })
+
+            # 智能城市推断：检测是否有地点被解析到完全不同的城市
+            if len(geocode_results) > 1:
+                geocode_results = await self._smart_city_inference(locations, geocode_results)
+
+            # 处理最终的 geocode 结果
+            for item in geocode_results:
+                geocode_result = item["result"]
+                location = item["original_location"]
                 lng, lat = geocode_result["location"].split(",")
                 coordinates.append((float(lng), float(lat)))
                 location_info.append({
@@ -383,7 +399,8 @@ class CafeRecommender(BaseTool):
                     "formatted_address": geocode_result.get("formatted_address", location),
                     "location": geocode_result["location"],
                     "lng": float(lng),
-                    "lat": float(lat)
+                    "lat": float(lat),
+                    "city": geocode_result.get("city", "")
                 })
 
             if not coordinates:
@@ -750,6 +767,88 @@ class CafeRecommender(BaseTool):
                 await asyncio.sleep(1 * (attempt + 1))
         
         return None
+
+    async def _smart_city_inference(
+        self,
+        original_locations: List[str],
+        geocode_results: List[Dict]
+    ) -> List[Dict]:
+        """智能城市推断：检测并修正被解析到错误城市的地点
+
+        当用户输入简短地名（如"国贸"）时，高德API可能将其解析到全国任何同名地点。
+        此方法检测这种情况，并尝试用其他地点的城市信息重新解析。
+        """
+        if len(geocode_results) < 2:
+            return geocode_results
+
+        # 提取所有地点的城市和坐标
+        cities = []
+        coords = []
+        for item in geocode_results:
+            result = item["result"]
+            city = result.get("city", "") or result.get("province", "")
+            cities.append(city)
+            lng, lat = result["location"].split(",")
+            coords.append((float(lng), float(lat)))
+
+        # 找出主流城市（出现次数最多的城市）
+        from collections import Counter
+        city_counts = Counter(cities)
+        if not city_counts:
+            return geocode_results
+
+        main_city, main_count = city_counts.most_common(1)[0]
+
+        # 如果所有地点都在同一城市，无需修正
+        if main_count == len(cities):
+            return geocode_results
+
+        # 检测异常地点：距离其他地点过远（超过500公里）
+        updated_results = []
+        for i, item in enumerate(geocode_results):
+            result = item["result"]
+            location = item["original_location"]
+            current_city = cities[i]
+
+            # 计算与其他地点的平均距离
+            if len(coords) > 1:
+                other_coords = [c for j, c in enumerate(coords) if j != i]
+                avg_distance = sum(
+                    self._calculate_distance(coords[i], c) for c in other_coords
+                ) / len(other_coords)
+
+                # 如果当前地点距离其他地点平均超过100公里，且城市不同，尝试重新解析
+                if avg_distance > 100000 and current_city != main_city:  # 100km = 100000m
+                    logger.warning(
+                        f"检测到地点 '{location}' 被解析到远离其他地点的城市 "
+                        f"({current_city})，尝试用 {main_city} 重新解析"
+                    )
+
+                    # 尝试用主流城市名作为前缀重新解析
+                    new_address = f"{main_city}{location}"
+                    new_result = await self._geocode(new_address)
+
+                    if new_result:
+                        new_lng, new_lat = new_result["location"].split(",")
+                        new_coord = (float(new_lng), float(new_lat))
+                        # 检查新结果是否更合理（距离其他地点更近）
+                        new_avg_distance = sum(
+                            self._calculate_distance(new_coord, c) for c in other_coords
+                        ) / len(other_coords)
+
+                        if new_avg_distance < avg_distance:
+                            logger.info(
+                                f"成功将 '{location}' 重新解析为 {new_result.get('formatted_address')}"
+                            )
+                            updated_results.append({
+                                "original_location": location,
+                                "result": new_result
+                            })
+                            continue
+
+            updated_results.append(item)
+
+        return updated_results
 
     def _calculate_center_point(self, coordinates: List[Tuple[float, float]]) -> Tuple[float, float]:
         """计算多个坐标点的中心点（使用球面几何）"""

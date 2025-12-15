@@ -122,6 +122,8 @@ public/
 └── css/               # Stylesheets
 
 workspace/js_src/      # Generated recommendation HTML pages (gitignored)
+
+OpenManus/             # Experimental agent framework (untracked, not used in production)
 ```
 
 ### Configuration Management
@@ -180,7 +182,8 @@ See `requirements.txt` for full list with versions.
 
 ### Deployment
 - **Render.com**: `render.yaml`
-- **Docker**: Multi-stage Dockerfile
+- **Railway**: Auto-detects via `RAILWAY_ENVIRONMENT` env var
+- **Docker**: Multi-stage Dockerfile (`FROM python:3.12-slim`)
 - **GitHub Actions**: Tests Python 3.11/3.12, runs import validation and flake8
 - **Environment variables**: `AMAP_API_KEY`, `PORT`, `RAILWAY_ENVIRONMENT`, `AMAP_SECURITY_JS_CODE`
 
@@ -193,6 +196,15 @@ See `requirements.txt` for full list with versions.
   - Used for search engine optimization and social sharing
 
 ## Development Notes
+
+### Experimental Agent Mode (Not Production-Ready)
+
+The codebase includes an experimental agent endpoint (`/api/find_meetspot_agent`) that uses the OpenManus framework for AI-driven recommendations. This is NOT used in production:
+
+- Located in `api/index.py:447-526`
+- Requires OpenManus directory (currently untracked)
+- Falls back to rule-based mode if agent unavailable
+- **DO NOT USE** for production features without explicit discussion
 
 ### Database Architecture (Optional)
 
@@ -279,7 +291,8 @@ Database layer is implemented but optional. Core MeetSpot recommendation works w
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/` | GET | Homepage redirect to main UI |
-| `/api/find_meetspot` | POST | Main recommendation endpoint |
+| `/api/find_meetspot` | POST | Main recommendation endpoint (production) |
+| `/api/find_meetspot_agent` | POST | Agent mode endpoint (experimental, not production) |
 | `/recommend` | POST | Legacy compatibility endpoint |
 | `/health` | GET | Health check and config status |
 | `/config` | GET | Configuration status (no secrets) |
