@@ -1165,11 +1165,12 @@
                         <div class="filter-group">
                             <label for="maxDistance">最大距离</label>
                             <select id="maxDistance">
-                                <option value="10000">不限制</option>
-                                <option value="1000">1公里内</option>
-                                <option value="2000">2公里内</option>
-                                <option value="3000">3公里内</option>
+                                <option value="100000">不限制</option>
                                 <option value="5000">5公里内</option>
+                                <option value="10000" selected>10公里内</option>
+                                <option value="20000">20公里内</option>
+                                <option value="30000">30公里内</option>
+                                <option value="50000">50公里内</option>
                             </select>
                         </div>
                         <div class="filter-group">
@@ -1489,8 +1490,10 @@
                 toastManager.dismiss(loadingToastId);
 
                 if (result.success && result.html_url) {
-                    window.open(result.html_url, '_blank');
-                    showSuccess('推荐完成', `${keywords}推荐已生成`);
+                    showSuccess('推荐完成', `${keywords}推荐已生成，正在跳转...`);
+                    setTimeout(() => {
+                        window.location.href = result.html_url;
+                    }, 500);
                 } else if (result.success && !result.html_url) {
                     showWarning('未找到结果', '请尝试更换关键词或使用更详细的地址');
                 } else {

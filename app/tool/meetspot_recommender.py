@@ -2188,7 +2188,7 @@ class CafeRecommender(BaseTool):
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.9/css/boxicons.min.css">
 
     <!-- Modern UI Components -->
-    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/public/css/components.css">
 
     {schema_script}
     <style>
@@ -2372,7 +2372,7 @@ class CafeRecommender(BaseTool):
                     </ul>
                 </div>
             </div>
-            <a href="/public/meetspot_finder.html" class="btn-modern btn-primary-modern">
+            <a href="/" class="btn-modern btn-primary-modern">
                 <i class='bx bx-left-arrow-alt'></i>返回首页
             </a>
         </div>
@@ -2475,7 +2475,7 @@ class CafeRecommender(BaseTool):
     </script>
 
     <!-- Modern Toast Notification System -->
-    <script src="/js/toast.js"></script>
+    <script src="/public/js/toast.js"></script>
 </body>
 </html>"""
         return html_content
