@@ -214,7 +214,7 @@ MIT License - see [LICENSE](LICENSE)
 
 - Email: Johnrobertdestiny@gmail.com
 - Issues: [GitHub Issues](https://github.com/JasonRobertDestiny/MeetSpot/issues)
-- WeChat Group: <img src="vx_chat.png" alt="WeChat" width="150"/>
+- WeChat: <img src="docs/Wechat.png" alt="WeChat" width="150"/>
 
 ## Acknowledgments
 

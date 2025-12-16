@@ -214,7 +214,7 @@ MIT License - 详见 [LICENSE](LICENSE)
 
 - 邮箱：Johnrobertdestiny@gmail.com
 - 问题反馈：[GitHub Issues](https://github.com/JasonRobertDestiny/MeetSpot/issues)
-- 微信群：<img src="vx_chat.png" alt="微信群" width="150"/>
+- 微信：<img src="docs/Wechat.png" alt="微信" width="150"/>
 
 ## 致谢
 
