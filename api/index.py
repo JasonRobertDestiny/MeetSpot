@@ -41,6 +41,17 @@ try:
 except ImportError as e:
     print(f"⚠️ Agent 模块导入失败: {e}")
 
+# 导入 LLM 模块
+llm_available = False
+llm_instance = None
+try:
+    from app.llm import LLM
+    from app.schema import Message
+    llm_available = True
+    print("✅ 成功导入 LLM 模块")
+except ImportError as e:
+    print(f"⚠️ LLM 模块导入失败: {e}")
+
     # 在Vercel环境下创建最小化配置类
     class MinimalConfig:
         class AMapSettings:
@@ -175,6 +186,44 @@ class MeetSpotRequest(BaseModel):
     keywords: Optional[str] = "咖啡馆"
     place_type: Optional[str] = ""
     user_requirements: Optional[str] = ""
+
+class AIChatRequest(BaseModel):
+    message: str
+    conversation_history: Optional[List[dict]] = []
+
+# MeetSpot AI客服系统提示词
+MEETSPOT_SYSTEM_PROMPT = """你是MeetSpot（聚点）的AI智能客服助手。MeetSpot是一个智能会面地点推荐系统，帮助用户找到多人聚会的最佳中间点。
+
+## 产品功能介绍：
+1. **智能中点计算**：输入2-10个参与者地点，系统自动计算最公平的中间位置
+2. **多场景推荐**：支持咖啡馆、餐厅、图书馆、商场、KTV、电影院等15+场景类型
+3. **智能排序**：基于距离、评分、用户需求等多维度智能排序推荐结果
+4. **地图可视化**：在高德地图上直观展示所有地点和推荐场所
+5. **特殊需求**：支持停车方便、环境安静、有Wi-Fi、适合商务等特殊需求筛选
+
+## 使用方法：
+1. 在首页输入2个以上参与者地点（支持地址或地标名称）
+2. 选择想要的场景类型（如咖啡馆、餐厅）
+3. 可选：设置筛选条件和特殊需求
+4. 点击"查找最佳会面点"获取推荐
+
+## 常见问题：
+- **Q: 支持哪些城市？** A: 支持全国所有城市，只要输入准确地址即可
+- **Q: 可以输入多少个地点？** A: 最少2个，最多10个参与者地点
+- **Q: 推荐结果准确吗？** A: 我们使用高德地图API获取实时POI数据，结合智能算法排序
+- **Q: 是否收费？** A: 基础功能完全免费使用
+
+请用友好、专业的语气回答用户问题。如果用户问的问题与MeetSpot无关，礼貌地引导他们了解我们的产品功能。回答要简洁明了，中文回复。"""
+
+# 预设问题列表
+PRESET_QUESTIONS = [
+    {"id": 1, "question": "MeetSpot是什么？", "category": "产品介绍"},
+    {"id": 2, "question": "如何使用MeetSpot找会面点？", "category": "使用指南"},
+    {"id": 3, "question": "支持哪些场景类型？", "category": "功能"},
+    {"id": 4, "question": "可以输入多少个地点？", "category": "功能"},
+    {"id": 5, "question": "推荐结果是怎么排序的？", "category": "技术"},
+    {"id": 6, "question": "MeetSpot收费吗？", "category": "其他"},
+]
 
 # 环境变量配置（用于 Vercel）
 AMAP_API_KEY = os.getenv("AMAP_API_KEY", "")
@@ -351,6 +400,103 @@ async def get_config():
         "config_loaded": bool(config),
         "full_features_available": bool(config)
     }
+
+# ==================== AI 客服接口 ====================
+
+@app.get("/api/ai_chat/preset_questions")
+async def get_preset_questions():
+    """获取预设问题列表"""
+    return {
+        "success": True,
+        "questions": PRESET_QUESTIONS
+    }
+
+@app.post("/api/ai_chat")
+async def ai_chat(request: AIChatRequest):
+    """AI客服聊天接口"""
+    start_time = time.time()
+
+    try:
+        print(f"🤖 [AI客服] 收到消息: {request.message[:50]}...")
+
+        if not llm_available:
+            # LLM不可用时返回预设回复
+            print("⚠️ LLM模块不可用，使用预设回复")
+            return {
+                "success": True,
+                "response": "抱歉，AI客服暂时不可用。您可以直接使用我们的会面点推荐功能，或查看页面上的使用说明。如有问题请稍后再试。",
+                "processing_time": time.time() - start_time,
+                "mode": "fallback"
+            }
+
+        # 获取LLM API配置
+        llm_api_key = os.getenv("LLM_API_KEY", "")
+        llm_api_base = os.getenv("LLM_API_BASE", "https://newapi.deepwisdom.ai/v1")
+        llm_model = os.getenv("LLM_MODEL", "deepseek-chat")  # 默认使用deepseek，中文能力强
+
+        if not llm_api_key:
+            print("⚠️ LLM_API_KEY未配置")
+            return {
+                "success": True,
+                "response": "AI客服配置中，请稍后再试。您也可以直接体验我们的会面点推荐功能！",
+                "processing_time": time.time() - start_time,
+                "mode": "fallback"
+            }
+
+        # 使用openai库直接调用（兼容DeepWisdom API）
+        from openai import AsyncOpenAI
+
+        client = AsyncOpenAI(
+            api_key=llm_api_key,
+            base_url=llm_api_base
+        )
+
+        # 构建消息列表
+        messages = [
+            {"role": "system", "content": MEETSPOT_SYSTEM_PROMPT}
+        ]
+
+        # 添加历史对话（最多保留最近5轮）
+        if request.conversation_history:
+            recent_history = request.conversation_history[-10:]  # 最多10条消息
+            messages.extend(recent_history)
+
+        # 添加当前用户消息
+        messages.append({"role": "user", "content": request.message})
+
+        print(f"🚀 [AI客服] 调用LLM ({llm_model})，消息数: {len(messages)}")
+
+        # 调用LLM
+        response = await client.chat.completions.create(
+            model=llm_model,
+            messages=messages,
+            max_tokens=500,
+            temperature=0.7
+        )
+
+        ai_response = response.choices[0].message.content
+        processing_time = time.time() - start_time
+
+        print(f"✅ [AI客服] 回复生成成功，耗时: {processing_time:.2f}秒")
+
+        return {
+            "success": True,
+            "response": ai_response,
+            "processing_time": processing_time,
+            "mode": "llm"
+        }
+
+    except Exception as e:
+        print(f"💥 [AI客服] 错误: {str(e)}")
+        return {
+            "success": False,
+            "response": f"抱歉，AI客服遇到了问题。您可以直接使用会面点推荐功能，或稍后再试。",
+            "error": str(e),
+            "processing_time": time.time() - start_time,
+            "mode": "error"
+        }
+
+# ==================== 会面点推荐接口 ====================
 
 @app.post("/api/find_meetspot")
 async def find_meetspot(request: MeetSpotRequest):
