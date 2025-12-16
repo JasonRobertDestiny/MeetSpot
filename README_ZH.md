@@ -2,7 +2,7 @@
 
 # MeetSpot 聚点
 
-<img src="docs/logo.png" alt="MeetSpot Logo" width="200"/>
+<img src="docs/logo.jpg" alt="MeetSpot Logo" width="200"/>
 
 **智能会面地点推荐系统**
 
@@ -19,6 +19,10 @@
 
 MeetSpot（聚点）根据多个参与者的位置计算最佳会面地点，并推荐附近高评分场所。无论是商务会谈找咖啡馆、朋友聚餐找餐厅、还是学习讨论找图书馆，聚点都能为所有人找到最公平的中点位置。
 
+<div align="center">
+<img src="docs/show1.jpg" alt="MeetSpot 首页" width="80%"/>
+</div>
+
 ## 核心功能
 
 - **智能中心点计算**：几何中心算法确保每个人的路程都公平
@@ -27,8 +31,34 @@ MeetSpot（聚点）根据多个参与者的位置计算最佳会面地点，并
 - **智能排序**：评分、距离、需求综合排序
 - **60+ 大学简称**："北大"自动识别为"北京大学"
 - **350+ 城市覆盖**：基于高德地图 API
-- **导航主题 UI**：现代地图风格设计
-- **SEO 优化页面**：内置 FAQ、关于、城市落地页
+- **AI 智能客服**：内置 AI 助手解答使用问题
+- **LLM 动态建议**：智能生成交通与停车建议
+
+<div align="center">
+<img src="docs/show2.jpg" alt="输入地点" width="80%"/>
+</div>
+
+## 产品截图
+
+### 地图展示
+<div align="center">
+<img src="docs/show4地图展示.jpg" alt="地图展示" width="80%"/>
+</div>
+
+### 推荐地点
+<div align="center">
+<img src="docs/show5推荐地点.jpg" alt="推荐地点" width="80%"/>
+</div>
+
+### 智能交通建议
+<div align="center">
+<img src="docs/show6停车建议.jpg" alt="交通与停车建议" width="80%"/>
+</div>
+
+### 高德地图导航
+<div align="center">
+<img src="docs/show7高德地图.jpg" alt="高德地图导航" width="80%"/>
+</div>
 
 ## 快速开始
 
@@ -60,6 +90,10 @@ python web_server.py
 2. **选择场所**：选择 1-3 种类型（咖啡馆、餐厅、图书馆、KTV、健身房等）
 3. **设置需求**：可选 - 停车方便、环境安静、有包间
 4. **获取结果**：点击搜索，0.3-0.8 秒内出结果
+
+<div align="center">
+<img src="docs/show3.jpg" alt="选择场景" width="80%"/>
+</div>
 
 ## API 接口
 
@@ -103,13 +137,15 @@ curl -X POST "http://127.0.0.1:8000/api/find_meetspot" \
 | `GET /faq` | 常见问题 |
 | `GET /how-it-works` | 使用指南 |
 | `GET /meetspot/{city}` | 城市落地页 |
+| `POST /api/ai_chat` | AI 智能客服 |
 
 ## 技术栈
 
-**后端**：FastAPI, Pydantic, aiohttp, SQLAlchemy
+**后端**：FastAPI, Pydantic, aiohttp, SQLAlchemy, OpenAI API
 **前端**：HTML5, CSS3, Vanilla JS, Boxicons
 **地图**：高德地图 API
-**设计**：导航/地图主题，Outfit + DM Sans + Space Mono 字体
+**AI**：DeepSeek / GPT-4o-mini (LLM 动态内容生成)
+**设计**：Urban Navigator 主题，现代地图风格
 
 ## 性能指标
 
@@ -149,12 +185,14 @@ MeetSpot/
 │   ├── tool/
 │   │   └── meetspot_recommender.py  # 核心推荐引擎
 │   ├── config.py             # 配置模型
+│   ├── llm.py                # LLM 集成
 │   └── design_tokens.py      # 设计系统
 ├── templates/                # Jinja2 模板
 │   ├── base.html
 │   └── pages/
 ├── public/                   # 静态文件
-│   └── meetspot_finder.html  # Demo 页面
+│   └── meetspot_finder.html  # 主搜索页面
+├── docs/                     # 文档和截图
 ├── config/
 │   └── config.toml.example   # 配置模板
 └── web_server.py             # 入口文件
@@ -183,6 +221,7 @@ MIT License - 详见 [LICENSE](LICENSE)
 - [高德地图](https://lbs.amap.com/) - 地理编码和 POI 搜索
 - [FastAPI](https://fastapi.tiangolo.com/) - Web 框架
 - [Boxicons](https://boxicons.com/) - 图标库
+- [DeepSeek](https://www.deepseek.com/) - LLM 服务
 
 ---
 

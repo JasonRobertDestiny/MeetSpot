@@ -2,7 +2,7 @@
 
 # MeetSpot
 
-<img src="docs/logo.png" alt="MeetSpot Logo" width="200"/>
+<img src="docs/logo.jpg" alt="MeetSpot Logo" width="200"/>
 
 **Intelligent Meeting Point Recommendation System**
 
@@ -19,6 +19,10 @@
 
 MeetSpot calculates the optimal meeting location based on multiple participants' positions and recommends nearby venues. Whether you need a quiet cafe for business talks, a lively restaurant for friends, or a library for study groups - MeetSpot finds the fairest meeting point for everyone.
 
+<div align="center">
+<img src="docs/show1.jpg" alt="MeetSpot Homepage" width="80%"/>
+</div>
+
 ## Features
 
 - **Smart Center Point**: Geometric center calculation ensures fairness for all participants
@@ -27,8 +31,34 @@ MeetSpot calculates the optimal meeting location based on multiple participants'
 - **Intelligent Ranking**: Sort by rating, distance, and user requirements
 - **60+ University Shortcuts**: "PKU" auto-expands to "Peking University"
 - **350+ Cities**: Coverage across major Chinese cities via Amap API
-- **Navigation Theme UI**: Modern cartography-inspired design
-- **SEO-Optimized Pages**: Built-in FAQ, About, and city landing pages
+- **AI Customer Service**: Built-in AI assistant for usage questions
+- **LLM Dynamic Suggestions**: Smart transport and parking recommendations
+
+<div align="center">
+<img src="docs/show2.jpg" alt="Enter Locations" width="80%"/>
+</div>
+
+## Screenshots
+
+### Map Display
+<div align="center">
+<img src="docs/show4地图展示.jpg" alt="Map Display" width="80%"/>
+</div>
+
+### Recommended Venues
+<div align="center">
+<img src="docs/show5推荐地点.jpg" alt="Recommended Venues" width="80%"/>
+</div>
+
+### Smart Transport Tips
+<div align="center">
+<img src="docs/show6停车建议.jpg" alt="Transport and Parking Tips" width="80%"/>
+</div>
+
+### Amap Navigation
+<div align="center">
+<img src="docs/show7高德地图.jpg" alt="Amap Navigation" width="80%"/>
+</div>
 
 ## Quick Start
 
@@ -60,6 +90,10 @@ Open browser: http://127.0.0.1:8000
 2. **Select Venue Types**: Choose 1-3 types (cafe, restaurant, library, KTV, gym, etc.)
 3. **Set Requirements**: Optional - parking, quiet environment, private rooms
 4. **Get Results**: Click search, results in 0.3-0.8 seconds
+
+<div align="center">
+<img src="docs/show3.jpg" alt="Select Scenarios" width="80%"/>
+</div>
 
 ## API
 
@@ -103,13 +137,15 @@ curl -X POST "http://127.0.0.1:8000/api/find_meetspot" \
 | `GET /faq` | FAQ page |
 | `GET /how-it-works` | Usage guide |
 | `GET /meetspot/{city}` | City landing page |
+| `POST /api/ai_chat` | AI customer service |
 
 ## Tech Stack
 
-**Backend**: FastAPI, Pydantic, aiohttp, SQLAlchemy
+**Backend**: FastAPI, Pydantic, aiohttp, SQLAlchemy, OpenAI API
 **Frontend**: HTML5, CSS3, Vanilla JS, Boxicons
 **Map API**: Amap (Gaode Map)
-**Design**: Navigation/Cartography theme with Outfit, DM Sans, Space Mono fonts
+**AI**: DeepSeek / GPT-4o-mini (LLM dynamic content generation)
+**Design**: Urban Navigator theme with modern cartography style
 
 ## Performance
 
@@ -149,12 +185,14 @@ MeetSpot/
 │   ├── tool/
 │   │   └── meetspot_recommender.py  # Core recommendation engine
 │   ├── config.py             # Configuration models
+│   ├── llm.py                # LLM integration
 │   └── design_tokens.py      # Design system tokens
 ├── templates/                # Jinja2 templates
 │   ├── base.html
 │   └── pages/
 ├── public/                   # Static files
-│   └── meetspot_finder.html  # Demo page
+│   └── meetspot_finder.html  # Main search page
+├── docs/                     # Documentation and screenshots
 ├── config/
 │   └── config.toml.example   # Config template
 └── web_server.py             # Entry point
@@ -183,6 +221,7 @@ MIT License - see [LICENSE](LICENSE)
 - [Amap](https://lbs.amap.com/) - Geocoding and POI search
 - [FastAPI](https://fastapi.tiangolo.com/) - Web framework
 - [Boxicons](https://boxicons.com/) - Icon library
+- [DeepSeek](https://www.deepseek.com/) - LLM service
 
 ---
 
