@@ -26,6 +26,9 @@ passlib[bcrypt]==1.7.4
 redis==5.0.1
 websockets==12.0
 
+# Environment
+python-dotenv==1.0.0
+
 # LLM/AI Dependencies
 openai>=1.0.0
 tiktoken>=0.5.0

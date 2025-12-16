@@ -15,6 +15,10 @@ import os
 # Add the project root to Python path
 sys.path.insert(0, os.path.dirname(__file__))
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
 def main():
     """Main entry point for development and production server"""
     try:
