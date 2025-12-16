@@ -9,6 +9,9 @@ MeetSpot is an intelligent meeting point recommendation system built with FastAP
 ## Quick Reference
 
 ```bash
+# Activate conda environment (REQUIRED)
+conda activate meetspot-dev
+
 # Start server
 python web_server.py                     # Development server with auto-reload
 uvicorn api.index:app --reload           # Alternative (preferred while iterating)

@@ -75,12 +75,23 @@ class GeocodeTool(BaseTool):
 
 
 class CalculateCenterTool(BaseTool):
-    """计算中心点工具 - 计算多个位置的最佳会面点"""
+    """智能中心点工具 - 计算多个位置的最佳会面点
+
+    使用智能算法，综合考虑：
+    - POI 密度：周边是否有足够的目标场所
+    - 交通便利性：是否靠近地铁站/公交站
+    - 公平性：对所有参与者的距离是否均衡
+    """
 
     name: str = "calculate_center"
-    description: str = """计算多个坐标点的几何中心作为最佳会面位置。
-使用球面几何算法确保在地球表面上的精确计算。
-对于两个点使用球面中点公式，多个点使用加权平均。"""
+    description: str = """智能计算最佳会面中心点。
+
+不同于简单的几何中心，本工具会：
+1. 在几何中心周围生成多个候选点
+2. 评估每个候选点的 POI 密度、交通便利性和公平性
+3. 返回综合得分最高的点作为最佳会面位置
+
+这样可以避免中心点落在河流、荒地等不适合的位置。"""
     parameters: dict = {
         "type": "object",
         "properties": {
@@ -96,6 +107,16 @@ class CalculateCenterTool(BaseTool):
                     },
                     "required": ["lng", "lat"]
                 }
+            },
+            "keywords": {
+                "type": "string",
+                "description": "搜索的场所类型，如'咖啡馆'、'餐厅'，用于评估 POI 密度",
+                "default": "咖啡馆"
+            },
+            "use_smart_algorithm": {
+                "type": "boolean",
+                "description": "是否使用智能算法（考虑 POI 密度和交通），默认 true",
+                "default": True
             }
         },
         "required": ["coordinates"]
@@ -115,8 +136,13 @@ class CalculateCenterTool(BaseTool):
             object.__setattr__(self, '_cached_recommender', recommender)
         return self._cached_recommender
 
-    async def execute(self, coordinates: List[Dict]) -> ToolResult:
-        """计算中心点"""
+    async def execute(
+        self,
+        coordinates: List[Dict],
+        keywords: str = "咖啡馆",
+        use_smart_algorithm: bool = True
+    ) -> ToolResult:
+        """计算最佳中心点"""
         try:
             if not coordinates or len(coordinates) < 2:
                 return BaseTool.fail_response("至少需要2个坐标点来计算中心")
@@ -125,7 +151,17 @@ class CalculateCenterTool(BaseTool):
 
             # 转换为 (lng, lat) 元组列表
             coord_tuples = [(c["lng"], c["lat"]) for c in coordinates]
-            center = recommender._calculate_center_point(coord_tuples)
+
+            if use_smart_algorithm:
+                # 使用智能中心点算法
+                center, evaluation_details = await recommender._calculate_smart_center(
+                    coord_tuples, keywords
+                )
+                logger.info(f"智能中心点算法完成，最优中心: {center}")
+            else:
+                # 使用简单几何中心
+                center = recommender._calculate_center_point(coord_tuples)
+                evaluation_details = {"algorithm": "geometric_center"}
 
             # 计算每个点到中心的距离
             distances = []
@@ -136,17 +172,30 @@ class CalculateCenterTool(BaseTool):
                     "distance_to_center": round(dist, 0)
                 })
 
-            return BaseTool.success_response({
+            max_dist = max(d["distance_to_center"] for d in distances)
+            min_dist = min(d["distance_to_center"] for d in distances)
+
+            result = {
                 "center": {
                     "lng": round(center[0], 6),
                     "lat": round(center[1], 6)
                 },
+                "algorithm": "smart" if use_smart_algorithm else "geometric",
                 "input_count": len(coordinates),
                 "distances": distances,
-                "max_distance": max(d["distance_to_center"] for d in distances),
-                "fairness_score": round(100 - (max(d["distance_to_center"] for d in distances) -
-                                               min(d["distance_to_center"] for d in distances)) / 100, 1)
-            })
+                "max_distance": max_dist,
+                "fairness_score": round(100 - (max_dist - min_dist) / 100, 1)
+            }
+
+            # 添加智能算法的评估详情
+            if use_smart_algorithm and evaluation_details:
+                result["evaluation"] = {
+                    "geo_center": evaluation_details.get("geo_center"),
+                    "best_score": evaluation_details.get("best_score"),
+                    "top_candidates": len(evaluation_details.get("all_candidates", []))
+                }
+
+            return BaseTool.success_response(result)
 
         except Exception as e:
             logger.error(f"计算中心点失败: {e}")
@@ -268,12 +317,21 @@ class SearchPOITool(BaseTool):
 
 
 class GenerateRecommendationTool(BaseTool):
-    """生成推荐工具 - 分析并生成最终推荐结果"""
+    """智能推荐工具 - 使用 LLM 生成个性化推荐结果
+
+    结合规则评分和 LLM 智能评分，生成更精准的推荐：
+    - 规则评分：基于距离、评分、热度等客观指标
+    - LLM 评分：理解用户需求语义，评估场所匹配度
+    """
 
     name: str = "generate_recommendation"
-    description: str = """根据搜索结果生成最终的会面地点推荐。
-分析场所的评分、距离、特色等因素，
-为用户提供个性化的推荐理由和建议。"""
+    description: str = """智能生成会面地点推荐。
+
+本工具使用双层评分系统：
+1. 规则评分（40%）：基于距离、评分、热度等客观指标
+2. LLM 智能评分（60%）：理解用户需求，评估场所特色与需求的匹配度
+
+最终生成个性化的推荐理由，帮助用户做出最佳选择。"""
     parameters: dict = {
         "type": "object",
         "properties": {
@@ -300,6 +358,17 @@ class GenerateRecommendationTool(BaseTool):
                 },
                 "required": ["lng", "lat"]
             },
+            "participant_locations": {
+                "type": "array",
+                "description": "参与者位置名称列表，用于 LLM 评估公平性",
+                "items": {"type": "string"},
+                "default": []
+            },
+            "keywords": {
+                "type": "string",
+                "description": "搜索的场所类型，如'咖啡馆'、'餐厅'",
+                "default": "咖啡馆"
+            },
             "user_requirements": {
                 "type": "string",
                 "description": "用户的特殊需求，如'停车方便'、'环境安静'",
@@ -309,6 +378,11 @@ class GenerateRecommendationTool(BaseTool):
                 "type": "integer",
                 "description": "推荐数量，默认5个",
                 "default": 5
+            },
+            "use_llm_ranking": {
+                "type": "boolean",
+                "description": "是否使用 LLM 智能排序，默认 true",
+                "default": True
             }
         },
         "required": ["places", "center"]
@@ -332,10 +406,13 @@ class GenerateRecommendationTool(BaseTool):
         self,
         places: List[Dict],
         center: Dict,
+        participant_locations: List[str] = None,
+        keywords: str = "咖啡馆",
         user_requirements: str = "",
-        recommendation_count: int = 5
+        recommendation_count: int = 5,
+        use_llm_ranking: bool = True
     ) -> ToolResult:
-        """生成推荐"""
+        """智能生成推荐"""
         try:
             if not places:
                 return BaseTool.fail_response("没有候选场所可供推荐")
@@ -343,64 +420,84 @@ class GenerateRecommendationTool(BaseTool):
             recommender = self._get_recommender()
             center_point = (center["lng"], center["lat"])
 
-            # 使用现有的排序算法
+            # 1. 先用规则评分进行初步排序
             ranked = recommender._rank_places(
                 places=places,
                 center_point=center_point,
                 user_requirements=user_requirements,
-                keywords=""
+                keywords=keywords
             )
+
+            # 2. 如果启用 LLM 智能排序，进行重排序
+            if use_llm_ranking and participant_locations:
+                logger.info("启用 LLM 智能排序")
+                ranked = await recommender._llm_smart_ranking(
+                    places=ranked,
+                    user_requirements=user_requirements,
+                    participant_locations=participant_locations or [],
+                    keywords=keywords,
+                    top_n=recommendation_count + 3  # 多取几个以便筛选
+                )
 
             # 取前N个推荐
             top_places = ranked[:recommendation_count]
 
-            # 生成推荐理由
+            # 生成推荐结果
             recommendations = []
             for i, place in enumerate(top_places, 1):
-                score = place.get("_score", 0)
-                distance = place.get("distance", 0)
-                rating = place.get("rating", "N/A")
+                score = place.get("_final_score") or place.get("_score", 0)
+                distance = place.get("_distance") or place.get("distance", 0)
+                rating = place.get("_raw_rating") or place.get("rating", "N/A")
 
-                # 构建推荐理由
-                reasons = []
-                if distance <= 500:
-                    reasons.append("距离中心点很近")
-                elif distance <= 1000:
-                    reasons.append("距离适中")
+                # 优先使用 LLM 生成的理由
+                llm_reason = place.get("_llm_reason", "")
+                rule_reason = place.get("_recommendation_reason", "")
 
-                if rating != "N/A":
-                    try:
-                        r = float(rating)
-                        if r >= 4.5:
-                            reasons.append("口碑优秀")
-                        elif r >= 4.0:
-                            reasons.append("评价良好")
-                    except (ValueError, TypeError):
-                        pass
+                if llm_reason:
+                    reasons = [llm_reason]
+                elif rule_reason:
+                    reasons = [rule_reason]
+                else:
+                    # 兜底：构建基础推荐理由
+                    reasons = []
+                    if distance <= 500:
+                        reasons.append("距离中心点很近")
+                    elif distance <= 1000:
+                        reasons.append("距离适中")
 
-                tag = place.get("tag", "")
-                if "停车" in tag or "车位" in tag:
-                    reasons.append("有停车位")
-                if "wifi" in tag.lower() or "无线" in tag:
-                    reasons.append("提供WiFi")
+                    if rating != "N/A":
+                        try:
+                            r = float(rating)
+                            if r >= 4.5:
+                                reasons.append("口碑优秀")
+                            elif r >= 4.0:
+                                reasons.append("评价良好")
+                        except (ValueError, TypeError):
+                            pass
+
+                    if not reasons:
+                        reasons = ["综合评分较高"]
 
                 recommendations.append({
                     "rank": i,
                     "name": place.get("name", ""),
                     "address": place.get("address", ""),
-                    "rating": rating,
+                    "rating": str(rating) if rating else "N/A",
                     "distance": round(distance, 0),
                     "score": round(score, 1),
+                    "llm_score": place.get("_llm_score", 0),
                     "tel": place.get("tel", ""),
-                    "reasons": reasons if reasons else ["综合评分较高"],
-                    "location": place.get("location", "")
+                    "reasons": reasons,
+                    "location": place.get("location", ""),
+                    "scoring_method": "llm+rule" if place.get("_llm_score") else "rule"
                 })
 
             return BaseTool.success_response({
                 "recommendations": recommendations,
                 "total_candidates": len(places),
                 "user_requirements": user_requirements,
-                "center": center
+                "center": center,
+                "llm_ranking_used": use_llm_ranking and bool(participant_locations)
             })
 
         except Exception as e:

@@ -97,10 +97,74 @@
             letter-spacing: -0.02em;
         }
 
+        /* Navigation Bar */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background: rgba(0, 21, 36, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-home {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--coral-500) 0%, var(--coral-400) 100%);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
+        }
+
+        .nav-home i {
+            font-size: 18px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--mint-500);
+        }
+
+        @media (max-width: 600px) {
+            .nav-links {
+                display: none;
+            }
+            .nav-bar {
+                justify-content: center;
+            }
+        }
+
         .container {
             max-width: 920px;
             margin: 0 auto;
             padding: 24px 20px;
+            padding-top: 80px; /* Account for fixed nav */
             position: relative;
             z-index: 1;
         }
@@ -860,6 +924,19 @@
     </style>
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+        <a href="/" class="nav-home">
+            <i class='bx bx-home'></i>
+            <span>首页</span>
+        </a>
+        <div class="nav-links">
+            <a href="/how-it-works">使用指南</a>
+            <a href="/faq">常见问题</a>
+            <a href="/about">关于我们</a>
+        </div>
+    </nav>
+
     <div class="container">
         <div class="header">
             <div class="logo">

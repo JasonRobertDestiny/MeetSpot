@@ -16,6 +16,20 @@ from app.logger import logger
 from app.tool.base import BaseTool, ToolResult
 from app.config import config
 
+# LLM 智能评分（延迟导入以避免循环依赖）
+_llm_instance = None
+
+def _get_llm():
+    """延迟加载 LLM 实例"""
+    global _llm_instance
+    if _llm_instance is None:
+        try:
+            from app.llm import LLM
+            _llm_instance = LLM()
+        except Exception as e:
+            logger.warning(f"LLM 初始化失败，智能评分不可用: {e}")
+    return _llm_instance
+
 
 class CafeRecommender(BaseTool):
     """场所推荐工具，基于多个地点计算最佳会面位置并推荐周边场所"""
@@ -854,32 +868,226 @@ class CafeRecommender(BaseTool):
         """计算多个坐标点的中心点（使用球面几何）"""
         if not coordinates:
             raise ValueError("至少需要一个坐标来计算中心点。")
-        
+
         if len(coordinates) == 1:
             return coordinates[0]
-        
+
         # 对于两个点，使用球面中点计算
         if len(coordinates) == 2:
-            import math
-            
             lat1, lng1 = math.radians(coordinates[0][1]), math.radians(coordinates[0][0])
             lat2, lng2 = math.radians(coordinates[1][1]), math.radians(coordinates[1][0])
-            
+
             dLng = lng2 - lng1
-            
+
             Bx = math.cos(lat2) * math.cos(dLng)
             By = math.cos(lat2) * math.sin(dLng)
-            
+
             lat3 = math.atan2(math.sin(lat1) + math.sin(lat2),
                               math.sqrt((math.cos(lat1) + Bx) * (math.cos(lat1) + Bx) + By * By))
             lng3 = lng1 + math.atan2(By, math.cos(lat1) + Bx)
-            
+
             return (math.degrees(lng3), math.degrees(lat3))
-        
+
         # 对于多个点，使用简单平均（可以进一步优化）
         avg_lng = sum(lng for lng, _ in coordinates) / len(coordinates)
         avg_lat = sum(lat for _, lat in coordinates) / len(coordinates)
         return (avg_lng, avg_lat)
+
+    async def _calculate_smart_center(
+        self,
+        coordinates: List[Tuple[float, float]],
+        keywords: str = "咖啡馆"
+    ) -> Tuple[Tuple[float, float], Dict]:
+        """智能中心点算法 - 考虑 POI 密度、交通便利性和公平性
+
+        算法步骤：
+        1. 计算几何中心作为基准点
+        2. 在基准点周围生成候选点网格
+        3. 评估每个候选点：POI 密度 + 交通便利性 + 公平性
+        4. 返回最优中心点
+
+        Returns:
+            (最优中心点坐标, 评估详情)
+        """
+        logger.info("使用智能中心点算法")
+
+        # 1. 计算几何中心
+        geo_center = self._calculate_center_point(coordinates)
+        logger.info(f"几何中心: {geo_center}")
+
+        # 2. 生成候选点网格（在几何中心周围 1.5km 范围内）
+        candidates = self._generate_candidate_points(geo_center, radius_km=1.5, grid_size=3)
+        candidates.insert(0, geo_center)  # 几何中心作为第一个候选
+
+        logger.info(f"生成了 {len(candidates)} 个候选中心点")
+
+        # 3. 评估每个候选点
+        best_candidate = geo_center
+        best_score = -1
+        evaluation_results = []
+
+        for candidate in candidates:
+            score, details = await self._evaluate_center_candidate(
+                candidate, coordinates, keywords
+            )
+            evaluation_results.append({
+                "point": candidate,
+                "score": score,
+                "details": details
+            })
+
+            if score > best_score:
+                best_score = score
+                best_candidate = candidate
+
+        # 排序结果
+        evaluation_results.sort(key=lambda x: x["score"], reverse=True)
+
+        logger.info(f"最优中心点: {best_candidate}, 评分: {best_score:.1f}")
+
+        return best_candidate, {
+            "geo_center": geo_center,
+            "best_candidate": best_candidate,
+            "best_score": best_score,
+            "all_candidates": evaluation_results[:5]  # 返回前5个
+        }
+
+    def _generate_candidate_points(
+        self,
+        center: Tuple[float, float],
+        radius_km: float = 1.5,
+        grid_size: int = 3
+    ) -> List[Tuple[float, float]]:
+        """在中心点周围生成候选点网格
+
+        Args:
+            center: 中心点坐标 (lng, lat)
+            radius_km: 搜索半径（公里）
+            grid_size: 网格大小（每边的点数，不含中心）
+        """
+        candidates = []
+        lng, lat = center
+
+        # 经纬度偏移量（粗略计算）
+        # 纬度1度 ≈ 111km，经度1度 ≈ 111km * cos(lat)
+        lat_offset = radius_km / 111.0
+        lng_offset = radius_km / (111.0 * math.cos(math.radians(lat)))
+
+        step_lat = lat_offset / grid_size
+        step_lng = lng_offset / grid_size
+
+        for i in range(-grid_size, grid_size + 1):
+            for j in range(-grid_size, grid_size + 1):
+                if i == 0 and j == 0:
+                    continue  # 跳过中心点
+                new_lng = lng + j * step_lng
+                new_lat = lat + i * step_lat
+                candidates.append((new_lng, new_lat))
+
+        return candidates
+
+    async def _evaluate_center_candidate(
+        self,
+        candidate: Tuple[float, float],
+        participant_coords: List[Tuple[float, float]],
+        keywords: str
+    ) -> Tuple[float, Dict]:
+        """评估候选中心点的质量
+
+        评分维度（满分100）：
+        - POI 密度: 40分 - 周边是否有足够的目标场所
+        - 交通便利性: 30分 - 是否靠近地铁站/公交站
+        - 公平性: 30分 - 对所有参与者是否公平（最小化最大距离）
+        """
+        lng, lat = candidate
+        location_str = f"{lng},{lat}"
+
+        scores = {
+            "poi_density": 0,
+            "transit": 0,
+            "fairness": 0
+        }
+        details = {}
+
+        # 1. POI 密度评分（40分）
+        try:
+            # 搜索目标场所
+            pois = await self._search_pois(
+                location=location_str,
+                keywords=keywords,
+                radius=1500,
+                offset=10
+            )
+            poi_count = len(pois)
+
+            # 评分：0个=0分，5个=20分，10个=40分
+            scores["poi_density"] = min(40, poi_count * 4)
+            details["poi_count"] = poi_count
+
+        except Exception as e:
+            logger.debug(f"POI 搜索失败: {e}")
+            scores["poi_density"] = 10  # 给个基础分
+
+        # 2. 交通便利性评分（30分）
+        try:
+            # 搜索地铁站
+            transit_pois = await self._search_pois(
+                location=location_str,
+                keywords="地铁站",
+                radius=1000,
+                offset=5
+            )
+            transit_count = len(transit_pois)
+
+            # 有地铁站得高分
+            if transit_count >= 2:
+                scores["transit"] = 30
+            elif transit_count == 1:
+                scores["transit"] = 20
+            else:
+                # 搜索公交站
+                bus_pois = await self._search_pois(
+                    location=location_str,
+                    keywords="公交站",
+                    radius=500,
+                    offset=5
+                )
+                scores["transit"] = min(15, len(bus_pois) * 5)
+
+            details["transit_count"] = transit_count
+
+        except Exception as e:
+            logger.debug(f"交通搜索失败: {e}")
+            scores["transit"] = 10
+
+        # 3. 公平性评分（30分）
+        distances = []
+        for coord in participant_coords:
+            dist = self._calculate_distance(candidate, coord)
+            distances.append(dist)
+
+        max_distance = max(distances) if distances else 0
+        avg_distance = sum(distances) / len(distances) if distances else 0
+
+        # 最大距离越小越好，基于 3km 作为基准
+        # max_dist <= 1km: 30分, 2km: 20分, 3km: 10分, >3km: 5分
+        if max_distance <= 1000:
+            scores["fairness"] = 30
+        elif max_distance <= 2000:
+            scores["fairness"] = 25 - (max_distance - 1000) / 200
+        elif max_distance <= 3000:
+            scores["fairness"] = 15 - (max_distance - 2000) / 200
+        else:
+            scores["fairness"] = max(5, 10 - (max_distance - 3000) / 500)
+
+        details["max_distance"] = max_distance
+        details["avg_distance"] = avg_distance
+        details["distances"] = distances
+
+        total_score = sum(scores.values())
+        details["scores"] = scores
+
+        return total_score, details
 
     async def _search_pois(
         self,
@@ -1188,6 +1396,344 @@ class CafeRecommender(BaseTool):
         # 最多返回2个理由
         return "；".join(reasons[:2])
 
+    async def _llm_smart_ranking(
+        self,
+        places: List[Dict],
+        user_requirements: str,
+        participant_locations: List[str],
+        keywords: str,
+        top_n: int = 8
+    ) -> List[Dict]:
+        """LLM 智能评分重排序
+
+        使用 LLM 对候选场所进行智能评分和重排序，考虑：
+        - 用户需求的语义理解
+        - 场所特点与需求的匹配度
+        - 对各参与者的公平性
+        - 场所的综合吸引力
+
+        Args:
+            places: 候选场所列表（已经过初步筛选）
+            user_requirements: 用户需求文本
+            participant_locations: 参与者位置列表
+            keywords: 搜索关键词
+            top_n: 返回的推荐数量
+
+        Returns:
+            重排序后的场所列表
+        """
+        llm = _get_llm()
+        if not llm or len(places) == 0:
+            logger.info("LLM 不可用或无候选场所，跳过智能排序")
+            return places[:top_n]
+
+        # 准备场所摘要信息
+        places_summary = []
+        for i, place in enumerate(places[:15]):  # 最多分析15个
+            summary = {
+                "id": i,
+                "name": place.get("name", ""),
+                "type": place.get("type", ""),
+                "rating": place.get("_raw_rating", 0),
+                "review_count": place.get("_review_count", 0),
+                "distance": round(place.get("_distance", 0)),
+                "address": place.get("address", ""),
+                "rule_score": round(place.get("_score", 0), 1),
+                "features": place.get("tag", "")[:100] if place.get("tag") else ""
+            }
+            places_summary.append(summary)
+
+        # 构建 LLM 评分 prompt
+        prompt = f"""你是一个智能会面地点推荐助手。请对以下候选场所进行评分和排序。
+
+## 会面信息
+- **参与者位置**: {', '.join(participant_locations)}
+- **寻找的场所类型**: {keywords}
+- **用户特殊需求**: {user_requirements or '无特殊要求'}
+
+## 候选场所
+{json.dumps(places_summary, ensure_ascii=False, indent=2)}
+
+## 评分要求
+请综合考虑以下因素：
+1. **需求匹配度** (30%): 场所是否满足用户的特殊需求
+2. **位置公平性** (25%): 对所有参与者是否方便（距离是否均衡）
+3. **场所品质** (25%): 评分、评论数等指标
+4. **特色吸引力** (20%): 场所的独特卖点
+
+## 输出格式
+请直接返回 JSON 数组，包含你推荐的场所ID（按推荐度从高到低排序），以及每个场所的推荐理由：
+```json
+[
+  {{"id": 0, "llm_score": 85, "reason": "距离适中，环境安静，非常适合商务会谈"}},
+  {{"id": 2, "llm_score": 78, "reason": "评分高，位置对双方都比较公平"}}
+]
+```
+
+只返回 JSON，不要其他内容。"""
+
+        try:
+            from app.schema import Message
+            response = await llm.ask(
+                messages=[Message.user_message(prompt)],
+                system_msgs=[Message.system_message("你是一个专业的地点推荐助手，请直接返回 JSON 格式的评分结果。")]
+            )
+
+            if not response or not response.content:
+                logger.warning("LLM 返回空响应")
+                return places[:top_n]
+
+            # 解析 LLM 返回的 JSON
+            content = response.content.strip()
+            # 提取 JSON 部分
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+
+            llm_rankings = json.loads(content)
+
+            # 应用 LLM 评分
+            id_to_llm_result = {r["id"]: r for r in llm_rankings}
+            for i, place in enumerate(places[:15]):
+                if i in id_to_llm_result:
+                    llm_result = id_to_llm_result[i]
+                    place["_llm_score"] = llm_result.get("llm_score", 0)
+                    place["_llm_reason"] = llm_result.get("reason", "")
+                    # 综合得分 = 规则得分 * 0.4 + LLM 得分 * 0.6
+                    place["_final_score"] = place.get("_score", 0) * 0.4 + place["_llm_score"] * 0.6
+                else:
+                    place["_llm_score"] = 0
+                    place["_llm_reason"] = ""
+                    place["_final_score"] = place.get("_score", 0) * 0.4
+
+            # 按最终得分重排序
+            places_with_llm = [p for p in places[:15] if p.get("_llm_score", 0) > 0]
+            places_without_llm = [p for p in places[:15] if p.get("_llm_score", 0) == 0]
+
+            # LLM 评分的排前面
+            places_with_llm.sort(key=lambda x: x.get("_final_score", 0), reverse=True)
+            places_without_llm.sort(key=lambda x: x.get("_score", 0), reverse=True)
+
+            result = places_with_llm + places_without_llm
+            logger.info(f"LLM 智能排序完成，返回 {len(result[:top_n])} 个推荐")
+
+            return result[:top_n]
+
+        except json.JSONDecodeError as e:
+            logger.warning(f"LLM 返回的 JSON 解析失败: {e}")
+            return places[:top_n]
+        except Exception as e:
+            logger.warning(f"LLM 智能排序失败: {e}")
+            return places[:top_n]
+
+    async def _llm_generate_transport_tips(
+        self,
+        places: List[Dict],
+        center_point: Tuple[float, float],
+        participant_locations: List[str],
+        keywords: str
+    ) -> str:
+        """LLM 动态生成交通与停车建议
+
+        根据实际场所位置、参与者出发地和场所类型，生成个性化的交通建议。
+
+        Args:
+            places: 推荐的场所列表
+            center_point: 中心点坐标
+            participant_locations: 参与者位置列表
+            keywords: 搜索关键词（用于判断场所类型）
+
+        Returns:
+            HTML 格式的交通停车建议
+        """
+        llm = _get_llm()
+        if not llm:
+            logger.info("LLM 不可用，使用默认交通建议")
+            return self._generate_default_transport_tips(keywords)
+
+        try:
+            # 构建场所信息摘要
+            places_info = []
+            for i, place in enumerate(places[:5]):
+                places_info.append({
+                    "name": place.get("name", ""),
+                    "address": place.get("address", ""),
+                    "distance": place.get("_distance", 0),
+                    "type": place.get("type", "")
+                })
+
+            prompt = f"""你是一个本地出行专家。根据以下信息，生成个性化的交通与停车建议。
+
+**参与者出发地**：
+{chr(10).join([f"- {loc}" for loc in participant_locations])}
+
+**推荐场所**：
+{json.dumps(places_info, ensure_ascii=False, indent=2)}
+
+**中心点坐标**：{center_point[0]:.6f}, {center_point[1]:.6f}
+
+**场所类型**：{keywords}
+
+请生成 4-5 条实用的交通与停车建议，要求：
+1. 根据参与者的实际出发地，建议最佳交通方式（地铁、公交、打车、自驾）
+2. 考虑场所周边的实际停车情况
+3. 给出具体的时间规划建议
+4. 如果是大学或商圈，提供特别提示
+
+直接返回 JSON 数组，每条建议包含 icon 和 text 字段：
+```json
+[
+  {{"icon": "bx-train", "text": "建议内容"}},
+  {{"icon": "bxs-car-garage", "text": "停车建议"}}
+]
+```
+
+可用图标：bx-train（地铁）、bx-bus（公交）、bx-taxi（打车）、bxs-car-garage（停车）、bx-time（时间）、bx-info-circle（提示）
+"""
+
+            from app.schema import Message
+            response = await llm.ask(
+                messages=[Message.user_message(prompt)],
+                system_msgs=[Message.system_message("你是一个本地出行专家，请直接返回 JSON 格式的交通建议。")],
+                stream=False  # 使用非流式调用，更可靠
+            )
+
+            if not response:
+                logger.warning("LLM 返回空响应")
+                return self._generate_default_transport_tips(keywords)
+
+            # 非流式调用返回字符串，流式调用返回 Message 对象
+            content = response if isinstance(response, str) else response.content
+            content = content.strip()
+
+            # 解析 JSON
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+
+            tips = json.loads(content)
+
+            # 生成 HTML
+            html_items = []
+            for tip in tips[:5]:
+                icon = tip.get("icon", "bx-check")
+                text = tip.get("text", "")
+                html_items.append(f"<li><i class='bx {icon}'></i>{text}</li>")
+
+            logger.info(f"LLM 生成了 {len(tips)} 条交通建议")
+            return "\n                        ".join(html_items)
+
+        except Exception as e:
+            logger.warning(f"LLM 生成交通建议失败: {e}")
+            return self._generate_default_transport_tips(keywords)
+
+    def _generate_default_transport_tips(self, keywords: str) -> str:
+        """生成默认交通建议（兜底逻辑）"""
+        return """<li><i class='bx bx-check'></i>建议使用高德地图或百度地图导航到目的地</li>
+                        <li><i class='bx bx-check'></i>高峰时段建议提前30分钟出发</li>
+                        <li><i class='bx bx-check'></i>部分场所可能提供停车服务，建议提前确认</li>
+                        <li><i class='bx bx-check'></i>如使用公共交通，可查询附近地铁站或公交站</li>"""
+
+    async def _llm_generate_place_reasons(
+        self,
+        places: List[Dict],
+        user_requirements: str,
+        participant_locations: List[str],
+        keywords: str
+    ) -> Dict[str, str]:
+        """LLM 批量生成场所推荐理由
+
+        为每个场所生成个性化的推荐理由，考虑用户需求和参与者位置。
+
+        Args:
+            places: 场所列表
+            user_requirements: 用户需求
+            participant_locations: 参与者位置
+            keywords: 搜索关键词
+
+        Returns:
+            场所名称到推荐理由的映射
+        """
+        llm = _get_llm()
+        if not llm or len(places) == 0:
+            return {}
+
+        try:
+            places_info = []
+            for i, place in enumerate(places[:8]):
+                places_info.append({
+                    "id": i,
+                    "name": place.get("name", ""),
+                    "rating": place.get("_raw_rating", place.get("rating", 0)),
+                    "distance": round(place.get("_distance", 0)),
+                    "address": place.get("address", ""),
+                    "type": place.get("type", "")
+                })
+
+            prompt = f"""你是一个本地生活推荐专家。为以下场所生成简洁的推荐理由。
+
+**用户需求**：{user_requirements or "无特殊要求"}
+
+**参与者出发地**：
+{chr(10).join([f"- {loc}" for loc in participant_locations])}
+
+**场所类型**：{keywords}
+
+**候选场所**：
+{json.dumps(places_info, ensure_ascii=False, indent=2)}
+
+为每个场所生成一句话推荐理由（15-25字），要求：
+1. 突出该场所最大的优势（距离近、评分高、环境好等）
+2. 如果有用户需求，说明如何满足
+3. 语言自然，避免模板化
+4. 每个场所的理由要有差异化
+
+直接返回 JSON 对象，key 是场所 id，value 是推荐理由：
+```json
+{{
+  "0": "距离两校中心最近，步行5分钟可达",
+  "1": "星巴克品质保证，适合安静交谈"
+}}
+```
+"""
+
+            from app.schema import Message
+            response = await llm.ask(
+                messages=[Message.user_message(prompt)],
+                system_msgs=[Message.system_message("你是一个本地生活推荐专家，请直接返回 JSON 格式的推荐理由。")],
+                stream=False  # 使用非流式调用，更可靠
+            )
+
+            if not response:
+                logger.warning("LLM 返回空响应")
+                return {}
+
+            # 非流式调用返回字符串
+            content = response if isinstance(response, str) else response.content
+            content = content.strip()
+
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+
+            reasons_map = json.loads(content)
+
+            # 转换为场所名称映射
+            result = {}
+            for i, place in enumerate(places[:8]):
+                if str(i) in reasons_map:
+                    result[place.get("name", "")] = reasons_map[str(i)]
+
+            logger.info(f"LLM 生成了 {len(result)} 条推荐理由")
+            return result
+
+        except Exception as e:
+            logger.warning(f"LLM 生成推荐理由失败: {e}")
+            return {}
+
     def _rank_places(
         self,
         places: List[Dict],
@@ -1255,9 +1801,13 @@ class CafeRecommender(BaseTool):
         # 重新排序
         ranked_places = sorted(ranked_places, key=lambda x: x.get("_score", 0), reverse=True)
 
-        # 生成推荐理由
+        # 生成推荐理由（优先使用 LLM 生成的理由，否则使用规则生成）
         for place in ranked_places:
-            place["_recommendation_reason"] = self._generate_recommendation_reason(place, ranked_places)
+            # 如果 LLM 智能排序已经生成了理由，优先使用
+            if place.get("_llm_reason"):
+                place["_recommendation_reason"] = place["_llm_reason"]
+            else:
+                place["_recommendation_reason"] = self._generate_recommendation_reason(place, ranked_places)
 
         # 对于多场景搜索，确保每个场景都有代表性
         if any(place.get('_source_keyword') for place in ranked_places):
@@ -1309,15 +1859,22 @@ class CafeRecommender(BaseTool):
     async def _generate_html_page(
         self,
         locations: List[Dict],
-        places: List[Dict], 
+        places: List[Dict],
         center_point: Tuple[float, float],
         user_requirements: str,
         keywords: str,
-        theme: str = ""  # 添加主题参数
+        theme: str = "",  # 添加主题参数
+        participant_locations: List[str] = None  # 参与者位置名称列表
     ) -> str:
         file_name_prefix = "place"
-        
-        html_content = self._generate_html_content(locations, places, center_point, user_requirements, keywords, theme)
+
+        # 提取参与者位置名称
+        if participant_locations is None:
+            participant_locations = [loc.get("formatted_address", loc.get("address", "")) for loc in locations]
+
+        html_content = await self._generate_html_content(
+            locations, places, center_point, user_requirements, keywords, theme, participant_locations
+        )
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         unique_id = str(uuid.uuid4())[:8]
         file_name = f"{file_name_prefix}_recommendation_{timestamp}_{unique_id}.html"
@@ -1330,14 +1887,15 @@ class CafeRecommender(BaseTool):
             await f.write(html_content)
         return file_path
 
-    def _generate_html_content(
+    async def _generate_html_content(
         self,
         locations: List[Dict],
-        places: List[Dict], 
+        places: List[Dict],
         center_point: Tuple[float, float],
         user_requirements: str,
         keywords: str,
-        theme: str = ""  # 添加主题参数
+        theme: str = "",  # 添加主题参数
+        participant_locations: List[str] = None  # 参与者位置名称列表
     ) -> str:
         # 根据主题参数确定配置
         if theme:
@@ -1452,6 +2010,13 @@ class CafeRecommender(BaseTool):
         for loc in locations:
             distance = self._calculate_distance(center_point, (loc['lng'], loc['lat']))/1000
             location_distance_html += f"<li><i class='bx bx-map'></i><strong>{loc['name']}</strong>: 距离中心点约 <span class='distance'>{distance:.1f} 公里</span></li>"
+
+        # LLM 动态生成交通与停车建议
+        if participant_locations is None:
+            participant_locations = [loc.get("name", loc.get("formatted_address", "")) for loc in locations]
+        transport_tips_html = await self._llm_generate_transport_tips(
+            places, center_point, participant_locations, keywords
+        )
 
         place_cards_html = "" 
         for place in places:
@@ -1801,12 +2366,9 @@ class CafeRecommender(BaseTool):
                     <ul class="transport-list">{location_distance_html}</ul>
                 </div>
                 <div class="transport-card">
-                    <h3 class="transport-title"><i class='bx bxs-car-garage'></i>停车建议</h3>
+                    <h3 class="transport-title"><i class='bx bxs-car-garage'></i>智能出行建议</h3>
                     <ul class="transport-list">
-                        <li><i class='bx bx-check'></i>大部分推荐的{cfg["noun_plural"]}周边有停车场或提供停车服务</li>
-                        <li><i class='bx bx-check'></i>建议使用高德地图或百度地图导航到目的地</li>
-                        <li><i class='bx bx-check'></i>高峰时段建议提前30分钟出发，以便寻找停车位</li>
-                        <li><i class='bx bx-check'></i>部分{cfg["noun_plural"]}可能提供免费停车或停车优惠</li>
+                        {transport_tips_html}
                     </ul>
                 </div>
             </div>
