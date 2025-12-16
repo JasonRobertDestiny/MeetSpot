@@ -188,7 +188,7 @@ class Config:
         
         # 从环境变量读取敏感信息
         import os
-        openai_api_key = os.getenv("OPENAI_API_KEY", "") or os.getenv("SILICON_API_KEY", "")
+        openai_api_key = os.getenv("OPENAI_API_KEY", "") or os.getenv("LLM_API_KEY", "")
         amap_api_key = os.getenv("AMAP_API_KEY", "")
         
         llm_overrides = {

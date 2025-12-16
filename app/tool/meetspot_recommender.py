@@ -918,58 +918,347 @@ class CafeRecommender(BaseTool):
                 self.poi_cache[cache_key] = pois
                 return pois
 
-    def _rank_places(
+    # ========== V2 多维度评分系统 ==========
+
+    def _calculate_base_score(self, place: Dict) -> Tuple[float, float]:
+        """计算基础评分 (满分30分)
+
+        Returns:
+            (score, raw_rating): 评分和原始rating值
+        """
+        biz_ext = place.get("biz_ext", {}) or {}
+        rating_str = biz_ext.get("rating", "0") or "0"
+        try:
+            rating = float(rating_str)
+        except (ValueError, TypeError):
+            rating = 0
+
+        # 无评分场所使用默认3.5分
+        if rating == 0:
+            rating = 3.5
+            place["_has_rating"] = False
+        else:
+            place["_has_rating"] = True
+
+        # 评分归一化到30分 (rating范围1-5)
+        score = min(rating, 5) * 6
+        return score, rating
+
+    def _calculate_popularity_score(self, place: Dict) -> Tuple[float, int, int]:
+        """计算热度分 (满分20分)
+
+        基于评论数和图片数
+        Returns:
+            (score, review_count, photo_count): 热度分和原始数据
+        """
+        biz_ext = place.get("biz_ext", {}) or {}
+
+        # 评论数
+        review_count_str = biz_ext.get("review_count", "0") or "0"
+        try:
+            review_count = int(review_count_str)
+        except (ValueError, TypeError):
+            review_count = 0
+
+        # 图片数 (高德API的photos字段)
+        photos = place.get("photos", []) or []
+        photo_count = len(photos) if isinstance(photos, list) else 0
+
+        # 对数计算避免大数压倒一切
+        # log10(100) = 2, log10(1000) = 3
+        review_score = math.log10(review_count + 1) * 5 if review_count > 0 else 0
+        photo_score = min(photo_count * 2, 6)  # 最多3张图贡献6分
+
+        score = min(20, review_score + photo_score)
+        return score, review_count, photo_count
+
+    def _calculate_distance_score_v2(
         self,
-        places: List[Dict], 
-        center_point: Tuple[float, float],
-        user_requirements: str,
-        keywords: str 
-    ) -> List[Dict]:
-        requirement_keywords_map = {
-            "停车": ["停车", "车位", "停车场"],
-            "安静": ["安静", "环境好", "氛围"],
-            "商务": ["商务", "会议", "办公"],
-            "交通": ["交通", "地铁", "公交"]
+        place: Dict,
+        center_point: Tuple[float, float]
+    ) -> Tuple[float, float]:
+        """计算距离分 (满分25分) - 非线性衰减
+
+        Returns:
+            (score, distance): 距离分和实际距离(米)
+        """
+        location = place.get("location", "")
+        if not location or "," not in location:
+            return 0, float('inf')
+
+        try:
+            lng_str, lat_str = location.split(",")
+            place_lng, place_lat = float(lng_str), float(lat_str)
+        except (ValueError, TypeError):
+            return 0, float('inf')
+
+        distance = self._calculate_distance(center_point, (place_lng, place_lat))
+        place["_distance"] = distance
+
+        # 非线性衰减：500米内满分，之后快速衰减
+        # 使用1.5次幂衰减曲线
+        if distance <= 500:
+            score = 25
+        elif distance <= 2500:
+            # (1 - (distance/2500)^1.5) * 25
+            ratio = (distance - 500) / 2000  # 归一化到0-1
+            decay = ratio ** 1.5
+            score = 25 * (1 - decay * 0.8)  # 最低保留20%
+        else:
+            score = 5  # 超远距离给最低分
+
+        return score, distance
+
+    def _calculate_scenario_match_score(
+        self,
+        place: Dict,
+        keywords: str
+    ) -> Tuple[float, str]:
+        """计算场景匹配分 (满分15分)
+
+        Returns:
+            (score, matched_keyword): 场景分和匹配的关键词
+        """
+        source_keyword = place.get('_source_keyword', '')
+
+        if source_keyword and source_keyword in keywords:
+            return 15, source_keyword
+
+        # 部分匹配：检查type字段
+        place_type = place.get("type", "")
+        keywords_list = keywords.replace("、", " ").split()
+
+        for kw in keywords_list:
+            if kw in place_type:
+                return 8, kw
+
+        return 0, ""
+
+    def _calculate_requirement_score(
+        self,
+        place: Dict,
+        user_requirements: str
+    ) -> Tuple[float, List[str]]:
+        """计算需求匹配分 (满分10分)
+
+        Returns:
+            (score, matched_requirements): 需求分和匹配的需求列表
+        """
+        if not user_requirements:
+            return 0, []
+
+        # 扩展的需求关键词映射
+        requirement_map = {
+            "停车": {
+                "keywords": ["停车", "车位", "停车场", "免费停车", "方便停车"],
+                "check_fields": ["tag", "parking_type", "navi_poiid"],
+                "match_values": ["停车", "车位", "免费停车"]
+            },
+            "安静": {
+                "keywords": ["安静", "环境好", "氛围", "静", "舒适"],
+                "check_fields": ["tag"],
+                "match_values": ["安静", "环境", "氛围", "舒适", "优雅"]
+            },
+            "商务": {
+                "keywords": ["商务", "会议", "办公", "谈事", "工作"],
+                "check_fields": ["tag", "type"],
+                "match_values": ["商务", "会议", "办公", "商务区"]
+            },
+            "交通": {
+                "keywords": ["交通", "地铁", "公交", "方便"],
+                "check_fields": ["tag", "address"],
+                "match_values": ["地铁", "公交", "站"]
+            },
+            "包间": {
+                "keywords": ["包间", "私密", "独立", "包厢"],
+                "check_fields": ["tag"],
+                "match_values": ["包间", "包厢", "私密"]
+            },
+            "WiFi": {
+                "keywords": ["wifi", "无线", "网络", "上网"],
+                "check_fields": ["tag"],
+                "match_values": ["wifi", "无线", "免费WiFi"]
+            }
         }
-        user_priorities = []
-        for key, kw_list in requirement_keywords_map.items():
-            if any(kw in user_requirements for kw in kw_list):
-                user_priorities.append(key)
 
-        for place in places:
-            score = 0
-            rating = float(place.get("biz_ext", {}).get("rating", "0") or "0") 
-            score += rating * 10
+        matched = []
+        total_score = 0
 
-            place_lng_str, place_lat_str = place.get("location", "").split(",")
-            if not place_lng_str or not place_lat_str: 
-                place["_score"] = score 
+        for req_name, req_config in requirement_map.items():
+            # 检查用户是否有这个需求
+            if not any(kw in user_requirements.lower() for kw in req_config["keywords"]):
                 continue
 
-            place_lng, place_lat = float(place_lng_str), float(place_lat_str)
-            distance = self._calculate_distance(center_point, (place_lng, place_lat))
-            distance_score = max(0, 20 * (1 - (distance / 2000))) 
-            score += distance_score
+            # 检查场所是否满足
+            for field in req_config["check_fields"]:
+                field_value = str(place.get(field, "")).lower()
+                if any(mv.lower() in field_value for mv in req_config["match_values"]):
+                    matched.append(req_name)
+                    total_score += 3
+                    break
 
-            # 多场景匹配奖励 - 如果场所来源匹配用户选择的关键词，给予额外分数
-            source_keyword = place.get('_source_keyword', '')
-            if source_keyword and source_keyword in keywords:
-                score += 15  # 匹配用户选择场景的奖励分数
-                logger.debug(f"场所 {place.get('name')} 匹配场景 '{source_keyword}'，获得奖励分数")
+        return min(10, total_score), matched
 
-            for priority in user_priorities:
-                if priority == "停车" and ("停车" in place.get("tag", "") or "免费停车" in place.get("parking_type", "")): 
-                    score += 10
-                elif priority == "安静" and ("安静" in place.get("tag", "") or "环境" in place.get("tag", "")):
-                    score += 10
-                elif priority == "商务" and ("商务" in place.get("tag", "") or "会议" in place.get("tag", "")): 
-                    score += 10
-                elif priority == "交通" and ("地铁" in place.get("tag", "") or "公交" in place.get("tag", "")):
-                    score += 10
-            place["_score"] = score
-        
+    def _apply_diversity_adjustment(
+        self,
+        places: List[Dict]
+    ) -> List[Dict]:
+        """应用多样性调整
+
+        - 同名连锁店惩罚
+        - 确保价格区间多样性
+        """
+        # 统计店名出现次数
+        name_counts = {}
+        for place in places:
+            name = place.get("name", "")
+            # 提取品牌名（去掉括号内容和分店信息）
+            brand_name = name.split("(")[0].split("（")[0]
+            brand_name = brand_name.replace("店", "").replace("分店", "")
+            name_counts[brand_name] = name_counts.get(brand_name, 0) + 1
+
+        # 应用惩罚
+        seen_brands = {}
+        for place in places:
+            name = place.get("name", "")
+            brand_name = name.split("(")[0].split("（")[0].replace("店", "").replace("分店", "")
+
+            if name_counts.get(brand_name, 0) > 1:
+                seen_count = seen_brands.get(brand_name, 0)
+                if seen_count > 0:
+                    # 第二家及以后的同品牌店铺扣分
+                    penalty = min(15, seen_count * 5)
+                    place["_score"] = place.get("_score", 0) - penalty
+                    place["_diversity_penalty"] = penalty
+                seen_brands[brand_name] = seen_count + 1
+
+        return places
+
+    def _generate_recommendation_reason(
+        self,
+        place: Dict,
+        all_places: List[Dict]
+    ) -> str:
+        """生成推荐理由
+
+        基于场所在各维度的表现生成个性化推荐理由
+        """
+        reasons = []
+
+        distance = place.get("_distance", float('inf'))
+        rating = place.get("_raw_rating", 0)
+        review_count = place.get("_review_count", 0)
+        matched_reqs = place.get("_matched_requirements", [])
+        scenario = place.get("_matched_scenario", "")
+
+        # 距离优势
+        if distance < 500:
+            reasons.append(f"距离最近，仅{int(distance)}米")
+        elif distance < 800:
+            reasons.append(f"位置便利，约{int(distance)}米")
+
+        # 评分优势
+        if rating >= 4.5 and place.get("_has_rating"):
+            reasons.append(f"口碑极佳，评分{rating}")
+        elif rating >= 4.0 and place.get("_has_rating"):
+            reasons.append(f"评价良好，{rating}分")
+
+        # 热度优势
+        if review_count >= 500:
+            reasons.append(f"人气火爆，{review_count}条评价")
+        elif review_count >= 100:
+            reasons.append(f"热门推荐，{review_count}人评价")
+
+        # 需求匹配
+        if matched_reqs:
+            req_text = "、".join(matched_reqs[:2])
+            reasons.append(f"满足{req_text}需求")
+
+        # 场景匹配
+        if scenario:
+            reasons.append(f"符合{scenario}场景")
+
+        # 如果没有明显优势，给一个通用理由
+        if not reasons:
+            if distance < 1500:
+                reasons.append("位置适中，综合评价不错")
+            else:
+                reasons.append("特色场所，值得一试")
+
+        # 最多返回2个理由
+        return "；".join(reasons[:2])
+
+    def _rank_places(
+        self,
+        places: List[Dict],
+        center_point: Tuple[float, float],
+        user_requirements: str,
+        keywords: str
+    ) -> List[Dict]:
+        """V2 多维度评分排序算法
+
+        评分维度 (满分100分):
+        - 基础评分: 30分 (基于rating)
+        - 热度分: 20分 (基于评论数+图片数)
+        - 距离分: 25分 (非线性衰减)
+        - 场景匹配: 15分
+        - 需求匹配: 10分
+        """
+        logger.info(f"开始V2多维度评分，共{len(places)}个场所")
+
+        for place in places:
+            # 1. 基础评分 (满分30分)
+            base_score, raw_rating = self._calculate_base_score(place)
+            place["_raw_rating"] = raw_rating
+
+            # 2. 热度分 (满分20分)
+            popularity_score, review_count, photo_count = self._calculate_popularity_score(place)
+            place["_review_count"] = review_count
+            place["_photo_count"] = photo_count
+
+            # 3. 距离分 (满分25分) - 非线性衰减
+            distance_score, distance = self._calculate_distance_score_v2(place, center_point)
+
+            # 4. 场景匹配分 (满分15分)
+            scenario_score, matched_scenario = self._calculate_scenario_match_score(place, keywords)
+            place["_matched_scenario"] = matched_scenario
+
+            # 5. 需求匹配分 (满分10分)
+            requirement_score, matched_reqs = self._calculate_requirement_score(place, user_requirements)
+            place["_matched_requirements"] = matched_reqs
+
+            # 汇总得分
+            total_score = base_score + popularity_score + distance_score + scenario_score + requirement_score
+            place["_score"] = total_score
+
+            # 记录评分明细用于调试
+            place["_score_breakdown"] = {
+                "base": round(base_score, 1),
+                "popularity": round(popularity_score, 1),
+                "distance": round(distance_score, 1),
+                "scenario": round(scenario_score, 1),
+                "requirement": round(requirement_score, 1)
+            }
+
+            logger.debug(
+                f"{place.get('name')}: 总分{total_score:.1f} "
+                f"(基础{base_score:.1f}+热度{popularity_score:.1f}+"
+                f"距离{distance_score:.1f}+场景{scenario_score:.1f}+需求{requirement_score:.1f})"
+            )
+
+        # 初步排序
         ranked_places = sorted(places, key=lambda x: x.get("_score", 0), reverse=True)
-        
+
+        # 应用多样性调整（惩罚连锁店）
+        ranked_places = self._apply_diversity_adjustment(ranked_places)
+
+        # 重新排序
+        ranked_places = sorted(ranked_places, key=lambda x: x.get("_score", 0), reverse=True)
+
+        # 生成推荐理由
+        for place in ranked_places:
+            place["_recommendation_reason"] = self._generate_recommendation_reason(place, ranked_places)
+
         # 对于多场景搜索，确保每个场景都有代表性
         if any(place.get('_source_keyword') for place in ranked_places):
             logger.info("应用多场景平衡策略")
@@ -980,21 +1269,30 @@ class CafeRecommender(BaseTool):
                 if keyword not in by_keyword:
                     by_keyword[keyword] = []
                 by_keyword[keyword].append(place)
-            
+
             # 从每个场景选择最佳的场所，确保多样性
             balanced_places = []
             max_per_keyword = max(2, 8 // len(by_keyword))  # 每个场景至少2个，总共不超过8个
-            
+
             for keyword, keyword_places in by_keyword.items():
                 selected = keyword_places[:max_per_keyword]
                 balanced_places.extend(selected)
                 logger.info(f"从场景 '{keyword}' 选择了 {len(selected)} 个场所")
-            
+
             # 按分数重新排序，但保持场景多样性
             balanced_places = sorted(balanced_places, key=lambda x: x.get("_score", 0), reverse=True)
+
+            # 记录最终推荐
+            for i, p in enumerate(balanced_places[:8]):
+                logger.info(f"推荐#{i+1}: {p.get('name')} ({p.get('_score', 0):.1f}分) - {p.get('_recommendation_reason', '')}")
+
             return balanced_places[:8]  # 增加到8个推荐
         else:
-            return ranked_places[:5]
+            # 记录最终推荐
+            for i, p in enumerate(ranked_places[:6]):
+                logger.info(f"推荐#{i+1}: {p.get('name')} ({p.get('_score', 0):.1f}分) - {p.get('_recommendation_reason', '')}")
+
+            return ranked_places[:6]  # 单场景增加到6个
 
 
     def _calculate_distance(
@@ -1181,10 +1479,25 @@ class CafeRecommender(BaseTool):
                 distance_text = f"{distance/1000:.1f} 公里"
                 map_link_coords = f"{lng},{lat}"
 
+            # 获取推荐理由
+            recommendation_reason = place.get("_recommendation_reason", "")
+            reason_html = ""
+            if recommendation_reason:
+                reason_html = f'''
+                        <div class="cafe-reason">
+                            <i class='bx bx-bulb'></i>
+                            <span>{recommendation_reason}</span>
+                        </div>'''
+
+            # 获取评分明细用于tooltip（可选展示）
+            score_breakdown = place.get("_score_breakdown", {})
+            total_score = place.get("_score", 0)
+            score_title = f"综合评分: {total_score:.0f}/100"
+
             place_cards_html += f'''
-            <div class="cafe-card"> 
+            <div class="cafe-card" title="{score_title}">
                 <div class="cafe-img">
-                    <i class='bx {cfg["icon_card"]}'></i> 
+                    <i class='bx {cfg["icon_card"]}'></i>
                 </div>
                 <div class="cafe-content">
                     <div class="cafe-header">
@@ -1192,7 +1505,7 @@ class CafeRecommender(BaseTool):
                             <h3 class="cafe-name">{place['name']}</h3>
                         </div>
                         <span class="cafe-rating">评分: {rating}</span>
-                    </div>
+                    </div>{reason_html}
                     <div class="cafe-details">
                         <div class="cafe-info">
                             <i class='bx bx-map'></i>
@@ -1233,7 +1546,7 @@ class CafeRecommender(BaseTool):
                     很抱歉，在您指定的区域内未能找到符合条件的{cfg["noun_plural"]}。<br>
                     建议扩大搜索范围或调整搜索关键词。
                 </p>
-                <a href="/workspace/meetspot_finder.html" class="btn-modern btn-primary-modern">
+                <a href="/public/meetspot_finder.html" class="btn-modern btn-primary-modern">
                     <i class='bx bx-redo'></i>重新搜索
                 </a>
             </div>'''
@@ -1302,10 +1615,10 @@ class CafeRecommender(BaseTool):
     <meta name="twitter:title" content="{meta_title}">
     <meta name="twitter:description" content="{meta_description}">
 
-    <!-- MeetSpot 品牌字体 -->
+    <!-- MeetSpot Urban Navigator Theme Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.9/css/boxicons.min.css">
 
@@ -1317,12 +1630,13 @@ class CafeRecommender(BaseTool):
         {dynamic_style} /* Inject dynamic theme colors here */
 
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        body {{ font-family: var(--font-family-sans, 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif); line-height: var(--font-leading-normal, 1.6); background-color: var(--light); color: var(--dark); padding-bottom: 50px; }}
-        h1, h2, h3, h4, h5, h6 {{ font-family: var(--font-family-heading, 'Poppins', 'PingFang SC', sans-serif); }}
+        body {{ font-family: var(--font-family-sans, 'Plus Jakarta Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif); line-height: var(--font-leading-normal, 1.6); background-color: var(--light); color: var(--dark); padding-bottom: 50px; }}
+        h1, h2, h3, h4, h5, h6 {{ font-family: var(--font-family-heading, 'Sora', 'PingFang SC', sans-serif); font-weight: 700; }}
         .container {{ max-width: 1200px; margin: 0 auto; padding: 0 20px; }}
-        header {{ background-color: var(--primary); color: white; padding: 60px 0 100px; text-align: center; position: relative; margin-bottom: 80px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); }}
-        header::after {{ content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 60"><path fill="{cfg.get("theme_light", "#f2e9e4")}" fill-opacity="1" d="M0,32L80,42.7C160,53,320,75,480,64C640,53,800,11,960,5.3C1120,0,1280,32,1360,48L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path></svg>'); background-size: cover; background-position: center; }}
-        .header-logo {{ font-size: 3rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -1px; }}
+        header {{ background: linear-gradient(135deg, #001524 0%, #0A4D68 50%, #001524 100%); color: white; padding: 60px 0 100px; text-align: center; position: relative; margin-bottom: 80px; box-shadow: 0 8px 32px rgba(0, 21, 36, 0.3); }}
+        header::before {{ content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-radial-gradient(circle at 30% 40%, transparent 0, transparent 40px, rgba(6, 214, 160, 0.05) 40px, rgba(6, 214, 160, 0.05) 42px); pointer-events: none; }}
+        header::after {{ content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 60"><path fill="%23F8FAFC" fill-opacity="1" d="M0,32L80,42.7C160,53,320,75,480,64C640,53,800,11,960,5.3C1120,0,1280,32,1360,48L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path></svg>'); background-size: cover; background-position: center; }}
+        .header-logo {{ font-size: 3rem; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.03em; text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3); }}
         .coffee-icon {{ font-size: 3rem; vertical-align: middle; margin-right: 10px; }}
         .header-subtitle {{ font-size: 1.2rem; opacity: 0.9; }}
         .main-content {{ margin-top: -60px; }}
@@ -1347,26 +1661,42 @@ class CafeRecommender(BaseTool):
         .location-table th {{ background-color: var(--primary-light); color: white; font-weight: 600; }}
         .location-table tr:last-child td {{ border-bottom: none; }}
         .location-table tr:nth-child(even) {{ background-color: rgba(0,0,0,0.02); /* Adjusted for better contrast */ }}
-        .cafe-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; margin-top: 20px; }} 
-        .cafe-card {{ background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); transition: var(--transition); display: flex; flex-direction: column; }}
-        .cafe-card:hover {{ transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); }}
-        .cafe-img {{ height: 180px; background-color: var(--primary-light); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; }}
-        .cafe-content {{ padding: 20px; flex: 1; display: flex; flex-direction: column; }}
-        .cafe-header {{ display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }}
-        .cafe-name {{ font-size: 1.3rem; margin: 0 0 5px 0; color: var(--primary-dark); }}
-        .cafe-rating {{ display: inline-block; background-color: var(--primary); color: white; padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; white-space: nowrap; }}
+        .cafe-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 28px; margin-top: 24px; }}
+        .cafe-card {{ background-color: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(10, 77, 104, 0.08), 0 1px 3px rgba(0,0,0,0.04); transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); display: flex; flex-direction: column; position: relative; }}
+        .cafe-card::before {{ content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 50%, var(--brand-accent, #FF6B35) 100%); opacity: 0; transition: opacity 0.3s ease; }}
+        .cafe-card:hover {{ transform: translateY(-8px) scale(1.01); box-shadow: 0 20px 40px rgba(10, 77, 104, 0.15), 0 8px 16px rgba(0,0,0,0.08); }}
+        .cafe-card:hover::before {{ opacity: 1; }}
+        /* 推荐理由 - 地图标注风格 */
+        .cafe-reason {{ position: relative; display: flex; align-items: center; gap: 10px; background: linear-gradient(135deg, rgba(255, 107, 53, 0.08) 0%, rgba(255, 107, 53, 0.03) 100%); padding: 12px 16px; margin: 0 0 12px 0; border-radius: 10px; border: 1px solid rgba(255, 107, 53, 0.15); }}
+        .cafe-reason::before {{ content: ''; position: absolute; left: 12px; top: -6px; width: 12px; height: 12px; background: linear-gradient(135deg, var(--brand-accent, #FF6B35) 0%, #ff8c5a 100%); border-radius: 50%; box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4); animation: reasonPulse 2s ease-in-out infinite; }}
+        .cafe-reason i {{ color: var(--brand-accent, #FF6B35); font-size: 1.2rem; margin-left: 8px; }}
+        .cafe-reason span {{ color: #2c3e50; font-size: 0.88rem; font-weight: 600; letter-spacing: 0.01em; line-height: 1.4; }}
+        @keyframes reasonPulse {{ 0%, 100% {{ transform: scale(1); opacity: 1; }} 50% {{ transform: scale(1.2); opacity: 0.7; }} }}
+        /* 卡片排名标记 */
+        .cafe-card:nth-child(1) .cafe-img::after {{ content: '🥇 TOP 1'; position: absolute; top: 12px; right: 12px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: #1a1a1a; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4); }}
+        .cafe-card:nth-child(2) .cafe-img::after {{ content: '🥈 TOP 2'; position: absolute; top: 12px; right: 12px; background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%); color: #1a1a1a; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(192, 192, 192, 0.4); }}
+        .cafe-card:nth-child(3) .cafe-img::after {{ content: '🥉 TOP 3'; position: absolute; top: 12px; right: 12px; background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(205, 127, 50, 0.4); }}
+        .cafe-img {{ height: 180px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3.5rem; position: relative; overflow: hidden; }}
+        .cafe-img::before {{ content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%); animation: shimmer 3s ease-in-out infinite; }}
+        @keyframes shimmer {{ 0%, 100% {{ transform: translate(-30%, -30%); }} 50% {{ transform: translate(30%, 30%); }} }}
+        .cafe-content {{ padding: 22px; flex: 1; display: flex; flex-direction: column; }}
+        .cafe-header {{ display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }}
+        .cafe-name {{ font-size: 1.25rem; margin: 0; color: var(--primary-dark); font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; }}
+        .cafe-rating {{ display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; white-space: nowrap; box-shadow: 0 2px 8px rgba(10, 77, 104, 0.25); }}
+        .cafe-rating::before {{ content: '⭐'; font-size: 0.75rem; }}
         .cafe-details {{ flex: 1; }}
-        .cafe-info {{ margin-bottom: 12px; display: flex; align-items: flex-start; }}
-        .cafe-info i {{ color: var(--primary); margin-right: 8px; font-size: 1.1rem; min-width: 20px; margin-top: 3px; }}
-        .cafe-info-text {{ flex: 1; }}
-        .cafe-tags {{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 15px; }}
-        .cafe-tag {{ background-color: rgba(0,0,0,0.05); /* Adjusted for better contrast */ color: var(--primary-dark); padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; }}
-        .cafe-footer {{ display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; }}
-        .cafe-distance {{ display: flex; align-items: center; color: var(--primary-dark); font-weight: 600; }}
-        .cafe-distance i {{ margin-right: 5px; }}
-        .cafe-actions a {{ display: inline-flex; align-items: center; justify-content: center; background-color: var(--primary); color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; transition: var(--transition); }}
-        .cafe-actions a:hover {{ background-color: var(--primary-dark); transform: translateY(-2px); }}
-        .cafe-actions i {{ margin-right: 5px; }}
+        .cafe-info {{ margin-bottom: 10px; display: flex; align-items: flex-start; }}
+        .cafe-info i {{ color: var(--primary); margin-right: 10px; font-size: 1.05rem; min-width: 18px; margin-top: 2px; opacity: 0.85; }}
+        .cafe-info-text {{ flex: 1; font-size: 0.9rem; color: #4a5568; line-height: 1.5; }}
+        .cafe-tags {{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }}
+        .cafe-tag {{ background: linear-gradient(135deg, rgba(10, 77, 104, 0.06) 0%, rgba(8, 131, 149, 0.04) 100%); color: var(--primary-dark); padding: 5px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 500; border: 1px solid rgba(10, 77, 104, 0.08); transition: all 0.2s ease; }}
+        .cafe-tag:hover {{ background: linear-gradient(135deg, rgba(10, 77, 104, 0.12) 0%, rgba(8, 131, 149, 0.08) 100%); transform: translateY(-1px); }}
+        .cafe-footer {{ display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(0,0,0,0.06); }}
+        .cafe-distance {{ display: inline-flex; align-items: center; gap: 6px; color: var(--primary-dark); font-weight: 600; font-size: 0.9rem; padding: 6px 12px; background: rgba(10, 77, 104, 0.04); border-radius: 8px; }}
+        .cafe-distance i {{ font-size: 1.1rem; color: var(--primary); }}
+        .cafe-actions a {{ display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(135deg, var(--brand-accent, #FF6B35) 0%, #ff8c5a 100%); color: white; padding: 10px 18px; border-radius: 10px; text-decoration: none; font-size: 0.88rem; font-weight: 600; transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1); box-shadow: 0 4px 12px rgba(255, 107, 53, 0.25); }}
+        .cafe-actions a:hover {{ transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 107, 53, 0.35); }}
+        .cafe-actions i {{ font-size: 1.1rem; }}
         .transportation-info {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 20px; }}
         .transport-card {{ background-color: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); border-top: 5px solid var(--primary); }}
         .transport-title {{ font-size: 1.3rem; color: var(--primary-dark); margin-bottom: 15px; display: flex; align-items: center; }}
@@ -1480,7 +1810,7 @@ class CafeRecommender(BaseTool):
                     </ul>
                 </div>
             </div>
-            <a href="/workspace/meetspot_finder.html" class="btn-modern btn-primary-modern">
+            <a href="/public/meetspot_finder.html" class="btn-modern btn-primary-modern">
                 <i class='bx bx-left-arrow-alt'></i>返回首页
             </a>
         </div>

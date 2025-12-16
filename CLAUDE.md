@@ -11,7 +11,7 @@ MeetSpot is an intelligent meeting point recommendation system built with FastAP
 ```bash
 # Start server
 python web_server.py                     # Development server with auto-reload
-uvicorn api.index:app --reload           # Alternative
+uvicorn api.index:app --reload           # Alternative (preferred while iterating)
 
 # Test recommendation endpoint
 curl -X POST "http://127.0.0.1:8000/api/find_meetspot" \
@@ -22,12 +22,20 @@ curl -X POST "http://127.0.0.1:8000/api/find_meetspot" \
 curl http://127.0.0.1:8000/health
 curl http://127.0.0.1:8000/config
 
+# Run tests
+pytest tests/ -v                         # Run test suite
+pytest --cov=app tests/                  # With coverage
+python tests/test_seo.py http://127.0.0.1:8000  # SEO audit (server must be running)
+
 # CI validation (what GitHub Actions runs)
 python -c "import app; print('OK')"
 flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 
-# Code quality (optional)
-ruff check . && black .
+# Code quality (run before PRs)
+black .                                  # Auto-format
+ruff check .                            # Lint
+mypy app/                               # Type check
+python tools/validate_colors.py         # Design token color contrast validation
 ```
 
 **Key URLs**: Main UI (`/`), API docs (`/docs`), Health (`/health`)
@@ -51,30 +59,16 @@ python3.11 -m venv venv && source venv/bin/activate && pip install -r requiremen
 
 ## Testing
 
-Project focuses on integration testing. Automated unit tests are minimal.
+Project focuses on integration testing. Target ≥80% coverage for `app/` package.
 
 ```bash
-# Manual integration test (start server first)
-curl -X POST "http://127.0.0.1:8000/api/find_meetspot" \
-  -H "Content-Type: application/json" \
-  -d '{"locations": ["北京大学", "清华大学"], "keywords": "咖啡馆"}'
-
-# SEO validation
-python verify_seo.py
-
-# Design token color contrast validation
-python tools/validate_colors.py
-
-# Existing test files
-tests/test_seo.py              # SEO page validation
-verify_seo.py                  # SEO content verification
-tools/validate_colors.py       # Design token color contrast validation
+pytest tests/ -v                                    # Full suite
+pytest --cov=app tests/                            # With coverage
+python tests/test_seo.py http://127.0.0.1:8000    # SEO audit against live server
+python verify_seo.py                               # SEO content verification
 ```
 
-**Test Coverage Notes**:
-- Target ≥80% coverage for `app/` package
-- Focus on caching, concurrency, and SEO logic
-- Integration checks run against live server (see `tests/test_seo.py`)
+**Test files**: `tests/test_seo.py` (SEO page validation), `verify_seo.py` (content verification)
 
 ## Code Architecture
 
@@ -201,7 +195,7 @@ See `requirements.txt` for full list with versions.
 
 The codebase includes an experimental agent endpoint (`/api/find_meetspot_agent`) that uses the OpenManus framework for AI-driven recommendations. This is NOT used in production:
 
-- Located in `api/index.py:447-526`
+- Located in `api/index.py` (search for `find_meetspot_agent`)
 - Requires OpenManus directory (currently untracked)
 - Falls back to rule-based mode if agent unavailable
 - **DO NOT USE** for production features without explicit discussion
@@ -368,7 +362,7 @@ Database layer is implemented but optional. Core MeetSpot recommendation works w
 - `CONDA_SETUP_GUIDE.md` - Detailed conda environment setup
 
 ### Adding a New Venue Type Theme
-1. Add theme configuration to `PLACE_TYPE_CONFIG` in `meetspot_recommender.py` (line ~63)
+1. Add theme configuration to `PLACE_TYPE_CONFIG` dict in `meetspot_recommender.py`
 2. Include Chinese name, icons (from Boxicons), and 6 color values
 3. Theme is auto-applied based on primary keyword in search
 4. Consider accessibility (use `design_tokens.py` utilities to verify color contrast)
@@ -384,7 +378,7 @@ Database layer is implemented but optional. Core MeetSpot recommendation works w
 - `api/index.py` has fallback MinimalConfig for environments without full dependencies
 
 ### Working with Generated HTML
-- HTML templates are embedded in `_generate_html_content()` method in `meetspot_recommender.py` (line 875+)
+- HTML templates are embedded in `_generate_html_content()` method in `meetspot_recommender.py`
 - Uses f-strings with dynamic theming via CSS variables
 - Map initialization via Amap Loader with security config
 - Files are auto-saved to `workspace/js_src/` directory
