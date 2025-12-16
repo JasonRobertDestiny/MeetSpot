@@ -322,7 +322,7 @@ async def faq_page(request: Request):
     )
 
 
-@router.get("/sitemap.xml")
+@router.api_route("/sitemap.xml", methods=["GET", "HEAD"])
 async def sitemap():
     base_url = "https://meetspot-irq2.onrender.com"
     today = datetime.now().strftime("%Y-%m-%d")
@@ -354,7 +354,7 @@ async def sitemap():
     return Response(content=sitemap_xml, media_type="application/xml")
 
 
-@router.get("/robots.txt")
+@router.api_route("/robots.txt", methods=["GET", "HEAD"])
 async def robots_txt():
     today = datetime.now().strftime("%Y-%m-%d")
     robots = f"""# MeetSpot Robots.txt\n# Generated: {today}\n\nUser-agent: *\nAllow: /\nCrawl-delay: 1\n\nDisallow: /admin/\nDisallow: /api/internal/\nDisallow: /*.json$\n\nSitemap: https://meetspot-irq2.onrender.com/sitemap.xml\n\nUser-agent: Googlebot\nAllow: /\n\nUser-agent: Baiduspider\nAllow: /\n\nUser-agent: GPTBot\nDisallow: /\n\nUser-agent: CCBot\nDisallow: /\n"""
