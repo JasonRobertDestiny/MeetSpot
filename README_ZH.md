@@ -4,7 +4,7 @@
 
 <img src="docs/logo.jpg" alt="MeetSpot Logo" width="200"/>
 
-**智能会面地点推荐系统**
+**多人会面地点推荐 Agent**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
@@ -17,7 +17,7 @@
 
 ## 什么是 MeetSpot？
 
-MeetSpot（聚点）根据多个参与者的位置计算最佳会面地点，并推荐附近高评分场所。无论是商务会谈找咖啡馆、朋友聚餐找餐厅、还是学习讨论找图书馆，聚点都能为所有人找到最公平的中点位置。
+MeetSpot 是一款多人会面地点推荐的 Agent。用户输入多个出发地址，系统自动计算最公平的中心点，并智能推荐周边咖啡馆、餐厅等场所。核心特点：LLM 智能评分排序、个性化交通建议、交互式地图展示。适用于朋友聚会、商务会谈、多人约会等场景，让"在哪见面"不再是难题。
 
 <div align="center">
 <img src="docs/show1.jpg" alt="MeetSpot 首页" width="80%"/>

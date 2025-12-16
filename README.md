@@ -4,7 +4,7 @@
 
 <img src="docs/logo.jpg" alt="MeetSpot Logo" width="200"/>
 
-**Intelligent Meeting Point Recommendation System**
+**Multi-Person Meeting Point Recommendation Agent**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
@@ -17,7 +17,7 @@
 
 ## What is MeetSpot?
 
-MeetSpot calculates the optimal meeting location based on multiple participants' positions and recommends nearby venues. Whether you need a quiet cafe for business talks, a lively restaurant for friends, or a library for study groups - MeetSpot finds the fairest meeting point for everyone.
+MeetSpot is an AI Agent for multi-person meeting point recommendations. Users input multiple starting addresses, and the system automatically calculates the fairest center point while intelligently recommending nearby cafes, restaurants, and other venues. Core features: LLM-powered intelligent scoring, personalized transport suggestions, and interactive map display. Perfect for friend gatherings, business meetings, and group dates - making "where to meet" no longer a problem.
 
 <div align="center">
 <img src="docs/show1.jpg" alt="MeetSpot Homepage" width="80%"/>
