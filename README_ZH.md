@@ -40,6 +40,11 @@ MeetSpot（聚点）根据多个参与者的位置计算最佳会面地点，并
 
 ## 产品截图
 
+### AI 智能客服
+<div align="center">
+<img src="docs/AI客服.jpg" alt="AI 智能客服" width="80%"/>
+</div>
+
 ### 地图展示
 <div align="center">
 <img src="docs/show4地图展示.jpg" alt="地图展示" width="80%"/>

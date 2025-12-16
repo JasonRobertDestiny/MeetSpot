@@ -40,6 +40,11 @@ MeetSpot calculates the optimal meeting location based on multiple participants'
 
 ## Screenshots
 
+### AI Customer Service
+<div align="center">
+<img src="docs/AI客服.jpg" alt="AI Customer Service" width="80%"/>
+</div>
+
 ### Map Display
 <div align="center">
 <img src="docs/show4地图展示.jpg" alt="Map Display" width="80%"/>
