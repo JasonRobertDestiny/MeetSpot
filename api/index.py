@@ -224,6 +224,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# 缓存中间件 - 为静态资源添加 Cache-Control 头
+@app.middleware("http")
+async def add_cache_headers(request: Request, call_next):
+    """Add Cache-Control headers for static assets to improve performance."""
+    response = await call_next(request)
+    path = request.url.path
+
+    # 静态资源长期缓存 (1 year for immutable assets)
+    if any(path.endswith(ext) for ext in ['.css', '.js', '.woff2', '.woff', '.ttf']):
+        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    # 图片缓存 (30 days)
+    elif any(path.endswith(ext) for ext in ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ico']):
+        response.headers["Cache-Control"] = "public, max-age=2592000"
+    # HTML 页面短期缓存 (10 minutes, revalidate)
+    elif path.endswith('.html') or path == '/' or path in ['/about', '/faq', '/how-it-works']:
+        response.headers["Cache-Control"] = "public, max-age=600, stale-while-revalidate=86400"
+    # sitemap/robots 缓存 (1 hour)
+    elif path in ['/sitemap.xml', '/robots.txt']:
+        response.headers["Cache-Control"] = "public, max-age=3600"
+
+    return response
+
 async def _rate_limit_handler(request: Request, exc: RateLimitExceeded):
     """全局限流处理器."""
     return JSONResponse(

@@ -132,6 +132,9 @@
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;900&family=DM+Sans:wght@400;700&family=Space+Mono&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;900&family=DM+Sans:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
 
+    <!-- LCP Image Preload - Critical for performance -->
+    <link rel="preload" href="https://meetspot-irq2.onrender.com/static/og-image.jpg" as="image" fetchpriority="high">
+
     <!-- Icons - Async loading to avoid render blocking -->
     <link rel="preconnect" href="https://unpkg.com">
     <link rel="dns-prefetch" href="https://unpkg.com">
@@ -646,6 +649,8 @@
         section {
             max-width: 1400px;
             margin: 0 auto 100px;
+            content-visibility: auto;
+            contain-intrinsic-size: auto 500px;
         }
 
         section h2 {
@@ -853,6 +858,27 @@
             }
         }
 
+        /* Mobile optimization - reduce animations for battery/performance */
+        @media (max-width: 768px) {
+            body::before {
+                animation: none;
+                opacity: 0.2;
+            }
+            header::after {
+                animation: none;
+            }
+            .logo i {
+                animation: none;
+            }
+            .stat-marker::before {
+                animation: none;
+            }
+            .hero h1 {
+                animation: none;
+                background-position: 0% center;
+            }
+        }
+
         /* Focus visible for keyboard navigation */
         *:focus-visible {
             outline: 2px solid var(--nav-accent);
@@ -919,7 +945,7 @@
             </div>
 
             <div class="hero-visual">
-                <img src="https://meetspot-irq2.onrender.com/static/og-image.jpg" alt="MeetSpot midpoint illustration showing route planning interface" loading="eager">
+                <img src="https://meetspot-irq2.onrender.com/static/og-image.jpg" alt="MeetSpot midpoint illustration showing route planning interface" loading="eager" fetchpriority="high" width="1200" height="630" decoding="async">
             </div>
         </div>
     </header>
