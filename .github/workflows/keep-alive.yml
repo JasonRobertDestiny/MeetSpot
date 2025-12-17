@@ -19,3 +19,13 @@ jobs:
           if [ "$response" != "200" ]; then
             echo "Warning: Health check returned non-200 status"
           fi
+
+      - name: Ping Sitemap (SEO critical)
+        run: |
+          sitemap_response=$(curl -s -o /dev/null -w "%{http_code}" https://meetspot-irq2.onrender.com/sitemap.xml)
+          echo "Sitemap response: $sitemap_response"
+
+      - name: Ping Robots.txt
+        run: |
+          robots_response=$(curl -s -o /dev/null -w "%{http_code}" https://meetspot-irq2.onrender.com/robots.txt)
+          echo "Robots.txt response: $robots_response"
