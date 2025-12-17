@@ -190,6 +190,10 @@ class MeetSpotRequest(BaseModel):
     keywords: Optional[str] = "咖啡馆"
     place_type: Optional[str] = ""
     user_requirements: Optional[str] = ""
+    # 筛选条件
+    min_rating: Optional[float] = 0.0      # 最低评分 (0-5)
+    max_distance: Optional[int] = 100000   # 最大距离 (米)
+    price_range: Optional[str] = ""        # 价格区间: economy/mid/high
 
 class AIChatRequest(BaseModel):
     message: str
@@ -389,6 +393,36 @@ async def bing_verification():
     # 如果文件不存在，返回404
     raise HTTPException(status_code=404, detail="Bing verification file not found")
 
+@app.api_route("/sitemap.xml", methods=["GET", "HEAD"])
+async def sitemap():
+    """返回站点地图（支持GET和HEAD请求）"""
+    sitemap_file = "public/sitemap.xml"
+    if os.path.exists(sitemap_file):
+        return FileResponse(
+            sitemap_file,
+            media_type="application/xml",
+            headers={
+                "Cache-Control": "public, max-age=3600",
+                "Content-Type": "application/xml; charset=utf-8"
+            }
+        )
+    raise HTTPException(status_code=404, detail="Sitemap not found")
+
+@app.api_route("/robots.txt", methods=["GET", "HEAD"])
+async def robots():
+    """返回robots.txt（支持GET和HEAD请求）"""
+    robots_file = "public/robots.txt"
+    if os.path.exists(robots_file):
+        return FileResponse(
+            robots_file,
+            media_type="text/plain",
+            headers={
+                "Cache-Control": "public, max-age=3600",
+                "Content-Type": "text/plain; charset=utf-8"
+            }
+        )
+    raise HTTPException(status_code=404, detail="robots.txt not found")
+
 @app.get("/config")
 async def get_config():
     """获取当前配置状态（不暴露敏感信息）"""
@@ -535,7 +569,10 @@ async def find_meetspot(request: MeetSpotRequest):
                 locations=request.locations,
                 keywords=request.keywords,
                 place_type=request.place_type,
-                user_requirements=request.user_requirements
+                user_requirements=request.user_requirements,
+                min_rating=request.min_rating,
+                max_distance=request.max_distance,
+                price_range=request.price_range
             )
 
             processing_time = time.time() - start_time
