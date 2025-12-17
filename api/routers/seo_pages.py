@@ -127,7 +127,7 @@ async def city_page(request: Request, city_slug: str):
         seo_generator.generate_schema_org("organization", {}),
         breadcrumb,
     )
-    city_content = seo_generator.generate_city_content(city.get("name", ""))
+    city_content = seo_generator.generate_city_content(city)
 
     return templates.TemplateResponse(
         "pages/city.html",

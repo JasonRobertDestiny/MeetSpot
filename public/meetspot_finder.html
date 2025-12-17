@@ -9,10 +9,10 @@
     <meta http-equiv="Expires" content="0">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-    <!-- Urban Navigator Theme Fonts -->
+    <!-- Urban Navigator Theme Fonts - Distinctive Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <!-- Design Token System -->
     <link rel="stylesheet" href="/static/css/design-tokens.css">
@@ -47,7 +47,7 @@
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
             background: linear-gradient(165deg, var(--navy-900) 0%, var(--navy-800) 40%, var(--navy-700) 100%);
             min-height: 100vh;
             line-height: 1.6;
@@ -92,7 +92,7 @@
         }
 
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Sora', sans-serif;
+            font-family: 'Outfit', 'PingFang SC', sans-serif;
             font-weight: 700;
             letter-spacing: -0.02em;
         }
@@ -1470,6 +1470,11 @@
             const loadingToastId = showInfo('正在处理', `正在为您推荐${keywords}，请稍候...`, 0);
 
             try {
+                // 获取筛选条件
+                const minRating = parseFloat(document.getElementById('minRating').value) || 0;
+                const maxDistance = parseInt(document.getElementById('maxDistance').value) || 100000;
+                const priceRange = document.getElementById('priceRange').value || "";
+
                 const response = await fetch('/api/find_meetspot', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1477,7 +1482,10 @@
                         locations: locations,
                         keywords: keywords,
                         user_requirements: userRequirements,
-                        theme: selectedTheme
+                        theme: selectedTheme,
+                        min_rating: minRating,
+                        max_distance: maxDistance,
+                        price_range: priceRange
                     })
                 });
 

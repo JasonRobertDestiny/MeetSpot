@@ -1,21 +1,447 @@
 {% extends "base.html" %}
 
+{% block extra_head %}
+<style>
+    /* City Page Styles */
+    .city-hero {
+        text-align: center;
+        padding: 48px 32px;
+        background: linear-gradient(135deg, rgba(10, 77, 104, 0.05) 0%, rgba(6, 214, 160, 0.05) 100%);
+        border-radius: 24px;
+        margin-bottom: 32px;
+    }
+
+    .city-hero h1 {
+        font-size: 2.5rem;
+        font-family: "Outfit", sans-serif;
+        font-weight: 900;
+        color: var(--nav-primary);
+        margin-bottom: 12px;
+        letter-spacing: -0.02em;
+    }
+
+    .city-hero .tagline {
+        font-size: 1.25rem;
+        color: var(--nav-accent);
+        font-weight: 600;
+        margin-bottom: 16px;
+        font-family: "Outfit", sans-serif;
+    }
+
+    .city-hero .lead {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.8;
+    }
+
+    /* Venue Tags Header */
+    .venue-tags-header {
+        background: #fff;
+        padding: 24px 32px;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 32px;
+    }
+
+    .venue-tags-header h2 {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-bottom: 16px;
+    }
+
+    .venue-tags {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .venue-tag {
+        background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-dark) 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    /* Features Section */
+    .city-features {
+        margin-bottom: 40px;
+    }
+
+    .city-features h2 {
+        font-size: 1.75rem;
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-primary);
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+    }
+
+    .feature-card {
+        background: #fff;
+        padding: 32px;
+        border-radius: 20px;
+        box-shadow: var(--shadow-md);
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(10, 77, 104, 0.08);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+    }
+
+    .feature-card h3 {
+        font-size: 1.25rem;
+        color: var(--nav-primary);
+        margin-bottom: 12px;
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+    }
+
+    .feature-card p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    /* Landmarks Section */
+    .city-landmarks {
+        background: #fff;
+        padding: 40px;
+        border-radius: 24px;
+        box-shadow: var(--shadow-md);
+        margin-bottom: 40px;
+    }
+
+    .city-landmarks h2 {
+        font-size: 1.75rem;
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-primary);
+        margin-bottom: 32px;
+        text-align: center;
+    }
+
+    .tags-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 32px;
+    }
+
+    .tags-group h3 {
+        font-size: 1rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        margin-bottom: 16px;
+        font-family: "Space Mono", monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .tag {
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .tag-landmark {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.15) 0%, rgba(255, 107, 53, 0.05) 100%);
+        color: #D84315;
+        border: 1px solid rgba(255, 107, 53, 0.3);
+    }
+
+    .tag-district {
+        background: linear-gradient(135deg, rgba(10, 77, 104, 0.15) 0%, rgba(10, 77, 104, 0.05) 100%);
+        color: var(--nav-primary);
+        border: 1px solid rgba(10, 77, 104, 0.3);
+    }
+
+    .tag-university {
+        background: linear-gradient(135deg, rgba(6, 214, 160, 0.15) 0%, rgba(6, 214, 160, 0.05) 100%);
+        color: #047857;
+        border: 1px solid rgba(6, 214, 160, 0.3);
+    }
+
+    .tag:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Use Cases Section */
+    .use-cases {
+        margin-bottom: 40px;
+    }
+
+    .use-cases h2 {
+        font-size: 1.75rem;
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-primary);
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .use-cases-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+    }
+
+    .use-case-card {
+        background: linear-gradient(135deg, #fff 0%, rgba(255, 107, 53, 0.02) 100%);
+        padding: 28px;
+        border-radius: 20px;
+        border-left: 4px solid var(--nav-accent);
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+    }
+
+    .use-case-card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateX(4px);
+    }
+
+    .use-case-card h4 {
+        font-size: 1.1rem;
+        color: var(--nav-primary);
+        margin-bottom: 12px;
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+    }
+
+    .use-case-card p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    /* Local Tips Section */
+    .local-tips {
+        margin-bottom: 40px;
+    }
+
+    .local-tips h2 {
+        font-size: 1.75rem;
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-primary);
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .tip-card {
+        background: linear-gradient(135deg, rgba(255, 184, 77, 0.1) 0%, rgba(255, 107, 53, 0.05) 100%);
+        padding: 32px;
+        border-radius: 20px;
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        border: 1px solid rgba(255, 184, 77, 0.3);
+    }
+
+    .tip-icon {
+        font-size: 2rem;
+        flex-shrink: 0;
+    }
+
+    .tip-card p {
+        color: var(--text-primary);
+        font-size: 1.05rem;
+        line-height: 1.8;
+    }
+
+    /* How It Works Section */
+    .how-it-works {
+        background: #fff;
+        padding: 40px;
+        border-radius: 24px;
+        box-shadow: var(--shadow-md);
+        margin-bottom: 40px;
+    }
+
+    .how-it-works h2 {
+        font-size: 1.75rem;
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+        color: var(--nav-primary);
+        margin-bottom: 32px;
+        text-align: center;
+    }
+
+    .steps {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .step {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .step-number {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-dark) 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        font-weight: 700;
+        font-family: "Outfit", sans-serif;
+        flex-shrink: 0;
+    }
+
+    .step-content h4 {
+        font-size: 1.15rem;
+        color: var(--nav-primary);
+        margin-bottom: 8px;
+        font-family: "Outfit", sans-serif;
+        font-weight: 700;
+    }
+
+    .step-content p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        text-align: center;
+        padding: 48px 32px;
+        background: linear-gradient(135deg, var(--nav-primary) 0%, var(--nav-dark) 100%);
+        border-radius: 24px;
+        color: white;
+    }
+
+    .cta-section h2 {
+        font-size: 2rem;
+        font-family: "Outfit", sans-serif;
+        font-weight: 900;
+        margin-bottom: 16px;
+    }
+
+    .cta-section p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 28px;
+    }
+
+    .cta-button {
+        display: inline-block;
+        padding: 16px 48px;
+        background: var(--nav-accent);
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        font-family: "Outfit", sans-serif;
+        border-radius: 999px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+    }
+
+    .cta-button:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 12px 32px rgba(255, 107, 53, 0.5);
+        color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .city-hero {
+            padding: 32px 20px;
+        }
+
+        .city-hero h1 {
+            font-size: 1.75rem;
+        }
+
+        .city-landmarks,
+        .how-it-works {
+            padding: 28px 20px;
+        }
+
+        .tip-card {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .step {
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+        }
+
+        .cta-section {
+            padding: 32px 20px;
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 14px 32px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<section style="background:#fff;padding:32px;border-radius:24px;box-shadow:0 20px 60px rgba(15,23,42,0.05);">
-    <h1>{{ city.name }}聚会地点推荐</h1>
-    <p>{{ city.description }}</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;">
+<!-- Venue Tags Header -->
+<div class="venue-tags-header">
+    <h2>{{ city.name }}热门聚会场所类型</h2>
+    <div class="venue-tags">
         {% for venue in city.popular_venues %}
-        <span style="background:#EEF2FF;color:var(--primary);padding:6px 12px;border-radius:999px;font-size:0.9rem;">{{ venue }}</span>
+        <span class="venue-tag">{{ venue }}</span>
         {% endfor %}
     </div>
-</section>
+</div>
 
-<section style="margin-top:32px;">
-    {{ city_content.intro | safe }}
-    {{ city_content.features | safe }}
-    {{ city_content.how_it_works | safe }}
-    {{ city_content.testimonial | safe }}
-    {{ city_content.cta | safe }}
-</section>
+<!-- City Hero -->
+{{ city_content.intro | safe }}
+
+<!-- Features -->
+{{ city_content.features | safe }}
+
+<!-- Landmarks & Areas -->
+{{ city_content.landmarks | safe }}
+
+<!-- Use Cases -->
+{{ city_content.use_cases | safe }}
+
+<!-- Local Tips -->
+{{ city_content.local_tips | safe }}
+
+<!-- How It Works -->
+{{ city_content.how_it_works | safe }}
+
+<!-- CTA -->
+{{ city_content.cta | safe }}
 {% endblock %}

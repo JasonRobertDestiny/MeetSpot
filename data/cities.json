@@ -5,1200 +5,1100 @@
       "name_en": "Beijing",
       "slug": "beijing",
       "description": "中国首都，文化与科技交织，适合商务与文艺聚会",
-      "popular_venues": [
-        "咖啡馆",
-        "创意园区",
-        "艺术空间",
-        "餐厅"
-      ],
+      "tagline": "千年古都，创新之城",
+      "popular_venues": ["咖啡馆", "创意园区", "艺术空间", "餐厅"],
       "priority": 1,
       "population": 21800000,
-      "coordinates": {
-        "lat": 39.9042,
-        "lng": 116.4074
-      },
-      "keywords": [
-        "北京聚会",
-        "beijing meetup",
-        "北京中点",
-        "首都会面"
-      ]
+      "coordinates": {"lat": 39.9042, "lng": 116.4074},
+      "keywords": ["北京聚会", "beijing meetup", "北京中点", "首都会面"],
+      "landmarks": ["国贸", "中关村", "望京", "三里屯", "798艺术区"],
+      "university_clusters": ["海淀高校群", "北大清华", "人大", "北航", "北理工"],
+      "business_districts": ["国贸CBD", "中关村", "金融街", "望京", "亦庄"],
+      "metro_lines": 27,
+      "use_cases": [
+        {"scenario": "校友聚会", "example": "北大校友从海淀、朝阳、丰台出发，系统推荐西单附近的咖啡馆"},
+        {"scenario": "商务会谈", "example": "投资人与创业者分别在国贸和中关村，推荐东直门商圈"},
+        {"scenario": "朋友聚餐", "example": "住在通州、昌平、大兴的朋友，系统计算出崇文门是最公平的中点"}
+      ],
+      "local_tips": "北京地铁覆盖广泛，建议优先选择地铁站附近的场所。高峰期避开1/2/10号线换乘站。"
     },
     {
       "name": "上海",
       "name_en": "Shanghai",
       "slug": "shanghai",
       "description": "国际化大都市，金融与创意产业高度集聚",
-      "popular_venues": [
-        "咖啡馆",
-        "外滩酒吧",
-        "联合办公",
-        "米其林餐厅"
-      ],
+      "tagline": "魔都潮流，精致生活",
+      "popular_venues": ["咖啡馆", "外滩酒吧", "联合办公", "米其林餐厅"],
       "priority": 1,
       "population": 24800000,
-      "coordinates": {
-        "lat": 31.2304,
-        "lng": 121.4737
-      },
-      "keywords": [
-        "上海聚会",
-        "shanghai meeting",
-        "上海会面",
-        "黄浦聚会"
-      ]
+      "coordinates": {"lat": 31.2304, "lng": 121.4737},
+      "keywords": ["上海聚会", "shanghai meeting", "上海会面", "黄浦聚会"],
+      "landmarks": ["外滩", "陆家嘴", "南京路", "静安寺", "新天地"],
+      "university_clusters": ["复旦", "交大", "同济", "华师大", "上财"],
+      "business_districts": ["陆家嘴", "静安", "徐汇滨江", "虹桥商务区", "张江"],
+      "metro_lines": 20,
+      "use_cases": [
+        {"scenario": "投资人约见", "example": "陆家嘴基金经理与徐汇创业者，推荐人民广场附近"},
+        {"scenario": "大学同学聚会", "example": "复旦、交大、同济校友从浦东浦西出发，系统推荐静安寺商圈"},
+        {"scenario": "跨国团队会面", "example": "古北外籍员工与张江程序员，推荐虹桥交通枢纽附近"}
+      ],
+      "local_tips": "浦东浦西通勤时间差异大，优先选择2/10号线沿线场所。"
     },
     {
       "name": "广州",
       "name_en": "Guangzhou",
       "slug": "guangzhou",
       "description": "岭南美食与设计品牌并存的贸易中心",
-      "popular_venues": [
-        "茶餐厅",
-        "咖啡店",
-        "设计酒店",
-        "江景餐吧"
-      ],
+      "tagline": "千年商都，美食天堂",
+      "popular_venues": ["茶餐厅", "咖啡店", "设计酒店", "江景餐吧"],
       "priority": 1,
       "population": 18700000,
-      "coordinates": {
-        "lat": 23.1291,
-        "lng": 113.2644
-      },
-      "keywords": [
-        "广州聚会",
-        "guangzhou meetup",
-        "广州中点",
-        "珠江新城聚会"
-      ]
+      "coordinates": {"lat": 23.1291, "lng": 113.2644},
+      "keywords": ["广州聚会", "guangzhou meetup", "广州中点", "珠江新城聚会"],
+      "landmarks": ["珠江新城", "天河", "北京路", "沙面", "琶洲"],
+      "university_clusters": ["大学城", "中大", "华工", "暨大", "华师"],
+      "business_districts": ["珠江新城", "天河北", "琶洲", "白云新城", "南沙"],
+      "metro_lines": 16,
+      "use_cases": [
+        {"scenario": "外贸同行聚会", "example": "琶洲展商与天河采购商，推荐珠江新城商圈"},
+        {"scenario": "大学城校友会", "example": "中大、华工、广外校友从番禺、天河出发，推荐客村站附近"},
+        {"scenario": "粤港合作会议", "example": "广州佛山团队与香港来客，推荐广州南站附近或琶洲"}
+      ],
+      "local_tips": "广州早茶文化浓厚，上午聚会推荐选择茶楼。夏季注意防晒和空调。"
     },
     {
       "name": "深圳",
       "name_en": "Shenzhen",
       "slug": "shenzhen",
       "description": "创新之都，科技公司与海景度假地共存",
-      "popular_venues": [
-        "海景咖啡",
-        "联合办公",
-        "创客空间",
-        "精品餐厅"
-      ],
+      "tagline": "创新硅谷，年轻活力",
+      "popular_venues": ["海景咖啡", "联合办公", "创客空间", "精品餐厅"],
       "priority": 1,
       "population": 17500000,
-      "coordinates": {
-        "lat": 22.5431,
-        "lng": 114.0579
-      },
-      "keywords": [
-        "深圳聚会",
-        "shenzhen meeting",
-        "深圳会面",
-        "前海聚会"
-      ]
+      "coordinates": {"lat": 22.5431, "lng": 114.0579},
+      "keywords": ["深圳聚会", "shenzhen meeting", "深圳会面", "前海聚会"],
+      "landmarks": ["南山科技园", "华强北", "蛇口", "福田CBD", "前海"],
+      "university_clusters": ["南科大", "深大", "港中深", "哈工深", "北理深圳"],
+      "business_districts": ["南山科技园", "福田CBD", "前海", "龙华", "坪山"],
+      "metro_lines": 16,
+      "use_cases": [
+        {"scenario": "程序员聚会", "example": "腾讯、字节、华为员工分别在南山、福田、龙岗，推荐福田中心区"},
+        {"scenario": "投融资对接", "example": "科创板企业与深创投从前海和福田出发，推荐车公庙商圈"},
+        {"scenario": "跨境电商团队", "example": "华强北供应商与蛇口外贸团队，推荐后海站附近"}
+      ],
+      "local_tips": "深圳公司加班文化浓厚，周末聚会推荐海边或商场。"
     },
     {
       "name": "杭州",
       "name_en": "Hangzhou",
       "slug": "hangzhou",
       "description": "互联网总部基地，西湖与科创气质并行",
-      "popular_venues": [
-        "湖景咖啡",
-        "茶馆",
-        "创意园",
-        "精品酒店"
-      ],
+      "tagline": "数字之城，人间天堂",
+      "popular_venues": ["湖景咖啡", "茶馆", "创意园", "精品酒店"],
       "priority": 1,
       "population": 12000000,
-      "coordinates": {
-        "lat": 30.2741,
-        "lng": 120.1551
-      },
-      "keywords": [
-        "杭州聚会",
-        "hangzhou meeting",
-        "杭州中点",
-        "西湖聚会"
-      ]
+      "coordinates": {"lat": 30.2741, "lng": 120.1551},
+      "keywords": ["杭州聚会", "hangzhou meeting", "杭州中点", "西湖聚会"],
+      "landmarks": ["西湖", "滨江", "未来科技城", "钱江新城", "湖滨银泰"],
+      "university_clusters": ["浙大", "浙工大", "杭师大", "中国美院", "浙理工"],
+      "business_districts": ["滨江", "未来科技城", "钱江新城", "西溪", "城西科创大走廊"],
+      "metro_lines": 12,
+      "use_cases": [
+        {"scenario": "阿里系聚会", "example": "滨江、西溪、未来科技城的阿里人，推荐城站或龙翔桥"},
+        {"scenario": "浙大校友会", "example": "紫金港、玉泉、西溪校区校友，推荐武林商圈"},
+        {"scenario": "电商直播团队", "example": "义乌供应链与杭州主播，推荐杭州东站附近"}
+      ],
+      "local_tips": "西湖周边周末人流密集，商务聚会推荐滨江或钱江新城。"
     },
     {
       "name": "成都",
       "name_en": "Chengdu",
       "slug": "chengdu",
       "description": "天府之国的慢生活城市，美食与创意集市并重",
-      "popular_venues": [
-        "火锅店",
-        "茶馆",
-        "咖啡馆",
-        "文创园"
-      ],
+      "tagline": "天府之国，巴适生活",
+      "popular_venues": ["火锅店", "茶馆", "咖啡馆", "文创园"],
       "priority": 1,
       "population": 21000000,
-      "coordinates": {
-        "lat": 30.5728,
-        "lng": 104.0668
-      },
-      "keywords": [
-        "成都聚会",
-        "chengdu meeting",
-        "成都中点",
-        "天府聚会"
-      ]
+      "coordinates": {"lat": 30.5728, "lng": 104.0668},
+      "keywords": ["成都聚会", "chengdu meeting", "成都中点", "天府聚会"],
+      "landmarks": ["春熙路", "太古里", "宽窄巷子", "天府广场", "锦里"],
+      "university_clusters": ["川大", "电子科大", "西财", "西南交大", "成都理工"],
+      "business_districts": ["天府新区", "高新区", "春熙路", "金融城", "成都科学城"],
+      "metro_lines": 13,
+      "use_cases": [
+        {"scenario": "游戏行业聚会", "example": "天美、莉莉丝、叠纸员工从高新区各处出发，推荐金融城"},
+        {"scenario": "川大校友会", "example": "望江、华西、江安校区校友，推荐人民公园附近"},
+        {"scenario": "美食探店团", "example": "住在东门、南门、北门的吃货，系统推荐春熙路核心区"}
+      ],
+      "local_tips": "成都人爱喝茶，下午聚会可选择人民公园鹤鸣茶社。火锅聚会建议提前预约。"
     },
     {
       "name": "重庆",
       "name_en": "Chongqing",
       "slug": "chongqing",
       "description": "山城夜景与巴蜀美食让聚会富有层次感",
-      "popular_venues": [
-        "江景餐厅",
-        "火锅店",
-        "观景咖啡",
-        "文旅综合体"
-      ],
+      "tagline": "8D魔幻，江城不夜",
+      "popular_venues": ["江景餐厅", "火锅店", "观景咖啡", "文旅综合体"],
       "priority": 1,
       "population": 32000000,
-      "coordinates": {
-        "lat": 29.563,
-        "lng": 106.5516
-      },
-      "keywords": [
-        "重庆聚会",
-        "chongqing meetup",
-        "山城会面",
-        "巴渝聚会"
-      ]
+      "coordinates": {"lat": 29.563, "lng": 106.5516},
+      "keywords": ["重庆聚会", "chongqing meetup", "山城会面", "巴渝聚会"],
+      "landmarks": ["解放碑", "洪崖洞", "观音桥", "南滨路", "江北嘴"],
+      "university_clusters": ["重大", "西南大学", "重邮", "川美", "重医"],
+      "business_districts": ["江北嘴", "解放碑", "观音桥", "两江新区", "西部科学城"],
+      "metro_lines": 12,
+      "use_cases": [
+        {"scenario": "跨江聚会", "example": "渝北、南岸、沙坪坝的朋友，系统计算出解放碑是最公平中点"},
+        {"scenario": "大学同学会", "example": "重大虎溪、沙坪坝校区校友从各区出发，推荐观音桥商圈"},
+        {"scenario": "夜景聚餐", "example": "想看江景的团队，系统推荐南滨路或洪崖洞附近"}
+      ],
+      "local_tips": "重庆地形复杂，导航可能不准，建议约在地铁站出口。夏季40°高温，选择有空调的室内场所。"
     },
     {
       "name": "武汉",
       "name_en": "Wuhan",
       "slug": "wuhan",
       "description": "九省通衢的科技教育中心，交通便利",
-      "popular_venues": [
-        "滨江咖啡",
-        "书店",
-        "共享空间",
-        "汉味餐馆"
-      ],
+      "tagline": "江城明珠，百万大学生",
+      "popular_venues": ["滨江咖啡", "书店", "共享空间", "汉味餐馆"],
       "priority": 1,
       "population": 12500000,
-      "coordinates": {
-        "lat": 30.5928,
-        "lng": 114.3055
-      },
-      "keywords": [
-        "武汉聚会",
-        "wuhan meeting",
-        "汉口会面",
-        "长江聚会"
-      ]
+      "coordinates": {"lat": 30.5928, "lng": 114.3055},
+      "keywords": ["武汉聚会", "wuhan meeting", "汉口会面", "长江聚会"],
+      "landmarks": ["光谷", "江汉路", "楚河汉街", "武昌", "汉阳"],
+      "university_clusters": ["武大", "华科", "武理工", "华师", "中南财大"],
+      "business_districts": ["光谷", "武昌中心", "汉口中心", "汉阳", "经开区"],
+      "metro_lines": 12,
+      "use_cases": [
+        {"scenario": "三镇聚会", "example": "汉口、武昌、汉阳的朋友，系统推荐江汉路或中南路"},
+        {"scenario": "光谷IT聚会", "example": "光谷各软件园的程序员，推荐光谷广场或鲁巷"},
+        {"scenario": "高校校友会", "example": "武大珞珈山与华科喻家山校友，推荐洪山广场附近"}
+      ],
+      "local_tips": "武汉跨江交通耗时较长，尽量选择同一岸的场所。热干面店早上去，排队短。"
     },
     {
       "name": "西安",
       "name_en": "Xi'an",
       "slug": "xian",
       "description": "古今交融的城市，历史景点与创新企业聚集",
-      "popular_venues": [
-        "博物馆",
-        "茶馆",
-        "咖啡馆",
-        "城墙景点"
-      ],
+      "tagline": "千年古都，硬科技之城",
+      "popular_venues": ["博物馆", "茶馆", "咖啡馆", "城墙景点"],
       "priority": 1,
       "population": 12900000,
-      "coordinates": {
-        "lat": 34.3416,
-        "lng": 108.9398
-      },
-      "keywords": [
-        "西安聚会",
-        "xian meetup",
-        "长安会面",
-        "西安中点"
-      ]
+      "coordinates": {"lat": 34.3416, "lng": 108.9398},
+      "keywords": ["西安聚会", "xian meetup", "长安会面", "西安中点"],
+      "landmarks": ["钟楼", "大雁塔", "高新区", "曲江", "永宁门"],
+      "university_clusters": ["交大", "西工大", "西电", "西北大学", "陕师大"],
+      "business_districts": ["高新区", "曲江新区", "经开区", "浐灞", "西咸新区"],
+      "metro_lines": 9,
+      "use_cases": [
+        {"scenario": "硬科技聚会", "example": "高新区航天、芯片企业员工，推荐高新路或科技路"},
+        {"scenario": "高校联谊", "example": "交大、西工大、西电校友从雁塔、长安出发，推荐小寨商圈"},
+        {"scenario": "文旅团队会议", "example": "曲江文旅与城墙景区团队，推荐大雁塔附近"}
+      ],
+      "local_tips": "西安城墙内停车困难，选择地铁站附近场所。回民街游客多，商务聚会避开。"
     },
     {
       "name": "苏州",
       "name_en": "Suzhou",
       "slug": "suzhou",
       "description": "园林与制造业并存，宜居可持续",
-      "popular_venues": [
-        "园林茶室",
-        "咖啡馆",
-        "文创街区",
-        "太湖营地"
-      ],
+      "tagline": "园林之城，精工制造",
+      "popular_venues": ["园林茶室", "咖啡馆", "文创街区", "太湖营地"],
       "priority": 1,
       "population": 12700000,
-      "coordinates": {
-        "lat": 31.2989,
-        "lng": 120.5853
-      },
-      "keywords": [
-        "苏州聚会",
-        "suzhou meeting",
-        "姑苏会面",
-        "苏南聚会"
-      ]
+      "coordinates": {"lat": 31.2989, "lng": 120.5853},
+      "keywords": ["苏州聚会", "suzhou meeting", "姑苏会面", "苏南聚会"],
+      "landmarks": ["观前街", "金鸡湖", "平江路", "工业园区", "太湖"],
+      "university_clusters": ["苏大", "西交利物浦", "苏科大", "常熟理工"],
+      "business_districts": ["工业园区", "高新区", "相城区", "吴中区", "昆山"],
+      "metro_lines": 6,
+      "use_cases": [
+        {"scenario": "外企聚会", "example": "园区外企员工与姑苏区供应商，推荐星海广场"},
+        {"scenario": "沪苏跨城会议", "example": "上海客户与苏州团队，推荐苏州站或园区"},
+        {"scenario": "文创团建", "example": "平江路设计公司与太湖度假团队，推荐观前街商圈"}
+      ],
+      "local_tips": "苏州园林需提前预约，商务聚会推荐金鸡湖附近现代商圈。"
     },
     {
       "name": "天津",
       "name_en": "Tianjin",
       "slug": "tianjin",
       "description": "港口经济城市，欧式风情街与科技新区并存",
-      "popular_venues": [
-        "意风街",
-        "海河餐厅",
-        "咖啡馆",
-        "创意仓"
-      ],
+      "tagline": "津门故里，九河下梢",
+      "popular_venues": ["意风街", "海河餐厅", "咖啡馆", "创意仓"],
       "priority": 1,
       "population": 13900000,
-      "coordinates": {
-        "lat": 39.0851,
-        "lng": 117.1994
-      },
-      "keywords": [
-        "天津聚会",
-        "tianjin meeting",
-        "津城会面",
-        "滨海聚会"
-      ]
+      "coordinates": {"lat": 39.0851, "lng": 117.1994},
+      "keywords": ["天津聚会", "tianjin meeting", "津城会面", "滨海聚会"],
+      "landmarks": ["五大道", "意式风情街", "天津之眼", "滨海新区", "南开"],
+      "university_clusters": ["南开", "天大", "天津医科大", "天津师大", "天津财大"],
+      "business_districts": ["滨海新区", "和平区", "河西区", "南开区", "空港经济区"],
+      "metro_lines": 10,
+      "use_cases": [
+        {"scenario": "京津双城聚会", "example": "北京出差与天津本地团队，推荐天津站或南京路"},
+        {"scenario": "南开校友会", "example": "南开、天大校友从各区出发，推荐鼓楼商圈"},
+        {"scenario": "港口贸易会议", "example": "滨海新区企业与市区客户，推荐海河沿岸"}
+      ],
+      "local_tips": "天津话独特，问路时语速放慢。狗不理包子本地人很少吃，推荐正宗天津早点。"
     },
     {
       "name": "南京",
       "name_en": "Nanjing",
       "slug": "nanjing",
       "description": "六朝古都兼具高校与科技园区",
-      "popular_venues": [
-        "书店",
-        "咖啡馆",
-        "江景酒吧",
-        "创新工场"
-      ],
+      "tagline": "六朝古都，创新名城",
+      "popular_venues": ["书店", "咖啡馆", "江景酒吧", "创新工场"],
       "priority": 1,
       "population": 9400000,
-      "coordinates": {
-        "lat": 32.0603,
-        "lng": 118.7969
-      },
-      "keywords": [
-        "南京聚会",
-        "nanjing meetup",
-        "金陵会面",
-        "玄武聚会"
-      ]
+      "coordinates": {"lat": 32.0603, "lng": 118.7969},
+      "keywords": ["南京聚会", "nanjing meetup", "金陵会面", "玄武聚会"],
+      "landmarks": ["新街口", "夫子庙", "河西", "仙林", "江北新区"],
+      "university_clusters": ["南大", "东南", "南航", "南理工", "南师大"],
+      "business_districts": ["新街口", "河西新城", "江北新区", "仙林", "软件谷"],
+      "metro_lines": 12,
+      "use_cases": [
+        {"scenario": "高校云集聚会", "example": "南大鼓楼与仙林校区校友，推荐新街口或珠江路"},
+        {"scenario": "江北新区会议", "example": "江北新区与主城区团队，推荐南京南站或河西"},
+        {"scenario": "文化行业交流", "example": "夫子庙文旅与城北传媒公司，推荐玄武湖附近"}
+      ],
+      "local_tips": "南京盐水鸭是特色，聚餐可选老字号。地铁1号线新街口站是换乘大站，高峰期拥挤。"
     },
     {
       "name": "长沙",
       "name_en": "Changsha",
       "slug": "changsha",
       "description": "新消费与文娱热点，夜生活丰富",
-      "popular_venues": [
-        "茶颜悦色",
-        "音乐酒吧",
-        "创意园",
-        "米粉店"
-      ],
+      "tagline": "娱乐之都，网红打卡",
+      "popular_venues": ["茶颜悦色", "音乐酒吧", "创意园", "米粉店"],
       "priority": 1,
       "population": 10000000,
-      "coordinates": {
-        "lat": 28.2282,
-        "lng": 112.9388
-      },
-      "keywords": [
-        "长沙聚会",
-        "changsha meeting",
-        "星城会面",
-        "芙蓉聚会"
-      ]
+      "coordinates": {"lat": 28.2282, "lng": 112.9388},
+      "keywords": ["长沙聚会", "changsha meeting", "星城会面", "芙蓉聚会"],
+      "landmarks": ["五一广场", "太平街", "岳麓山", "橘子洲", "梅溪湖"],
+      "university_clusters": ["湖大", "中南", "湖师大", "长沙理工", "国防科大"],
+      "business_districts": ["五一商圈", "梅溪湖", "河西", "高铁新城", "星沙"],
+      "metro_lines": 7,
+      "use_cases": [
+        {"scenario": "新消费行业聚会", "example": "文和友、茶颜悦色从业者与投资人，推荐五一广场"},
+        {"scenario": "湖大中南校友会", "example": "岳麓山下两校校友，推荐河西商圈或溁湾镇"},
+        {"scenario": "综艺节目组聚会", "example": "芒果TV与马栏山园区团队，推荐万家丽商圈"}
+      ],
+      "local_tips": "长沙网红店排队时间长，工作日聚会避开周末。茶颜悦色本地人推荐声声乌龙。"
     },
     {
       "name": "郑州",
       "name_en": "Zhengzhou",
       "slug": "zhengzhou",
       "description": "中原交通枢纽，会议与展览资源充沛",
-      "popular_venues": [
-        "会议中心",
-        "咖啡馆",
-        "黄河景区",
-        "商业综合体"
-      ],
+      "tagline": "九州之中，交通枢纽",
+      "popular_venues": ["会议中心", "咖啡馆", "黄河景区", "商业综合体"],
       "priority": 1,
       "population": 12600000,
-      "coordinates": {
-        "lat": 34.7473,
-        "lng": 113.6249
-      },
-      "keywords": [
-        "郑州聚会",
-        "zhengzhou meeting",
-        "中原会面",
-        "郑州中点"
-      ]
+      "coordinates": {"lat": 34.7473, "lng": 113.6249},
+      "keywords": ["郑州聚会", "zhengzhou meeting", "中原会面", "郑州中点"],
+      "landmarks": ["二七广场", "郑东新区", "高铁站", "航空港", "中原福塔"],
+      "university_clusters": ["郑大", "河大郑州校区", "河南农大", "郑轻工", "河南财大"],
+      "business_districts": ["郑东新区", "金水区", "航空港区", "高新区", "经开区"],
+      "metro_lines": 8,
+      "use_cases": [
+        {"scenario": "全国会议中转", "example": "全国各地参会者在郑州高铁站汇合，推荐郑东新区"},
+        {"scenario": "河南高校联谊", "example": "郑大、河大、河南大学校友，推荐二七商圈"},
+        {"scenario": "物流行业会议", "example": "航空港企业与市区客户，推荐高铁站附近"}
+      ],
+      "local_tips": "郑州是高铁枢纽，外地来客选择郑州东站附近最方便。烩面是本地特色。"
     },
     {
       "name": "东莞",
       "name_en": "Dongguan",
       "slug": "dongguan",
       "description": "制造业与设计品牌共存的珠三角城市",
-      "popular_venues": [
-        "工业风咖啡",
-        "茶楼",
-        "运动馆",
-        "花园餐厅"
-      ],
+      "tagline": "世界工厂，制造名城",
+      "popular_venues": ["工业风咖啡", "茶楼", "运动馆", "花园餐厅"],
       "priority": 1,
       "population": 10400000,
-      "coordinates": {
-        "lat": 23.0207,
-        "lng": 113.7518
-      },
-      "keywords": [
-        "东莞聚会",
-        "dongguan meetup",
-        "莞城会面",
-        "珠三角聚会"
-      ]
+      "coordinates": {"lat": 23.0207, "lng": 113.7518},
+      "keywords": ["东莞聚会", "dongguan meetup", "莞城会面", "珠三角聚会"],
+      "landmarks": ["南城", "东城", "松山湖", "虎门", "长安"],
+      "university_clusters": ["东莞理工", "广东科技学院", "东莞城市学院"],
+      "business_districts": ["南城CBD", "松山湖", "东城", "虎门港", "长安"],
+      "metro_lines": 3,
+      "use_cases": [
+        {"scenario": "制造业供应链会议", "example": "长安工厂与南城贸易公司，推荐东城商圈"},
+        {"scenario": "松山湖科技聚会", "example": "华为松山湖与市区团队，推荐松山湖或南城"},
+        {"scenario": "莞深联动会议", "example": "深圳客户与东莞供应商，推荐虎门高铁站附近"}
+      ],
+      "local_tips": "东莞各镇特色不同，提前了解对方所在镇区。松山湖环境好适合户外团建。"
     },
     {
       "name": "青岛",
       "name_en": "Qingdao",
       "slug": "qingdao",
       "description": "海风城市，啤酒文化与创意办公结合",
-      "popular_venues": [
-        "海景餐厅",
-        "咖啡店",
-        "啤酒屋",
-        "创意园"
-      ],
+      "tagline": "红瓦绿树，碧海蓝天",
+      "popular_venues": ["海景餐厅", "咖啡店", "啤酒屋", "创意园"],
       "priority": 1,
       "population": 10000000,
-      "coordinates": {
-        "lat": 36.0671,
-        "lng": 120.3826
-      },
-      "keywords": [
-        "青岛聚会",
-        "qingdao meeting",
-        "岛城会面",
-        "海边聚会"
-      ]
+      "coordinates": {"lat": 36.0671, "lng": 120.3826},
+      "keywords": ["青岛聚会", "qingdao meeting", "岛城会面", "海边聚会"],
+      "landmarks": ["栈桥", "五四广场", "崂山", "奥帆中心", "台东"],
+      "university_clusters": ["中国海洋大学", "青大", "青岛科技大", "山东科技大"],
+      "business_districts": ["市南CBD", "崂山区", "西海岸新区", "城阳区", "高新区"],
+      "metro_lines": 7,
+      "use_cases": [
+        {"scenario": "海洋科研聚会", "example": "海洋大学与崂山研究所团队，推荐五四广场"},
+        {"scenario": "啤酒节团建", "example": "全国经销商与青啤团队，推荐金沙滩或台东"},
+        {"scenario": "外贸行业会议", "example": "港口企业与市区进出口公司，推荐CBD商圈"}
+      ],
+      "local_tips": "青岛海鲜季节性强，夏天最佳。啤酒推荐散啤（袋装），比瓶装新鲜。"
     },
     {
       "name": "沈阳",
       "name_en": "Shenyang",
       "slug": "shenyang",
       "description": "东北工业与文化并重，老厂房转型空间多",
-      "popular_venues": [
-        "工业风咖啡",
-        "烤肉店",
-        "博物馆",
-        "音乐酒吧"
-      ],
+      "tagline": "共和国长子，东北振兴",
+      "popular_venues": ["工业风咖啡", "烤肉店", "博物馆", "音乐酒吧"],
       "priority": 1,
       "population": 8300000,
-      "coordinates": {
-        "lat": 41.8057,
-        "lng": 123.4315
-      },
-      "keywords": [
-        "沈阳聚会",
-        "shenyang meeting",
-        "奉天会面",
-        "东北聚会"
-      ]
+      "coordinates": {"lat": 41.8057, "lng": 123.4315},
+      "keywords": ["沈阳聚会", "shenyang meeting", "奉天会面", "东北聚会"],
+      "landmarks": ["中街", "太原街", "铁西", "浑南", "沈阳故宫"],
+      "university_clusters": ["东北大学", "辽大", "沈阳工大", "沈阳建筑", "中国医科大"],
+      "business_districts": ["金融区", "铁西新区", "浑南新区", "沈北新区", "于洪区"],
+      "metro_lines": 10,
+      "use_cases": [
+        {"scenario": "东北老工业聚会", "example": "铁西机械与浑南新经济团队，推荐青年大街"},
+        {"scenario": "高校同学会", "example": "东北大学与辽大校友从各区出发，推荐中街商圈"},
+        {"scenario": "冰雪旅游对接", "example": "冬季旅游团队与市区酒店，推荐沈阳站附近"}
+      ],
+      "local_tips": "沈阳冬天寒冷，选择室内暖和的场所。烤肉推荐西塔或铁西。"
     },
     {
       "name": "宁波",
       "name_en": "Ningbo",
       "slug": "ningbo",
       "description": "港口贸易城市，拥有丰富的滨海休闲空间",
-      "popular_venues": [
-        "海港餐厅",
-        "咖啡馆",
-        "书店",
-        "创意仓"
-      ],
+      "tagline": "书藏古今，港通天下",
+      "popular_venues": ["海港餐厅", "咖啡馆", "书店", "创意仓"],
       "priority": 1,
       "population": 8500000,
-      "coordinates": {
-        "lat": 29.8683,
-        "lng": 121.544
-      },
-      "keywords": [
-        "宁波聚会",
-        "ningbo meeting",
-        "甬城会面",
-        "东海聚会"
-      ]
+      "coordinates": {"lat": 29.8683, "lng": 121.544},
+      "keywords": ["宁波聚会", "ningbo meeting", "甬城会面", "东海聚会"],
+      "landmarks": ["天一广场", "东部新城", "镇海", "北仑港", "鄞州"],
+      "university_clusters": ["宁大", "宁波诺丁汉", "浙江万里", "宁波工程"],
+      "business_districts": ["东部新城", "鄞州中心", "江北", "镇海", "北仑"],
+      "metro_lines": 5,
+      "use_cases": [
+        {"scenario": "外贸行业聚会", "example": "北仑港企业与市区贸易公司，推荐东部新城"},
+        {"scenario": "民营企业家会议", "example": "鄞州制造业与镇海化工企业，推荐天一广场商圈"},
+        {"scenario": "沪甬双城对接", "example": "上海客户与宁波团队，推荐宁波站或东部新城"}
+      ],
+      "local_tips": "宁波海鲜新鲜便宜，聚餐推荐去城隍庙或南塘老街。"
     },
     {
       "name": "昆明",
       "name_en": "Kunming",
       "slug": "kunming",
       "description": "春城气候宜人，公园和花市适合轻松聚会",
-      "popular_venues": [
-        "花市咖啡",
-        "公园",
-        "民族餐厅",
-        "共享空间"
-      ],
+      "tagline": "春城花都，四季如春",
+      "popular_venues": ["花市咖啡", "公园", "民族餐厅", "共享空间"],
       "priority": 1,
       "population": 8500000,
-      "coordinates": {
-        "lat": 24.8801,
-        "lng": 102.8329
-      },
-      "keywords": [
-        "昆明聚会",
-        "kunming meetup",
-        "春城会面",
-        "昆明中点"
-      ]
+      "coordinates": {"lat": 24.8801, "lng": 102.8329},
+      "keywords": ["昆明聚会", "kunming meetup", "春城会面", "昆明中点"],
+      "landmarks": ["翠湖", "金马碧鸡", "滇池", "南屏街", "呈贡新城"],
+      "university_clusters": ["云大", "昆工", "云师大", "云南财大", "昆明医科大"],
+      "business_districts": ["五华区", "呈贡新城", "高新区", "经开区", "西山区"],
+      "metro_lines": 6,
+      "use_cases": [
+        {"scenario": "跨境电商聚会", "example": "呈贡电商与市区供应链，推荐南屏街商圈"},
+        {"scenario": "高校联谊", "example": "云大、昆工校友从呈贡、五华出发，推荐翠湖附近"},
+        {"scenario": "文旅行业会议", "example": "滇池度假区与市区旅行社，推荐金马碧鸡坊附近"}
+      ],
+      "local_tips": "昆明紫外线强，户外聚会注意防晒。鲜花饼建议买嘉华或潘祥记。"
     },
     {
       "name": "合肥",
       "name_en": "Hefei",
       "slug": "hefei",
       "description": "科创和新能源企业聚集的新兴城市",
-      "popular_venues": [
-        "科技园咖啡",
-        "书店",
-        "创意街区",
-        "湖畔餐厅"
-      ],
+      "tagline": "科创名城，量子中心",
+      "popular_venues": ["科技园咖啡", "书店", "创意街区", "湖畔餐厅"],
       "priority": 1,
       "population": 9500000,
-      "coordinates": {
-        "lat": 31.8206,
-        "lng": 117.2273
-      },
-      "keywords": [
-        "合肥聚会",
-        "hefei meeting",
-        "科创会面",
-        "庐州聚会"
-      ]
+      "coordinates": {"lat": 31.8206, "lng": 117.2273},
+      "keywords": ["合肥聚会", "hefei meeting", "科创会面", "庐州聚会"],
+      "landmarks": ["政务区", "高新区", "滨湖新区", "大蜀山", "中科大"],
+      "university_clusters": ["中科大", "合工大", "安大", "安农大", "安医大"],
+      "business_districts": ["政务区", "高新区", "滨湖新区", "经开区", "新站区"],
+      "metro_lines": 5,
+      "use_cases": [
+        {"scenario": "科创企业聚会", "example": "高新区与政务区科技公司，推荐天鹅湖商圈"},
+        {"scenario": "中科大校友会", "example": "科大东西校区与新区校友，推荐政务区"},
+        {"scenario": "新能源行业会议", "example": "比亚迪合肥与蔚来团队，推荐经开区或滨湖"}
+      ],
+      "local_tips": "合肥发展快，地图可能不准，确认地址时多问一句。小龙虾是当地特色。"
     },
     {
       "name": "佛山",
       "name_en": "Foshan",
       "slug": "foshan",
       "description": "珠江西岸制造中心，岭南文化底蕴深厚",
-      "popular_venues": [
-        "功夫主题馆",
-        "茶楼",
-        "艺术空间",
-        "精品餐厅"
-      ],
+      "tagline": "武术之乡，制造名城",
+      "popular_venues": ["功夫主题馆", "茶楼", "艺术空间", "精品餐厅"],
       "priority": 1,
       "population": 9500000,
-      "coordinates": {
-        "lat": 23.0215,
-        "lng": 113.1214
-      },
-      "keywords": [
-        "佛山聚会",
-        "foshan meetup",
-        "佛山会面",
-        "岭南聚会"
-      ]
+      "coordinates": {"lat": 23.0215, "lng": 113.1214},
+      "keywords": ["佛山聚会", "foshan meetup", "佛山会面", "岭南聚会"],
+      "landmarks": ["祖庙", "千灯湖", "顺德", "南海", "三水"],
+      "university_clusters": ["佛山科技学院", "广东财经大学三水校区"],
+      "business_districts": ["千灯湖", "禅城区", "南海区", "顺德区", "三水区"],
+      "metro_lines": 4,
+      "use_cases": [
+        {"scenario": "制造业会议", "example": "顺德家电与南海铝材企业，推荐千灯湖商圈"},
+        {"scenario": "广佛同城聚会", "example": "广州客户与佛山供应商，推荐金沙洲或广州南站"},
+        {"scenario": "美食探店", "example": "寻找顺德美食的团队，系统推荐大良或容桂"}
+      ],
+      "local_tips": "顺德美食全国闻名，聚餐可选择顺德区。千灯湖夜景适合商务宴请。"
     },
     {
       "name": "福州",
       "name_en": "Fuzhou",
       "slug": "fuzhou",
       "description": "海丝文化与数字经济并行的滨海省会",
-      "popular_venues": [
-        "榕城咖啡",
-        "海景餐厅",
-        "书店",
-        "文化巷"
-      ],
+      "tagline": "有福之州，数字中国",
+      "popular_venues": ["榕城咖啡", "海景餐厅", "书店", "文化巷"],
       "priority": 1,
       "population": 8400000,
-      "coordinates": {
-        "lat": 26.0745,
-        "lng": 119.2965
-      },
-      "keywords": [
-        "福州聚会",
-        "fuzhou meeting",
-        "榕城会面",
-        "闽都聚会"
-      ]
+      "coordinates": {"lat": 26.0745, "lng": 119.2965},
+      "keywords": ["福州聚会", "fuzhou meeting", "榕城会面", "闽都聚会"],
+      "landmarks": ["三坊七巷", "东街口", "台江", "仓山", "马尾"],
+      "university_clusters": ["福大", "福师大", "福建农林", "福建医科大"],
+      "business_districts": ["东街口", "台江", "仓山", "马尾", "滨海新城"],
+      "metro_lines": 6,
+      "use_cases": [
+        {"scenario": "数字峰会对接", "example": "软件园与市区政府团队，推荐东街口商圈"},
+        {"scenario": "高校联谊", "example": "福大、师大校友从仓山、旗山出发，推荐宝龙城市广场"},
+        {"scenario": "对台交流", "example": "马尾台企与市区合作方，推荐台江万达"}
+      ],
+      "local_tips": "福州有独特的鱼丸和肉燕，聚餐可选三坊七巷老字号。"
     },
     {
       "name": "厦门",
       "name_en": "Xiamen",
       "slug": "xiamen",
       "description": "海岛气质结合创新产业，慢生活与创业兼具",
-      "popular_venues": [
-        "鼓浪屿餐吧",
-        "咖啡馆",
-        "联合办公",
-        "海边营地"
-      ],
+      "tagline": "海上花园，宜居之城",
+      "popular_venues": ["鼓浪屿餐吧", "咖啡馆", "联合办公", "海边营地"],
       "priority": 1,
       "population": 5300000,
-      "coordinates": {
-        "lat": 24.4798,
-        "lng": 118.0894
-      },
-      "keywords": [
-        "厦门聚会",
-        "xiamen meeting",
-        "海岛会面",
-        "鹭岛聚会"
-      ]
+      "coordinates": {"lat": 24.4798, "lng": 118.0894},
+      "keywords": ["厦门聚会", "xiamen meeting", "海岛会面", "鹭岛聚会"],
+      "landmarks": ["鼓浪屿", "中山路", "曾厝垵", "软件园", "环岛路"],
+      "university_clusters": ["厦大", "集美大学", "华侨大学厦门校区"],
+      "business_districts": ["思明区", "湖里区", "集美区", "翔安区", "软件园"],
+      "metro_lines": 4,
+      "use_cases": [
+        {"scenario": "软件行业聚会", "example": "软件园一期与二期团队，推荐软件园商圈"},
+        {"scenario": "厦大校友会", "example": "本部与翔安校区校友，推荐中山路或厦大附近"},
+        {"scenario": "两岸交流", "example": "台湾来客与本地企业，推荐五缘湾或中山路"}
+      ],
+      "local_tips": "厦门岛内岛外交通差异大，提前确认对方位置。沙茶面是本地特色。"
     },
     {
       "name": "哈尔滨",
       "name_en": "Harbin",
       "slug": "harbin",
       "description": "冰雪文化与俄式建筑让聚会充满特色",
-      "popular_venues": [
-        "中央大街",
-        "冬季酒吧",
-        "咖啡馆",
-        "冰雪乐园"
-      ],
+      "tagline": "冰城夏都，东方莫斯科",
+      "popular_venues": ["中央大街", "冬季酒吧", "咖啡馆", "冰雪乐园"],
       "priority": 1,
       "population": 9400000,
-      "coordinates": {
-        "lat": 45.8038,
-        "lng": 126.5349
-      },
-      "keywords": [
-        "哈尔滨聚会",
-        "harbin meeting",
-        "冰城会面",
-        "松花江聚会"
-      ]
+      "coordinates": {"lat": 45.8038, "lng": 126.5349},
+      "keywords": ["哈尔滨聚会", "harbin meeting", "冰城会面", "松花江聚会"],
+      "landmarks": ["中央大街", "索菲亚教堂", "太阳岛", "冰雪大世界", "松花江"],
+      "university_clusters": ["哈工大", "哈工程", "东北林大", "哈医大", "黑大"],
+      "business_districts": ["南岗区", "道里区", "哈西新区", "松北区", "群力新区"],
+      "metro_lines": 5,
+      "use_cases": [
+        {"scenario": "冰雪季聚会", "example": "冰雪大世界附近与市区团队，推荐中央大街"},
+        {"scenario": "哈工大校友会", "example": "一校区与二校区校友，推荐西大直街或哈西"},
+        {"scenario": "俄罗斯贸易对接", "example": "中俄贸易企业，推荐索菲亚教堂附近"}
+      ],
+      "local_tips": "哈尔滨冬天极寒，室内聚会为主。马迭尔冰棍冬天吃更有味道。"
     },
     {
       "name": "济南",
       "name_en": "Jinan",
       "slug": "jinan",
       "description": "泉城景观与总部经济共存，适合商务聚会",
-      "popular_venues": [
-        "泉水茶馆",
-        "咖啡馆",
-        "湖畔餐厅",
-        "创新小镇"
-      ],
+      "tagline": "泉城济南，天下名泉",
+      "popular_venues": ["泉水茶馆", "咖啡馆", "湖畔餐厅", "创新小镇"],
       "priority": 1,
       "population": 9200000,
-      "coordinates": {
-        "lat": 36.6512,
-        "lng": 117.12
-      },
-      "keywords": [
-        "济南聚会",
-        "jinan meeting",
-        "泉城会面",
-        "济南中点"
-      ]
+      "coordinates": {"lat": 36.6512, "lng": 117.12},
+      "keywords": ["济南聚会", "jinan meeting", "泉城会面", "济南中点"],
+      "landmarks": ["泉城广场", "大明湖", "趵突泉", "奥体中心", "汉峪金谷"],
+      "university_clusters": ["山大", "济南大学", "山东师范", "山东财大", "山东建筑大"],
+      "business_districts": ["CBD", "汉峪金谷", "高新区", "历下区", "历城区"],
+      "metro_lines": 4,
+      "use_cases": [
+        {"scenario": "山东企业聚会", "example": "汉峪金谷与高新区企业，推荐CBD或经十路"},
+        {"scenario": "山大校友会", "example": "中心校区与软件园校区校友，推荐泉城广场"},
+        {"scenario": "鲁菜宴请", "example": "接待外地客户，推荐大明湖附近老字号"}
+      ],
+      "local_tips": "济南泉水闻名，夏天趵突泉人多。把子肉是本地特色。"
     },
     {
       "name": "温州",
       "name_en": "Wenzhou",
       "slug": "wenzhou",
       "description": "民营经济活跃，海岛度假资源丰富",
-      "popular_venues": [
-        "海岛营地",
-        "咖啡馆",
-        "商圈",
-        "设计酒店"
-      ],
+      "tagline": "温商之乡，百岛之市",
+      "popular_venues": ["海岛营地", "咖啡馆", "商圈", "设计酒店"],
       "priority": 1,
       "population": 9300000,
-      "coordinates": {
-        "lat": 27.9938,
-        "lng": 120.6994
-      },
-      "keywords": [
-        "温州聚会",
-        "wenzhou meetup",
-        "瓯海会面",
-        "温州中点"
-      ]
+      "coordinates": {"lat": 27.9938, "lng": 120.6994},
+      "keywords": ["温州聚会", "wenzhou meetup", "瓯海会面", "温州中点"],
+      "landmarks": ["五马街", "南塘", "瓯江", "龙湾", "洞头"],
+      "university_clusters": ["温大", "温医大", "温州商学院"],
+      "business_districts": ["鹿城区", "龙湾区", "瓯海区", "瑞安", "乐清"],
+      "metro_lines": 2,
+      "use_cases": [
+        {"scenario": "温商聚会", "example": "各县市温商代表，推荐五马街或南塘商圈"},
+        {"scenario": "制造业对接", "example": "乐清电器与瑞安汽配企业，推荐龙湾机场附近"},
+        {"scenario": "海岛团建", "example": "市区团队去洞头，系统推荐龙湾集合点"}
+      ],
+      "local_tips": "温州话难懂但商人热情。瘦肉丸和糯米饭是早餐特色。"
     },
     {
       "name": "南宁",
       "name_en": "Nanning",
       "slug": "nanning",
       "description": "面向东盟的门户城市，绿色与音乐节丰富",
-      "popular_venues": [
-        "绿城公园",
-        "咖啡馆",
-        "民族餐厅",
-        "音乐酒吧"
-      ],
+      "tagline": "绿城南宁，东盟门户",
+      "popular_venues": ["绿城公园", "咖啡馆", "民族餐厅", "音乐酒吧"],
       "priority": 1,
       "population": 8700000,
-      "coordinates": {
-        "lat": 22.817,
-        "lng": 108.3669
-      },
-      "keywords": [
-        "南宁聚会",
-        "nanning meeting",
-        "绿城会面",
-        "东盟聚会"
-      ]
+      "coordinates": {"lat": 22.817, "lng": 108.3669},
+      "keywords": ["南宁聚会", "nanning meeting", "绿城会面", "东盟聚会"],
+      "landmarks": ["民族广场", "青秀山", "会展中心", "朝阳商圈", "五象新区"],
+      "university_clusters": ["广西大学", "广西民大", "广西医科大", "南宁师大"],
+      "business_districts": ["青秀区", "五象新区", "江南区", "兴宁区", "西乡塘区"],
+      "metro_lines": 5,
+      "use_cases": [
+        {"scenario": "东博会对接", "example": "会展中心与市区企业，推荐民族大道商圈"},
+        {"scenario": "高校联谊", "example": "西大与民大校友，推荐朝阳广场"},
+        {"scenario": "跨境电商聚会", "example": "五象新区与青秀区团队，推荐会展中心附近"}
+      ],
+      "local_tips": "南宁是东盟博览会永久举办地，会展期间酒店紧张。老友粉是本地特色。"
     },
     {
       "name": "长春",
       "name_en": "Changchun",
       "slug": "changchun",
       "description": "汽车工业基地，科技与影视产业同步",
-      "popular_venues": [
-        "汽车主题馆",
-        "咖啡馆",
-        "影棚",
-        "公园"
-      ],
+      "tagline": "北国春城，汽车摇篮",
+      "popular_venues": ["汽车主题馆", "咖啡馆", "影棚", "公园"],
       "priority": 1,
       "population": 7600000,
-      "coordinates": {
-        "lat": 43.8171,
-        "lng": 125.3235
-      },
-      "keywords": [
-        "长春聚会",
-        "changchun meeting",
-        "春城会面",
-        "吉林聚会"
-      ]
+      "coordinates": {"lat": 43.8171, "lng": 125.3235},
+      "keywords": ["长春聚会", "changchun meeting", "春城会面", "吉林聚会"],
+      "landmarks": ["红旗街", "南湖公园", "汽车经开区", "长影世纪城", "净月潭"],
+      "university_clusters": ["吉大", "东北师大", "长春理工", "吉林农大"],
+      "business_districts": ["南关区", "朝阳区", "汽开区", "净月区", "高新区"],
+      "metro_lines": 6,
+      "use_cases": [
+        {"scenario": "汽车行业聚会", "example": "一汽与汽车供应链企业，推荐汽开区或红旗街"},
+        {"scenario": "吉大校友会", "example": "各校区校友从全市出发，推荐红旗街商圈"},
+        {"scenario": "影视行业对接", "example": "长影与净月影视公司，推荐长影世纪城附近"}
+      ],
+      "local_tips": "长春冬天冷但供暖好，室内很暖和。烧烤是本地特色。"
     },
     {
       "name": "泉州",
       "name_en": "Quanzhou",
       "slug": "quanzhou",
       "description": "海丝起点，宗教文化与轻工业发达",
-      "popular_venues": [
-        "古城茶馆",
-        "咖啡馆",
-        "非遗馆",
-        "商圈"
-      ],
+      "tagline": "海丝起点，多元宗教",
+      "popular_venues": ["古城茶馆", "咖啡馆", "非遗馆", "商圈"],
       "priority": 1,
       "population": 8800000,
-      "coordinates": {
-        "lat": 24.8741,
-        "lng": 118.6759
-      },
-      "keywords": [
-        "泉州聚会",
-        "quanzhou meeting",
-        "刺桐会面",
-        "闽南聚会"
-      ]
+      "coordinates": {"lat": 24.8741, "lng": 118.6759},
+      "keywords": ["泉州聚会", "quanzhou meeting", "刺桐会面", "闽南聚会"],
+      "landmarks": ["西街", "开元寺", "晋江", "石狮", "安溪"],
+      "university_clusters": ["华侨大学", "泉州师院", "黎明大学"],
+      "business_districts": ["鲤城区", "丰泽区", "晋江", "石狮", "南安"],
+      "metro_lines": 0,
+      "use_cases": [
+        {"scenario": "鞋服行业聚会", "example": "晋江鞋企与石狮服装企业，推荐泉州市区"},
+        {"scenario": "华侨商务对接", "example": "海外侨商与本地企业，推荐西街或浦西万达"},
+        {"scenario": "文旅行业会议", "example": "古城保护与旅游开发团队，推荐开元寺附近"}
+      ],
+      "local_tips": "泉州还没有地铁，公交或打车为主。面线糊和土笋冻是本地特色。"
     },
     {
       "name": "石家庄",
       "name_en": "Shijiazhuang",
       "slug": "shijiazhuang",
       "description": "华北交通枢纽，制造与物流资源充足",
-      "popular_venues": [
-        "酒店会议室",
-        "咖啡馆",
-        "郊野公园",
-        "文创街区"
-      ],
+      "tagline": "燕赵之都，药都枢纽",
+      "popular_venues": ["酒店会议室", "咖啡馆", "郊野公园", "文创街区"],
       "priority": 1,
       "population": 11200000,
-      "coordinates": {
-        "lat": 38.0428,
-        "lng": 114.5149
-      },
-      "keywords": [
-        "石家庄聚会",
-        "shijiazhuang meeting",
-        "冀城会面",
-        "河北聚会"
-      ]
+      "coordinates": {"lat": 38.0428, "lng": 114.5149},
+      "keywords": ["石家庄聚会", "shijiazhuang meeting", "冀城会面", "河北聚会"],
+      "landmarks": ["裕华区", "长安区", "正定", "栾城", "鹿泉"],
+      "university_clusters": ["河北大学", "河北师大", "河北医大", "石家庄铁道大学"],
+      "business_districts": ["裕华区", "长安区", "桥西区", "新华区", "高新区"],
+      "metro_lines": 3,
+      "use_cases": [
+        {"scenario": "医药行业聚会", "example": "华北制药与各药企，推荐裕华区或高新区"},
+        {"scenario": "京津冀协同会议", "example": "北京客户与石家庄团队，推荐石家庄站附近"},
+        {"scenario": "高校联谊", "example": "河北大学与师大校友，推荐万达或北国商圈"}
+      ],
+      "local_tips": "石家庄是华北药都，医药行业资源丰富。驴肉火烧是河北特色。"
     },
     {
       "name": "贵阳",
       "name_en": "Guiyang",
       "slug": "guiyang",
       "description": "避暑与大数据产业并存的西南省会",
-      "popular_venues": [
-        "山地咖啡",
-        "簸箕街",
-        "共享空间",
-        "夜市"
-      ],
+      "tagline": "爽爽贵阳，大数据之都",
+      "popular_venues": ["山地咖啡", "簸箕街", "共享空间", "夜市"],
       "priority": 1,
       "population": 6000000,
-      "coordinates": {
-        "lat": 26.647,
-        "lng": 106.6302
-      },
-      "keywords": [
-        "贵阳聚会",
-        "guiyang meetup",
-        "爽爽贵阳会面",
-        "西南聚会"
-      ]
+      "coordinates": {"lat": 26.647, "lng": 106.6302},
+      "keywords": ["贵阳聚会", "guiyang meetup", "爽爽贵阳会面", "西南聚会"],
+      "landmarks": ["花果园", "观山湖", "甲秀楼", "青岩古镇", "数博大道"],
+      "university_clusters": ["贵大", "贵州师大", "贵州医科大", "贵州财大"],
+      "business_districts": ["观山湖区", "云岩区", "南明区", "白云区", "花溪区"],
+      "metro_lines": 3,
+      "use_cases": [
+        {"scenario": "大数据行业聚会", "example": "观山湖数据中心与市区企业，推荐数博大道"},
+        {"scenario": "避暑旅游对接", "example": "旅游企业与外地来客，推荐甲秀楼或花果园"},
+        {"scenario": "高校联谊", "example": "贵大花溪校区与市区校友，推荐喷水池商圈"}
+      ],
+      "local_tips": "贵阳夏天凉爽是避暑胜地。酸汤鱼和肠旺面是本地特色。"
     },
     {
       "name": "南昌",
       "name_en": "Nanchang",
       "slug": "nanchang",
       "description": "红色文化与航空制造驱动的城市",
-      "popular_venues": [
-        "滕王阁",
-        "咖啡馆",
-        "书店",
-        "科技园"
-      ],
+      "tagline": "英雄城市，航空重镇",
+      "popular_venues": ["滕王阁", "咖啡馆", "书店", "科技园"],
       "priority": 1,
       "population": 6300000,
-      "coordinates": {
-        "lat": 28.682,
-        "lng": 115.8579
-      },
-      "keywords": [
-        "南昌聚会",
-        "nanchang meeting",
-        "英雄城会面",
-        "赣江聚会"
-      ]
+      "coordinates": {"lat": 28.682, "lng": 115.8579},
+      "keywords": ["南昌聚会", "nanchang meeting", "英雄城会面", "赣江聚会"],
+      "landmarks": ["滕王阁", "八一广场", "红谷滩", "秋水广场", "航空城"],
+      "university_clusters": ["南昌大学", "江西财大", "江西师大", "华东交大"],
+      "business_districts": ["红谷滩", "东湖区", "西湖区", "青山湖区", "航空城"],
+      "metro_lines": 4,
+      "use_cases": [
+        {"scenario": "航空产业聚会", "example": "航空城企业与市区团队，推荐红谷滩CBD"},
+        {"scenario": "高校联谊", "example": "南大前湖校区与江财校友，推荐秋水广场"},
+        {"scenario": "红色旅游对接", "example": "八一起义纪念馆周边旅游企业，推荐八一广场附近"}
+      ],
+      "local_tips": "南昌米粉是本地特色，推荐拌粉。红谷滩新区发展快，交通便利。"
     },
     {
       "name": "金华",
       "name_en": "Jinhua",
       "slug": "jinhua",
       "description": "浙江中部的商贸节点，义乌外贸辐射",
-      "popular_venues": [
-        "夜市",
-        "咖啡馆",
-        "文化街",
-        "联合办公"
-      ],
+      "tagline": "浙中明珠，义乌腹地",
+      "popular_venues": ["夜市", "咖啡馆", "文化街", "联合办公"],
       "priority": 1,
       "population": 5600000,
-      "coordinates": {
-        "lat": 29.0895,
-        "lng": 119.6495
-      },
-      "keywords": [
-        "金华聚会",
-        "jinhua meeting",
-        "浙中会面",
-        "义乌聚会"
-      ]
+      "coordinates": {"lat": 29.0895, "lng": 119.6495},
+      "keywords": ["金华聚会", "jinhua meeting", "浙中会面", "义乌聚会"],
+      "landmarks": ["婺州古城", "义乌", "东阳", "永康", "横店"],
+      "university_clusters": ["浙师大", "金华职业技术学院"],
+      "business_districts": ["婺城区", "金东区", "义乌", "东阳", "永康"],
+      "metro_lines": 0,
+      "use_cases": [
+        {"scenario": "义乌外贸聚会", "example": "义乌商户与金华物流企业，推荐金华市区或义乌"},
+        {"scenario": "影视行业对接", "example": "横店影视与投资方，推荐东阳或金华高铁站"},
+        {"scenario": "五金行业会议", "example": "永康五金与东阳木雕企业，推荐金华市区"}
+      ],
+      "local_tips": "金华火腿全国闻名，义乌小商品价格实惠。横店是影视打卡地。"
     },
     {
       "name": "常州",
       "name_en": "Changzhou",
       "slug": "changzhou",
       "description": "长三角先进制造城市，乐园与湿地丰富",
-      "popular_venues": [
-        "主题乐园",
-        "咖啡馆",
-        "湖滨栈道",
-        "科技园"
-      ],
+      "tagline": "龙城常州，智造名城",
+      "popular_venues": ["主题乐园", "咖啡馆", "湖滨栈道", "科技园"],
       "priority": 1,
       "population": 5200000,
-      "coordinates": {
-        "lat": 31.8107,
-        "lng": 119.9737
-      },
-      "keywords": [
-        "常州聚会",
-        "changzhou meeting",
-        "龙城会面",
-        "常州中点"
-      ]
+      "coordinates": {"lat": 31.8107, "lng": 119.9737},
+      "keywords": ["常州聚会", "changzhou meeting", "龙城会面", "常州中点"],
+      "landmarks": ["南大街", "恐龙园", "天宁寺", "新北区", "武进"],
+      "university_clusters": ["常州大学", "江苏理工", "河海大学常州校区"],
+      "business_districts": ["新北区", "钟楼区", "天宁区", "武进区", "金坛区"],
+      "metro_lines": 2,
+      "use_cases": [
+        {"scenario": "新能源行业聚会", "example": "理想汽车与零部件企业，推荐新北区或武进"},
+        {"scenario": "亲子团建", "example": "恐龙园周边企业团建，推荐恐龙园商圈"},
+        {"scenario": "沪宁城际会议", "example": "上海客户与常州团队，推荐常州站附近"}
+      ],
+      "local_tips": "常州恐龙园是亲子游热门，团建可选择。银丝面是本地特色。"
     },
     {
       "name": "惠州",
       "name_en": "Huizhou",
       "slug": "huizhou",
       "description": "临海度假与电子产业并存的城市",
-      "popular_venues": [
-        "滨海营地",
-        "咖啡馆",
-        "客家餐厅",
-        "郊野公园"
-      ],
+      "tagline": "半城山色，半城湖",
+      "popular_venues": ["滨海营地", "咖啡馆", "客家餐厅", "郊野公园"],
       "priority": 1,
       "population": 6000000,
-      "coordinates": {
-        "lat": 23.1115,
-        "lng": 114.4152
-      },
-      "keywords": [
-        "惠州聚会",
-        "huizhou meetup",
-        "惠城会面",
-        "惠湾聚会"
-      ]
+      "coordinates": {"lat": 23.1115, "lng": 114.4152},
+      "keywords": ["惠州聚会", "huizhou meetup", "惠城会面", "惠湾聚会"],
+      "landmarks": ["惠城区", "大亚湾", "惠阳", "西湖", "巽寮湾"],
+      "university_clusters": ["惠州学院", "惠州城市职业学院"],
+      "business_districts": ["惠城区", "仲恺高新区", "惠阳区", "大亚湾", "惠东"],
+      "metro_lines": 0,
+      "use_cases": [
+        {"scenario": "电子产业聚会", "example": "仲恺TCL与大亚湾石化企业，推荐惠城区"},
+        {"scenario": "深惠联动会议", "example": "深圳客户与惠州团队，推荐惠州南站或大亚湾"},
+        {"scenario": "海滨团建", "example": "市区企业去巽寮湾，系统推荐惠东集合点"}
+      ],
+      "local_tips": "惠州西湖媲美杭州，客家菜是本地特色。大亚湾海鲜新鲜便宜。"
     },
     {
       "name": "无锡",
       "name_en": "Wuxi",
       "slug": "wuxi",
       "description": "太湖之滨的新一线城市，工业现代化",
-      "popular_venues": [
-        "湖景咖啡",
-        "太湖游船",
-        "文化街区",
-        "创新园"
-      ],
+      "tagline": "太湖明珠，工商名城",
+      "popular_venues": ["湖景咖啡", "太湖游船", "文化街区", "创新园"],
       "priority": 1,
       "population": 7500000,
-      "coordinates": {
-        "lat": 31.4912,
-        "lng": 120.3119
-      },
-      "keywords": [
-        "无锡聚会",
-        "wuxi meeting",
-        "太湖会面",
-        "锡城聚会"
-      ]
+      "coordinates": {"lat": 31.4912, "lng": 120.3119},
+      "keywords": ["无锡聚会", "wuxi meeting", "太湖会面", "锡城聚会"],
+      "landmarks": ["太湖", "鼋头渚", "南长街", "滨湖区", "新吴区"],
+      "university_clusters": ["江南大学", "无锡太湖学院"],
+      "business_districts": ["滨湖区", "新吴区", "梁溪区", "锡山区", "惠山区"],
+      "metro_lines": 4,
+      "use_cases": [
+        {"scenario": "物联网行业聚会", "example": "无锡物联网园区企业，推荐新吴区或滨湖"},
+        {"scenario": "太湖景区对接", "example": "鼋头渚景区与市区旅行社，推荐滨湖区"},
+        {"scenario": "沪宁城际会议", "example": "上海客户与无锡团队，推荐无锡站或东站"}
+      ],
+      "local_tips": "无锡排骨和小笼包是本地特色。太湖三白（白鱼白虾银鱼）值得尝试。"
     },
     {
       "name": "嘉兴",
       "name_en": "Jiaxing",
       "slug": "jiaxing",
       "description": "沪杭之间的科创节点，红船文化发源地",
-      "popular_venues": [
-        "运河咖啡",
-        "书店",
-        "创客空间",
-        "江南餐厅"
-      ],
+      "tagline": "红船启航，长三角枢纽",
+      "popular_venues": ["运河咖啡", "书店", "创客空间", "江南餐厅"],
       "priority": 1,
       "population": 5500000,
-      "coordinates": {
-        "lat": 30.7461,
-        "lng": 120.7555
-      },
-      "keywords": [
-        "嘉兴聚会",
-        "jiaxing meeting",
-        "嘉禾会面",
-        "江南聚会"
-      ]
+      "coordinates": {"lat": 30.7461, "lng": 120.7555},
+      "keywords": ["嘉兴聚会", "jiaxing meeting", "嘉禾会面", "江南聚会"],
+      "landmarks": ["南湖", "乌镇", "西塘", "海宁", "桐乡"],
+      "university_clusters": ["嘉兴学院", "浙江传媒学院桐乡校区"],
+      "business_districts": ["南湖区", "秀洲区", "海宁", "桐乡", "平湖"],
+      "metro_lines": 0,
+      "use_cases": [
+        {"scenario": "互联网大会对接", "example": "乌镇峰会参会者与市区企业，推荐嘉兴高铁站"},
+        {"scenario": "沪杭双城聚会", "example": "上海杭州来客与嘉兴本地，推荐嘉兴南站附近"},
+        {"scenario": "皮革行业会议", "example": "海宁皮革城与市区贸易商，推荐嘉兴市区"}
+      ],
+      "local_tips": "嘉兴粽子全国闻名，五芳斋是老字号。乌镇西塘适合周末团建。"
     },
     {
       "name": "太原",
       "name_en": "Taiyuan",
       "slug": "taiyuan",
       "description": "能源与装备制造中心，山地近郊游丰富",
-      "popular_venues": [
-        "黄河餐厅",
-        "咖啡馆",
-        "博物馆",
-        "工业遗址"
-      ],
+      "tagline": "锦绣龙城，能源重镇",
+      "popular_venues": ["黄河餐厅", "咖啡馆", "博物馆", "工业遗址"],
       "priority": 1,
       "population": 5300000,
-      "coordinates": {
-        "lat": 37.8706,
-        "lng": 112.5489
-      },
-      "keywords": [
-        "太原聚会",
-        "taiyuan meeting",
-        "并州会面",
-        "山西聚会"
-      ]
+      "coordinates": {"lat": 37.8706, "lng": 112.5489},
+      "keywords": ["太原聚会", "taiyuan meeting", "并州会面", "山西聚会"],
+      "landmarks": ["柳巷", "迎泽公园", "晋祠", "汾河", "长风商务区"],
+      "university_clusters": ["山西大学", "太原理工", "山西财大", "山西医科大"],
+      "business_districts": ["迎泽区", "小店区", "长风商务区", "杏花岭区", "尖草坪区"],
+      "metro_lines": 2,
+      "use_cases": [
+        {"scenario": "能源行业聚会", "example": "煤炭企业与新能源公司，推荐长风商务区"},
+        {"scenario": "高校联谊", "example": "山大、太理校友，推荐柳巷或迎泽大街"},
+        {"scenario": "晋商文化交流", "example": "文旅企业与金融机构，推荐晋祠附近"}
+      ],
+      "local_tips": "太原刀削面是必尝美食，六味斋是老字号。醋是山西特产。"
     },
     {
       "name": "烟台",
       "name_en": "Yantai",
       "slug": "yantai",
       "description": "胶东半岛的葡萄酒与海滨度假城市",
-      "popular_venues": [
-        "海岸咖啡",
-        "酒庄",
-        "滨海公园",
-        "渔人码头"
-      ],
+      "tagline": "仙境海岸，葡萄酒城",
+      "popular_venues": ["海岸咖啡", "酒庄", "滨海公园", "渔人码头"],
       "priority": 1,
       "population": 7000000,
-      "coordinates": {
-        "lat": 37.4638,
-        "lng": 121.4479
-      },
-      "keywords": [
-        "烟台聚会",
-        "yantai meeting",
-        "胶东会面",
-        "海滨聚会"
-      ]
+      "coordinates": {"lat": 37.4638, "lng": 121.4479},
+      "keywords": ["烟台聚会", "yantai meeting", "胶东会面", "海滨聚会"],
+      "landmarks": ["芝罘区", "开发区", "蓬莱", "龙口", "张裕酒庄"],
+      "university_clusters": ["烟台大学", "鲁东大学", "山东工商学院"],
+      "business_districts": ["芝罘区", "开发区", "莱山区", "福山区", "牟平区"],
+      "metro_lines": 0,
+      "use_cases": [
+        {"scenario": "葡萄酒行业聚会", "example": "张裕与各酒庄代表，推荐开发区或芝罘"},
+        {"scenario": "韩资企业会议", "example": "韩资企业与本地供应商，推荐开发区"},
+        {"scenario": "海滨度假团建", "example": "市区企业去蓬莱，系统推荐芝罘集合点"}
+      ],
+      "local_tips": "烟台苹果和葡萄酒是特产。海鲜推荐去养马岛或开发区海边。"
     },
     {
       "name": "珠海",
       "name_en": "Zhuhai",
       "slug": "zhuhai",
       "description": "琴澳合作示范城市，海岛度假氛围浓厚",
-      "popular_venues": [
-        "情侣路",
-        "咖啡馆",
-        "艺术馆",
-        "离岛营地"
-      ],
+      "tagline": "浪漫之城，粤港澳门户",
+      "popular_venues": ["情侣路", "咖啡馆", "艺术馆", "离岛营地"],
       "priority": 1,
       "population": 2500000,
-      "coordinates": {
-        "lat": 22.2707,
-        "lng": 113.5767
-      },
-      "keywords": [
-        "珠海聚会",
-        "zhuhai meeting",
-        "琴澳会面",
-        "海岛聚会"
-      ]
+      "coordinates": {"lat": 22.2707, "lng": 113.5767},
+      "keywords": ["珠海聚会", "zhuhai meeting", "琴澳会面", "海岛聚会"],
+      "landmarks": ["情侣路", "横琴", "拱北", "唐家湾", "万山群岛"],
+      "university_clusters": ["中山大学珠海校区", "北师大珠海", "暨南大学珠海"],
+      "business_districts": ["香洲区", "横琴新区", "高新区", "斗门区", "金湾区"],
+      "metro_lines": 0,
+      "use_cases": [
+        {"scenario": "琴澳合作会议", "example": "横琴深合区与澳门企业，推荐横琴口岸附近"},
+        {"scenario": "大学城联谊", "example": "中大、北师珠校友从唐家湾出发，推荐香洲商圈"},
+        {"scenario": "航展对接", "example": "航展参展商与市区企业，推荐金湾或香洲"}
+      ],
+      "local_tips": "珠海交通主要靠公交和自驾，暂无地铁。横琴与澳门一关之隔。"
     },
     {
       "name": "中山",
       "name_en": "Zhongshan",
       "slug": "zhongshan",
       "description": "粤港澳大湾区制造与影视双基地",
-      "popular_venues": [
-        "影视小镇",
-        "咖啡馆",
-        "花园餐厅",
-        "文创街"
-      ],
+      "tagline": "伟人故里，湾区明珠",
+      "popular_venues": ["影视小镇", "咖啡馆", "花园餐厅", "文创街"],
       "priority": 1,
       "population": 4400000,
-      "coordinates": {
-        "lat": 22.5167,
-        "lng": 113.3926
-      },
-      "keywords": [
-        "中山聚会",
-        "zhongshan meeting",
-        "孙城会面",
-        "湾区聚会"
-      ]
+      "coordinates": {"lat": 22.5167, "lng": 113.3926},
+      "keywords": ["中山聚会", "zhongshan meeting", "孙城会面", "湾区聚会"],
+      "landmarks": ["石岐", "小榄", "古镇", "火炬开发区", "翠亨村"],
+      "university_clusters": ["电子科技大学中山学院"],
+      "business_districts": ["石岐区", "火炬开发区", "小榄镇", "古镇镇", "东区"],
+      "metro_lines": 0,
+      "use_cases": [
+        {"scenario": "灯饰行业聚会", "example": "古镇灯饰城与各地采购商，推荐古镇或小榄"},
+        {"scenario": "深中通道对接", "example": "深圳客户与中山团队，推荐火炬区或翠亨新区"},
+        {"scenario": "湾区联动会议", "example": "珠中江企业联谊，推荐石岐商圈"}
+      ],
+      "local_tips": "中山是孙中山故里，翠亨村值得参观。古镇是全国灯饰之都。"
     },
     {
       "name": "台州",
       "name_en": "Taizhou",
       "slug": "taizhou",
       "description": "浙江沿海的医药与智能制造基地",
-      "popular_venues": [
-        "滨海公园",
-        "咖啡馆",
-        "创业园",
-        "夜市"
-      ],
+      "tagline": "山海水城，和合圣地",
+      "popular_venues": ["滨海公园", "咖啡馆", "创业园", "夜市"],
       "priority": 1,
       "population": 6100000,
-      "coordinates": {
-        "lat": 28.6614,
-        "lng": 121.4206
-      },
-      "keywords": [
-        "台州聚会",
-        "taizhou meeting",
-        "浙东会面",
-        "台州中点"
-      ]
+      "coordinates": {"lat": 28.6614, "lng": 121.4206},
+      "keywords": ["台州聚会", "taizhou meeting", "浙东会面", "台州中点"],
+      "landmarks": ["椒江", "临海", "黄岩", "路桥", "温岭"],
+      "university_clusters": ["台州学院", "台州职业技术学院"],
+      "business_districts": ["椒江区", "路桥区", "黄岩区", "临海市", "温岭市"],
+      "metro_lines": 1,
+      "use_cases": [
+        {"scenario": "医药行业聚会", "example": "椒江医药与各县市企业，推荐椒江商圈"},
+        {"scenario": "汽摩配件会议", "example": "路桥与黄岩汽配企业，推荐台州站附近"},
+        {"scenario": "民营企业家交流", "example": "温岭与临海企业家，推荐椒江CBD"}
+      ],
+      "local_tips": "台州各区县分散，提前确认具体位置。食饼筒是本地特色。"
     },
     {
       "name": "兰州",
       "name_en": "Lanzhou",
       "slug": "lanzhou",
       "description": "黄河穿城而过的西北中心城市",
-      "popular_venues": [
-        "黄河栈道",
-        "牛肉面馆",
-        "博物馆",
-        "咖啡店"
-      ],
+      "tagline": "黄河之都，丝路明珠",
+      "popular_venues": ["黄河栈道", "牛肉面馆", "博物馆", "咖啡店"],
       "priority": 1,
       "population": 4400000,
-      "coordinates": {
-        "lat": 36.0611,
-        "lng": 103.8343
-      },
-      "keywords": [
-        "兰州聚会",
-        "lanzhou meeting",
-        "金城会面",
-        "黄河聚会"
-      ]
+      "coordinates": {"lat": 36.0611, "lng": 103.8343},
+      "keywords": ["兰州聚会", "lanzhou meeting", "金城会面", "黄河聚会"],
+      "landmarks": ["黄河铁桥", "中山桥", "白塔山", "兰州新区", "西固"],
+      "university_clusters": ["兰州大学", "西北师大", "兰州理工", "兰州交大"],
+      "business_districts": ["城关区", "七里河区", "安宁区", "兰州新区", "西固区"],
+      "metro_lines": 2,
+      "use_cases": [
+        {"scenario": "高校联谊", "example": "兰大与西北师大校友，推荐西关什字或广场"},
+        {"scenario": "石化行业会议", "example": "西固石化与市区企业，推荐七里河商圈"},
+        {"scenario": "丝路文旅对接", "example": "敦煌旅游与兰州酒店，推荐黄河沿岸"}
+      ],
+      "local_tips": "兰州牛肉面要早上吃最正宗，推荐马子禄。黄河铁桥夜景值得一看。"
     },
     {
       "name": "保定",
       "name_en": "Baoding",
       "slug": "baoding",
       "description": "京津冀协同发展的制造业城市",
-      "popular_venues": [
-        "咖啡馆",
-        "书店",
-        "古城墙",
-        "产业园"
-      ],
+      "tagline": "京畿重地，协同先锋",
+      "popular_venues": ["咖啡馆", "书店", "古城墙", "产业园"],
       "priority": 1,
       "population": 9200000,
-      "coordinates": {
-        "lat": 38.851,
-        "lng": 115.4902
-      },
-      "keywords": [
-        "保定聚会",
-        "baoding meeting",
-        "保府会面",
-        "京津冀聚会"
-      ]
+      "coordinates": {"lat": 38.851, "lng": 115.4902},
+      "keywords": ["保定聚会", "baoding meeting", "保府会面", "京津冀聚会"],
+      "landmarks": ["竞秀区", "莲池区", "雄安新区", "涿州", "白洋淀"],
+      "university_clusters": ["河北大学", "华北电力大学", "河北农大"],
+      "business_districts": ["竞秀区", "莲池区", "高新区", "雄安新区", "涿州"],
+      "metro_lines": 0,
+      "use_cases": [
+        {"scenario": "雄安对接", "example": "雄安新区与保定市区企业，推荐高铁站附近"},
+        {"scenario": "京保联动", "example": "北京客户与保定团队，推荐涿州或保定东站"},
+        {"scenario": "高校联谊", "example": "河大与华电校友，推荐莲池商圈"}
+      ],
+      "local_tips": "保定驴肉火烧全国闻名，槐茂酱菜是特产。雄安新区正在建设中。"
     },
     {
       "name": "镇江",
       "name_en": "Zhenjiang",
       "slug": "zhenjiang",
       "description": "长江与大运河交汇的美食之城",
-      "popular_venues": [
-        "醋文化馆",
-        "咖啡店",
-        "滨江栈道",
-        "特色餐厅"
-      ],
+      "tagline": "镇江三怪，美食名城",
+      "popular_venues": ["醋文化馆", "咖啡店", "滨江栈道", "特色餐厅"],
       "priority": 1,
       "population": 3200000,
-      "coordinates": {
-        "lat": 32.1876,
-        "lng": 119.425
-      },
-      "keywords": [
-        "镇江聚会",
-        "zhenjiang meeting",
-        "江州会面",
-        "镇江中点"
-      ]
+      "coordinates": {"lat": 32.1876, "lng": 119.425},
+      "keywords": ["镇江聚会", "zhenjiang meeting", "江州会面", "镇江中点"],
+      "landmarks": ["大市口", "西津渡", "金山", "北固山", "丹阳"],
+      "university_clusters": ["江苏大学", "江苏科技大学"],
+      "business_districts": ["京口区", "润州区", "丹徒区", "丹阳", "句容"],
+      "metro_lines": 0,
+      "use_cases": [
+        {"scenario": "沪宁城际会议", "example": "上海南京客户与镇江团队，推荐镇江站附近"},
+        {"scenario": "高校联谊", "example": "江大与江科大校友，推荐大市口商圈"},
+        {"scenario": "美食探店", "example": "锅盖面和肴肉爱好者，推荐西津渡或大市口"}
+      ],
+      "local_tips": "镇江香醋全国闻名，锅盖面是本地特色。西津渡古街适合文艺聚会。"
     },
     {
       "name": "扬州",
       "name_en": "Yangzhou",
       "slug": "yangzhou",
       "description": "运河文化和园林闻名，适合慢旅行聚会",
-      "popular_venues": [
-        "瘦西湖",
-        "茶社",
-        "书店",
-        "文创街"
-      ],
+      "tagline": "烟花三月，运河名城",
+      "popular_venues": ["瘦西湖", "茶社", "书店", "文创街"],
       "priority": 1,
       "population": 4500000,
-      "coordinates": {
-        "lat": 32.3936,
-        "lng": 119.4127
-      },
-      "keywords": [
-        "扬州聚会",
-        "yangzhou meeting",
-        "运河会面",
-        "淮左聚会"
-      ]
+      "coordinates": {"lat": 32.3936, "lng": 119.4127},
+      "keywords": ["扬州聚会", "yangzhou meeting", "运河会面", "淮左聚会"],
+      "landmarks": ["瘦西湖", "东关街", "个园", "何园", "江都"],
+      "university_clusters": ["扬州大学"],
+      "business_districts": ["邗江区", "广陵区", "江都区", "开发区", "生态科技新城"],
+      "metro_lines": 0,
+      "use_cases": [
+        {"scenario": "园林文化聚会", "example": "文旅企业与设计公司，推荐瘦西湖或东关街"},
+        {"scenario": "扬大校友会", "example": "各校区校友，推荐文昌阁或京华城商圈"},
+        {"scenario": "淮扬菜品鉴", "example": "美食爱好者聚会，推荐东关街或皮市街"}
+      ],
+      "local_tips": "扬州早茶文化丰富，富春茶社是百年老字号。淮扬菜清淡精致。"
     },
     {
       "name": "临沂",
       "name_en": "Linyi",
       "slug": "linyi",
       "description": "物流与商贸枢纽，红色文化资源丰富",
-      "popular_venues": [
-        "书法广场",
-        "咖啡店",
-        "山地营地",
-        "会议中心"
-      ],
+      "tagline": "物流之都，红色沂蒙",
+      "popular_venues": ["书法广场", "咖啡店", "山地营地", "会议中心"],
       "priority": 1,
       "population": 11000000,
-      "coordinates": {
-        "lat": 35.1047,
-        "lng": 118.3565
-      },
-      "keywords": [
-        "临沂聚会",
-        "linyi meeting",
-        "沂蒙会面",
-        "鲁南聚会"
-      ]
+      "coordinates": {"lat": 35.1047, "lng": 118.3565},
+      "keywords": ["临沂聚会", "linyi meeting", "沂蒙会面", "鲁南聚会"],
+      "landmarks": ["兰山区", "河东区", "罗庄区", "沂水", "蒙阴"],
+      "university_clusters": ["临沂大学", "山东医学高等专科学校"],
+      "business_districts": ["兰山区", "河东区", "罗庄区", "经开区", "高新区"],
+      "metro_lines": 0,
+      "use_cases": [
+        {"scenario": "物流行业聚会", "example": "临沂商城与全国物流企业，推荐兰山商圈"},
+        {"scenario": "红色旅游对接", "example": "沂蒙山景区与市区旅行社，推荐沂河沿岸"},
+        {"scenario": "批发市场会议", "example": "各专业市场商户联谊，推荐临沂商城附近"}
+      ],
+      "local_tips": "临沂是北方最大的物流基地，商贸氛围浓厚。煎饼卷大葱是本地特色。"
     },
     {
       "name": "洛阳",
       "name_en": "Luoyang",
       "slug": "luoyang",
       "description": "十三朝古都，牡丹与博物馆资源丰富",
-      "popular_venues": [
-        "龙门石窟",
-        "牡丹园",
-        "咖啡馆",
-        "文化街"
-      ],
+      "tagline": "千年帝都，牡丹花城",
+      "popular_venues": ["龙门石窟", "牡丹园", "咖啡馆", "文化街"],
       "priority": 1,
       "population": 7000000,
-      "coordinates": {
-        "lat": 34.6197,
-        "lng": 112.454
-      },
-      "keywords": [
-        "洛阳聚会",
-        "luoyang meeting",
-        "洛阳会面",
-        "古都聚会"
-      ]
+      "coordinates": {"lat": 34.6197, "lng": 112.454},
+      "keywords": ["洛阳聚会", "luoyang meeting", "洛阳会面", "古都聚会"],
+      "landmarks": ["龙门石窟", "白马寺", "洛阳博物馆", "老城", "涧西"],
+      "university_clusters": ["河南科技大学", "洛阳理工", "洛阳师范"],
+      "business_districts": ["涧西区", "西工区", "老城区", "洛龙区", "伊滨区"],
+      "metro_lines": 2,
+      "use_cases": [
+        {"scenario": "文旅行业聚会", "example": "龙门石窟与各景区团队，推荐老城商圈"},
+        {"scenario": "重工业会议", "example": "涧西企业与市区供应商，推荐西工商圈"},
+        {"scenario": "牡丹节对接", "example": "牡丹园与酒店旅行社，推荐王城公园附近"}
+      ],
+      "local_tips": "洛阳牡丹4月盛开，是最佳观赏季。洛阳水席是本地特色。"
     },
     {
       "name": "唐山",
       "name_en": "Tangshan",
       "slug": "tangshan",
       "description": "沿海钢铁城市，工业遗产与新兴商圈并存",
-      "popular_venues": [
-        "工业遗址",
-        "咖啡馆",
-        "商业街",
-        "滨海公园"
-      ],
+      "tagline": "凤凰涅槃，钢铁名城",
+      "popular_venues": ["工业遗址", "咖啡馆", "商业街", "滨海公园"],
       "priority": 1,
       "population": 7800000,
-      "coordinates": {
-        "lat": 39.6305,
-        "lng": 118.1809
-      },
-      "keywords": [
-        "唐山聚会",
-        "tangshan meeting",
-        "唐城会面",
-        "环渤海聚会"
-      ]
+      "coordinates": {"lat": 39.6305, "lng": 118.1809},
+      "keywords": ["唐山聚会", "tangshan meeting", "唐城会面", "环渤海聚会"],
+      "landmarks": ["路北区", "路南区", "开平", "曹妃甸", "滦州古城"],
+      "university_clusters": ["华北理工大学", "唐山师范", "唐山学院"],
+      "business_districts": ["路北区", "路南区", "高新区", "曹妃甸", "丰润区"],
+      "metro_lines": 0,
+      "use_cases": [
+        {"scenario": "钢铁行业聚会", "example": "各钢铁企业代表，推荐路北商圈或高新区"},
+        {"scenario": "港口物流会议", "example": "曹妃甸港与市区企业，推荐唐山站附近"},
+        {"scenario": "工业旅游对接", "example": "工业遗址与文旅公司，推荐开滦矿区附近"}
+      ],
+      "local_tips": "唐山是震后重建的城市，凤凰精神深入人心。皮影戏是本地文化。"
     },
     {
       "name": "呼和浩特",
       "name_en": "Hohhot",
       "slug": "hohhot",
       "description": "草原门户城市，民族文化体验丰富",
-      "popular_venues": [
-        "奶茶馆",
-        "蒙古包营地",
-        "咖啡店",
-        "博物馆"
-      ],
+      "tagline": "青色之城，草原明珠",
+      "popular_venues": ["奶茶馆", "蒙古包营地", "咖啡店", "博物馆"],
       "priority": 1,
       "population": 3600000,
-      "coordinates": {
-        "lat": 40.8426,
-        "lng": 111.7492
-      },
-      "keywords": [
-        "呼和浩特聚会",
-        "hohhot meeting",
-        "青城会面",
-        "草原聚会"
-      ]
+      "coordinates": {"lat": 40.8426, "lng": 111.7492},
+      "keywords": ["呼和浩特聚会", "hohhot meeting", "青城会面", "草原聚会"],
+      "landmarks": ["大召寺", "青城公园", "敕勒川", "如意河", "金盛路"],
+      "university_clusters": ["内蒙古大学", "内蒙古师大", "内蒙古农大", "内蒙古工大"],
+      "business_districts": ["赛罕区", "新城区", "回民区", "玉泉区", "如意开发区"],
+      "metro_lines": 2,
+      "use_cases": [
+        {"scenario": "草原文化聚会", "example": "文旅企业与蒙古族文化团队，推荐大召寺附近"},
+        {"scenario": "高校联谊", "example": "内大与师大校友，推荐金盛路商圈"},
+        {"scenario": "乳业行业会议", "example": "伊利蒙牛与供应商，推荐如意开发区或金川"}
+      ],
+      "local_tips": "呼市是乳都，伊利蒙牛总部所在地。手把肉和奶茶是本地特色。"
     }
   ]
 }

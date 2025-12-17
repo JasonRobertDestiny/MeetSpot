@@ -74,6 +74,74 @@ class CafeRecommender(BaseTool):
     geocode_cache: Dict[str, Dict] = Field(default_factory=dict)
     poi_cache: Dict[str, List] = Field(default_factory=dict)
 
+    # ========== 品牌特征知识库 ==========
+    # 用于三层匹配算法的第二层：基于品牌特征的需求推断
+    # 分值范围 0.0-1.0，>=0.7 视为满足需求
+    BRAND_FEATURES: Dict[str, Dict[str, float]] = {
+        # ========== 咖啡馆 (15个) ==========
+        "星巴克": {"安静": 0.8, "WiFi": 1.0, "商务": 0.7, "停车": 0.3, "可以久坐": 0.9},
+        "瑞幸": {"安静": 0.4, "WiFi": 0.7, "商务": 0.4, "停车": 0.3, "可以久坐": 0.5},
+        "Costa": {"安静": 0.9, "WiFi": 1.0, "商务": 0.8, "停车": 0.4, "可以久坐": 0.9},
+        "漫咖啡": {"安静": 0.9, "WiFi": 0.9, "商务": 0.6, "停车": 0.5, "可以久坐": 1.0},
+        "太平洋咖啡": {"安静": 0.8, "WiFi": 0.9, "商务": 0.7, "停车": 0.4, "可以久坐": 0.8},
+        "Manner": {"安静": 0.5, "WiFi": 0.6, "商务": 0.4, "停车": 0.2, "可以久坐": 0.3},
+        "Seesaw": {"安静": 0.8, "WiFi": 0.9, "商务": 0.6, "停车": 0.3, "可以久坐": 0.8},
+        "M Stand": {"安静": 0.7, "WiFi": 0.8, "商务": 0.5, "停车": 0.3, "可以久坐": 0.7},
+        "Tims": {"安静": 0.6, "WiFi": 0.8, "商务": 0.5, "停车": 0.4, "可以久坐": 0.6},
+        "上岛咖啡": {"安静": 0.9, "WiFi": 0.8, "商务": 0.8, "停车": 0.6, "可以久坐": 0.9, "包间": 0.7},
+        "Zoo Coffee": {"安静": 0.7, "WiFi": 0.8, "商务": 0.5, "停车": 0.4, "可以久坐": 0.8, "适合儿童": 0.6},
+        "猫屎咖啡": {"安静": 0.8, "WiFi": 0.8, "商务": 0.6, "停车": 0.4, "可以久坐": 0.8},
+        "皮爷咖啡": {"安静": 0.7, "WiFi": 0.8, "商务": 0.5, "停车": 0.3, "可以久坐": 0.7},
+        "咖世家": {"安静": 0.8, "WiFi": 0.9, "商务": 0.7, "停车": 0.4, "可以久坐": 0.8},
+        "挪瓦咖啡": {"安静": 0.5, "WiFi": 0.6, "商务": 0.4, "停车": 0.2, "可以久坐": 0.4},
+        # ========== 中餐厅 (15个) ==========
+        "海底捞": {"包间": 0.9, "停车": 0.8, "安静": 0.2, "适合儿童": 0.9, "24小时营业": 0.3},
+        "西贝": {"包间": 0.7, "停车": 0.6, "安静": 0.5, "适合儿童": 0.7},
+        "外婆家": {"包间": 0.5, "停车": 0.5, "安静": 0.3, "适合儿童": 0.6},
+        "绿茶": {"包间": 0.4, "停车": 0.5, "安静": 0.4, "适合儿童": 0.5},
+        "小龙坎": {"包间": 0.6, "停车": 0.5, "安静": 0.2, "适合儿童": 0.4},
+        "呷哺呷哺": {"包间": 0.0, "停车": 0.4, "安静": 0.3, "适合儿童": 0.5},
+        "大龙燚": {"包间": 0.5, "停车": 0.5, "安静": 0.2, "适合儿童": 0.4},
+        "眉州东坡": {"包间": 0.8, "停车": 0.7, "安静": 0.6, "适合儿童": 0.7, "商务": 0.7},
+        "全聚德": {"包间": 0.9, "停车": 0.7, "安静": 0.6, "适合儿童": 0.6, "商务": 0.8},
+        "大董": {"包间": 0.9, "停车": 0.8, "安静": 0.8, "商务": 0.9},
+        "鼎泰丰": {"包间": 0.5, "停车": 0.6, "安静": 0.6, "适合儿童": 0.7},
+        "南京大牌档": {"包间": 0.6, "停车": 0.5, "安静": 0.3, "适合儿童": 0.6},
+        "九毛九": {"包间": 0.4, "停车": 0.5, "安静": 0.4, "适合儿童": 0.6},
+        "太二酸菜鱼": {"包间": 0.0, "停车": 0.4, "安静": 0.3, "适合儿童": 0.4},
+        "湘鄂情": {"包间": 0.8, "停车": 0.7, "安静": 0.5, "商务": 0.7},
+        # ========== 西餐/快餐 (10个) ==========
+        "麦当劳": {"停车": 0.5, "WiFi": 0.8, "适合儿童": 0.9, "24小时营业": 0.8},
+        "肯德基": {"停车": 0.5, "WiFi": 0.7, "适合儿童": 0.9, "24小时营业": 0.6},
+        "必胜客": {"包间": 0.3, "停车": 0.5, "适合儿童": 0.8, "安静": 0.5},
+        "萨莉亚": {"停车": 0.4, "适合儿童": 0.7, "安静": 0.4},
+        "汉堡王": {"停车": 0.4, "WiFi": 0.6, "适合儿童": 0.7},
+        "赛百味": {"停车": 0.3, "WiFi": 0.5, "可以久坐": 0.4},
+        "棒约翰": {"停车": 0.4, "适合儿童": 0.7, "包间": 0.2},
+        "达美乐": {"停车": 0.3, "适合儿童": 0.6},
+        "DQ": {"适合儿童": 0.9, "停车": 0.4},
+        "哈根达斯": {"适合儿童": 0.7, "安静": 0.6, "可以久坐": 0.5},
+        # ========== 奶茶/饮品 (8个) ==========
+        "喜茶": {"安静": 0.4, "可以久坐": 0.5, "停车": 0.3},
+        "奈雪的茶": {"安静": 0.5, "可以久坐": 0.6, "停车": 0.4, "WiFi": 0.6},
+        "茶百道": {"安静": 0.3, "可以久坐": 0.3, "停车": 0.2},
+        "一点点": {"安静": 0.2, "可以久坐": 0.2, "停车": 0.2},
+        "蜜雪冰城": {"安静": 0.2, "可以久坐": 0.2, "停车": 0.2},
+        "茶颜悦色": {"安静": 0.4, "可以久坐": 0.4, "停车": 0.3},
+        "古茗": {"安静": 0.3, "可以久坐": 0.3, "停车": 0.2},
+        "CoCo": {"安静": 0.3, "可以久坐": 0.3, "停车": 0.2},
+        # ========== 场所类型默认特征 (以下划线开头) ==========
+        "_图书馆": {"安静": 1.0, "WiFi": 0.9, "可以久坐": 1.0},
+        "_书店": {"安静": 1.0, "可以久坐": 0.8, "WiFi": 0.5},
+        "_商场": {"停车": 0.9, "交通": 0.8, "适合儿童": 0.7},
+        "_酒店": {"安静": 0.9, "商务": 0.9, "停车": 0.8, "WiFi": 0.9, "包间": 0.8},
+        "_电影院": {"停车": 0.7, "适合儿童": 0.6},
+        "_KTV": {"包间": 1.0, "停车": 0.6, "24小时营业": 0.5},
+        "_健身房": {"停车": 0.6, "WiFi": 0.5},
+        "_网咖": {"WiFi": 1.0, "24小时营业": 0.8, "可以久坐": 0.9},
+        "_便利店": {"24小时营业": 0.9},
+    }
+
     PLACE_TYPE_CONFIG: Dict[str, Dict[str, str]] = {
         "咖啡馆": {
             "topic": "咖啡会",
@@ -357,6 +425,9 @@ class CafeRecommender(BaseTool):
         place_type: str = "",
         user_requirements: str = "",
         theme: str = "",  # 添加主题参数
+        min_rating: float = 0.0,  # 最低评分筛选
+        max_distance: int = 100000,  # 最大距离筛选(米)
+        price_range: str = "",  # 价格区间筛选
     ) -> ToolResult:
         # 尝试从多个来源获取API key
         if not self.api_key:
@@ -582,7 +653,10 @@ class CafeRecommender(BaseTool):
                     
                     return ToolResult(output=error_msg)
 
-            recommended_places = self._rank_places(searched_places, center_point, user_requirements, keywords)
+            recommended_places = self._rank_places(
+                searched_places, center_point, user_requirements, keywords,
+                min_rating=min_rating, max_distance=max_distance, price_range=price_range
+            )
 
             html_path = await self._generate_html_page(
                 location_info,
@@ -1246,66 +1320,127 @@ class CafeRecommender(BaseTool):
         self,
         place: Dict,
         user_requirements: str
-    ) -> Tuple[float, List[str]]:
-        """计算需求匹配分 (满分10分)
+    ) -> Tuple[float, List[str], Dict[str, str]]:
+        """计算需求匹配分 (满分10分) - 三层匹配算法
+
+        三层匹配机制：
+        - Layer 1: POI标签硬匹配 (高置信度 high, +4分)
+        - Layer 2: 品牌特征匹配 (中置信度 medium, +2分)
+        - Layer 3: 类型推断匹配 (低置信度 low, +1分)
 
         Returns:
-            (score, matched_requirements): 需求分和匹配的需求列表
+            (score, matched_requirements, confidence_map):
+            需求分、匹配的需求列表、置信度字典
         """
         if not user_requirements:
-            return 0, []
+            return 0, [], {}
 
-        # 扩展的需求关键词映射
-        requirement_map = {
+        # 需求规范化映射（将各种表达方式统一）
+        requirement_aliases = {
+            "停车": ["停车", "车位", "停车场", "免费停车", "方便停车", "停车方便"],
+            "安静": ["安静", "环境好", "氛围", "静", "舒适", "环境安静"],
+            "商务": ["商务", "会议", "办公", "谈事", "工作"],
+            "交通": ["交通", "地铁", "公交", "方便", "交通便利"],
+            "包间": ["包间", "私密", "独立", "包厢", "有包间"],
+            "WiFi": ["wifi", "无线", "网络", "上网", "免费wifi"],
+            "可以久坐": ["久坐", "可以久坐", "坐着办公", "长时间"],
+            "适合儿童": ["儿童", "带娃", "亲子", "小孩", "适合儿童"],
+            "24小时营业": ["24小时", "通宵", "夜间", "凌晨"],
+        }
+
+        # POI标签匹配规则（Layer 1）
+        poi_match_rules = {
             "停车": {
-                "keywords": ["停车", "车位", "停车场", "免费停车", "方便停车"],
                 "check_fields": ["tag", "parking_type", "navi_poiid"],
-                "match_values": ["停车", "车位", "免费停车"]
+                "match_values": ["停车", "车位", "免费停车", "parking"]
             },
             "安静": {
-                "keywords": ["安静", "环境好", "氛围", "静", "舒适"],
                 "check_fields": ["tag"],
                 "match_values": ["安静", "环境", "氛围", "舒适", "优雅"]
             },
             "商务": {
-                "keywords": ["商务", "会议", "办公", "谈事", "工作"],
                 "check_fields": ["tag", "type"],
                 "match_values": ["商务", "会议", "办公", "商务区"]
             },
             "交通": {
-                "keywords": ["交通", "地铁", "公交", "方便"],
                 "check_fields": ["tag", "address"],
-                "match_values": ["地铁", "公交", "站"]
+                "match_values": ["地铁", "公交", "站", "枢纽"]
             },
             "包间": {
-                "keywords": ["包间", "私密", "独立", "包厢"],
                 "check_fields": ["tag"],
-                "match_values": ["包间", "包厢", "私密"]
+                "match_values": ["包间", "包厢", "私密", "独立房间"]
             },
             "WiFi": {
-                "keywords": ["wifi", "无线", "网络", "上网"],
                 "check_fields": ["tag"],
-                "match_values": ["wifi", "无线", "免费WiFi"]
-            }
+                "match_values": ["wifi", "无线", "免费WiFi", "网络"]
+            },
         }
 
-        matched = []
-        total_score = 0
-
-        for req_name, req_config in requirement_map.items():
-            # 检查用户是否有这个需求
-            if not any(kw in user_requirements.lower() for kw in req_config["keywords"]):
-                continue
-
-            # 检查场所是否满足
-            for field in req_config["check_fields"]:
-                field_value = str(place.get(field, "")).lower()
-                if any(mv.lower() in field_value for mv in req_config["match_values"]):
-                    matched.append(req_name)
-                    total_score += 3
+        # 识别用户需求
+        user_reqs = set()
+        user_requirements_lower = user_requirements.lower()
+        for req_name, aliases in requirement_aliases.items():
+            for alias in aliases:
+                if alias.lower() in user_requirements_lower:
+                    user_reqs.add(req_name)
                     break
 
-        return min(10, total_score), matched
+        if not user_reqs:
+            return 0, [], {}
+
+        matched = []
+        confidence_map = {}  # 需求 -> 置信度 (high/medium/low)
+        total_score = 0
+        place_name = place.get("name", "")
+        place_type = place.get("type", "")
+
+        # ========== Layer 1: POI标签硬匹配（高置信度）==========
+        for req_name in user_reqs:
+            if req_name in matched:
+                continue
+            if req_name not in poi_match_rules:
+                continue
+            rule = poi_match_rules[req_name]
+            for field in rule["check_fields"]:
+                field_value = str(place.get(field, "")).lower()
+                if any(mv.lower() in field_value for mv in rule["match_values"]):
+                    matched.append(req_name)
+                    confidence_map[req_name] = "high"
+                    total_score += 4  # 高置信度 +4分
+                    break
+
+        # ========== Layer 2: 品牌特征匹配（中置信度）==========
+        for brand, features in self.BRAND_FEATURES.items():
+            if brand.startswith("_"):
+                continue  # 跳过类型默认值
+            if brand in place_name:
+                for req_name in user_reqs:
+                    if req_name in matched:
+                        continue
+                    score = features.get(req_name, 0)
+                    if score >= 0.7:  # 0.7以上视为满足
+                        matched.append(req_name)
+                        confidence_map[req_name] = "medium"
+                        total_score += 2  # 中置信度 +2分
+                break  # 只匹配第一个品牌
+
+        # ========== Layer 3: 类型推断匹配（低置信度）==========
+        for type_key, features in self.BRAND_FEATURES.items():
+            if not type_key.startswith("_"):
+                continue  # 只处理类型默认值
+            type_name = type_key[1:]  # 去掉下划线前缀
+            if type_name in place_type or type_name in place_name:
+                for req_name in user_reqs:
+                    if req_name in matched:
+                        continue
+                    score = features.get(req_name, 0)
+                    if score >= 0.8:  # 类型推断需要更高阈值
+                        matched.append(req_name)
+                        confidence_map[req_name] = "low"
+                        total_score += 1  # 低置信度 +1分
+                break  # 只匹配第一个类型
+
+        return min(10, total_score), matched, confidence_map
 
     def _apply_diversity_adjustment(
         self,
@@ -1739,7 +1874,10 @@ class CafeRecommender(BaseTool):
         places: List[Dict],
         center_point: Tuple[float, float],
         user_requirements: str,
-        keywords: str
+        keywords: str,
+        min_rating: float = 0.0,
+        max_distance: int = 100000,
+        price_range: str = ""
     ) -> List[Dict]:
         """V2 多维度评分排序算法
 
@@ -1749,8 +1887,54 @@ class CafeRecommender(BaseTool):
         - 距离分: 25分 (非线性衰减)
         - 场景匹配: 15分
         - 需求匹配: 10分
+
+        筛选条件:
+        - min_rating: 最低评分过滤
+        - max_distance: 最大距离过滤(米)
+        - price_range: 价格区间过滤
         """
         logger.info(f"开始V2多维度评分，共{len(places)}个场所")
+
+        # ========== 硬筛选阶段 ==========
+        original_count = len(places)
+
+        # 1. 评分筛选
+        if min_rating > 0:
+            places = [p for p in places if float(p.get("rating", 0) or 0) >= min_rating]
+            logger.info(f"评分筛选(>={min_rating}): {original_count} -> {len(places)}")
+
+        # 2. 距离筛选
+        if max_distance < 100000:
+            filtered_places = []
+            for p in places:
+                try:
+                    # Amap POI uses "location" field with "lng,lat" format
+                    location = p.get("location", "")
+                    if location and "," in location:
+                        lng_str, lat_str = location.split(",")
+                        place_lng, place_lat = float(lng_str), float(lat_str)
+                    else:
+                        # Fallback to separate fields
+                        place_lng = float(p.get("lng", 0))
+                        place_lat = float(p.get("lat", 0))
+                    dist = self._calculate_distance(center_point, (place_lng, place_lat))
+                    if dist <= max_distance:
+                        filtered_places.append(p)
+                except (ValueError, TypeError):
+                    pass
+            places = filtered_places
+            logger.info(f"距离筛选(<={max_distance}米): 剩余{len(places)}个")
+
+        # 3. 价格区间筛选（软筛选，作为排序权重）
+        price_weight_map = {
+            "economy": ["¥", "人均20", "人均30", "人均40"],
+            "mid": ["¥¥", "人均50", "人均60", "人均80", "人均100"],
+            "high": ["¥¥¥", "¥¥¥¥", "人均150", "人均200", "人均300"]
+        }
+
+        if not places:
+            logger.warning("筛选后无符合条件的场所")
+            return []
 
         for place in places:
             # 1. 基础评分 (满分30分)
@@ -1769,9 +1953,10 @@ class CafeRecommender(BaseTool):
             scenario_score, matched_scenario = self._calculate_scenario_match_score(place, keywords)
             place["_matched_scenario"] = matched_scenario
 
-            # 5. 需求匹配分 (满分10分)
-            requirement_score, matched_reqs = self._calculate_requirement_score(place, user_requirements)
+            # 5. 需求匹配分 (满分10分) - 三层匹配算法
+            requirement_score, matched_reqs, confidence_map = self._calculate_requirement_score(place, user_requirements)
             place["_matched_requirements"] = matched_reqs
+            place["_requirement_confidence"] = confidence_map  # 置信度映射
 
             # 汇总得分
             total_score = base_score + popularity_score + distance_score + scenario_score + requirement_score
@@ -1975,7 +2160,7 @@ class CafeRecommender(BaseTool):
                 "    </script>\n"
             )
 
-        search_process_html = self._generate_search_process(locations, center_point, user_requirements, keywords) 
+        search_process_html = self._generate_search_process(locations, center_point, user_requirements, keywords, places) 
 
         location_markers = []
         for idx, loc in enumerate(locations):
@@ -2032,8 +2217,34 @@ class CafeRecommender(BaseTool):
             elif not isinstance(tags, list): tags = []
             
             tags_html = "".join([f"<span class='cafe-tag'>{tg.strip()}</span>" for tg in tags if tg.strip()])
-            if not tags_html: 
+            if not tags_html:
                 tags_html = f"<span class='cafe-tag'>{cfg['noun_singular']}</span>"
+
+            # 需求匹配置信度标签
+            matched_reqs = place.get("_matched_requirements", [])
+            confidence_map = place.get("_requirement_confidence", {})
+            requirement_match_html = ""
+            if matched_reqs:
+                match_tags = []
+                for req in matched_reqs:
+                    confidence = confidence_map.get(req, "low")
+                    if confidence == "high":
+                        icon = "bx-check-circle"
+                        tag_class = "match-tag-high"
+                        tooltip = "已验证"
+                    elif confidence == "medium":
+                        icon = "bx-check"
+                        tag_class = "match-tag-medium"
+                        tooltip = "品牌特征"
+                    else:
+                        icon = "bx-question-mark"
+                        tag_class = "match-tag-low"
+                        tooltip = "建议确认"
+                    match_tags.append(f"<span class='match-tag {tag_class}' title='{tooltip}'><i class='bx {icon}'></i>{req}</span>")
+                requirement_match_html = f'''
+                        <div class="requirement-match">
+                            {"".join(match_tags)}
+                        </div>'''
 
             lng_str, lat_str = place.get("location",",").split(",")
             distance_text = "未知距离"
@@ -2086,7 +2297,7 @@ class CafeRecommender(BaseTool):
                         </div>
                         <div class="cafe-tags">
                             {tags_html}
-                        </div>
+                        </div>{requirement_match_html}
                     </div>
                     <div class="cafe-footer">
                         <div class="cafe-distance">
@@ -2180,10 +2391,10 @@ class CafeRecommender(BaseTool):
     <meta name="twitter:title" content="{meta_title}">
     <meta name="twitter:description" content="{meta_description}">
 
-    <!-- MeetSpot Urban Navigator Theme Fonts -->
+    <!-- MeetSpot Urban Navigator Theme Fonts - Distinctive Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.9/css/boxicons.min.css">
 
@@ -2195,8 +2406,8 @@ class CafeRecommender(BaseTool):
         {dynamic_style} /* Inject dynamic theme colors here */
 
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        body {{ font-family: var(--font-family-sans, 'Plus Jakarta Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif); line-height: var(--font-leading-normal, 1.6); background-color: var(--light); color: var(--dark); padding-bottom: 50px; }}
-        h1, h2, h3, h4, h5, h6 {{ font-family: var(--font-family-heading, 'Sora', 'PingFang SC', sans-serif); font-weight: 700; }}
+        body {{ font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif; line-height: 1.6; background-color: var(--light); color: var(--dark); padding-bottom: 50px; }}
+        h1, h2, h3, h4, h5, h6 {{ font-family: 'Outfit', 'PingFang SC', sans-serif; font-weight: 700; letter-spacing: -0.02em; }}
         .container {{ max-width: 1200px; margin: 0 auto; padding: 0 20px; }}
         header {{ background: linear-gradient(135deg, #001524 0%, #0A4D68 50%, #001524 100%); color: white; padding: 60px 0 100px; text-align: center; position: relative; margin-bottom: 80px; box-shadow: 0 8px 32px rgba(0, 21, 36, 0.3); }}
         header::before {{ content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-radial-gradient(circle at 30% 40%, transparent 0, transparent 40px, rgba(6, 214, 160, 0.05) 40px, rgba(6, 214, 160, 0.05) 42px); pointer-events: none; }}
@@ -2256,6 +2467,17 @@ class CafeRecommender(BaseTool):
         .cafe-tags {{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }}
         .cafe-tag {{ background: linear-gradient(135deg, rgba(10, 77, 104, 0.06) 0%, rgba(8, 131, 149, 0.04) 100%); color: var(--primary-dark); padding: 5px 12px; border-radius: 16px; font-size: 0.78rem; font-weight: 500; border: 1px solid rgba(10, 77, 104, 0.08); transition: all 0.2s ease; }}
         .cafe-tag:hover {{ background: linear-gradient(135deg, rgba(10, 77, 104, 0.12) 0%, rgba(8, 131, 149, 0.08) 100%); transform: translateY(-1px); }}
+        /* 需求匹配置信度标签样式 */
+        .requirement-match {{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(0,0,0,0.08); }}
+        .match-tag {{ display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; transition: all 0.2s ease; }}
+        .match-tag i {{ font-size: 0.85rem; }}
+        .match-tag-high {{ background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%); color: #059669; border: 1px solid rgba(16, 185, 129, 0.2); }}
+        .match-tag-high i {{ color: #10B981; }}
+        .match-tag-medium {{ background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.08) 100%); color: #B45309; border: 1px solid rgba(245, 158, 11, 0.2); }}
+        .match-tag-medium i {{ color: #F59E0B; }}
+        .match-tag-low {{ background: linear-gradient(135deg, rgba(148, 163, 184, 0.15) 0%, rgba(148, 163, 184, 0.08) 100%); color: #475569; border: 1px solid rgba(148, 163, 184, 0.2); }}
+        .match-tag-low i {{ color: #94A3B8; }}
+        .match-tag:hover {{ transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }}
         .cafe-footer {{ display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(0,0,0,0.06); }}
         .cafe-distance {{ display: inline-flex; align-items: center; gap: 6px; color: var(--primary-dark); font-weight: 600; font-size: 0.9rem; padding: 6px 12px; background: rgba(10, 77, 104, 0.04); border-radius: 8px; }}
         .cafe-distance i {{ font-size: 1.1rem; color: var(--primary); }}
@@ -2275,7 +2497,66 @@ class CafeRecommender(BaseTool):
         .back-button {{ display: inline-flex; align-items: center; justify-content: center; background-color: white; color: var(--primary); border: 2px solid var(--primary); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: var(--transition); margin-top: 30px; }}
         .back-button:hover {{ background-color: var(--primary); color: white; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }}
         .back-button i {{ margin-right: 8px; }}
-        .search-process-card {{ position: relative; overflow: hidden; background-color: #fafafa; border-left: 5px solid #2c3e50; }} /* Search process card can have static border */
+
+        /* ========== AI Reasoning Panel Styles ========== */
+        .search-process-card {{ position: relative; overflow: hidden; background: linear-gradient(135deg, #fafbfc 0%, #f0f4f8 100%); border-left: 5px solid var(--primary); border-radius: 16px; }}
+
+        /* AI Location List */
+        .ai-location-list {{ display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }}
+        .ai-location-item {{ display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: white; border-radius: 10px; border: 1px solid rgba(0,0,0,0.06); }}
+        .ai-loc-num {{ width: 28px; height: 28px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }}
+        .ai-loc-info {{ flex: 1; }}
+        .ai-loc-info strong {{ display: block; color: var(--dark); font-size: 0.95rem; }}
+        .ai-coords {{ font-size: 0.8rem; color: #64748b; font-family: 'SF Mono', 'Consolas', monospace; }}
+
+        /* AI Algorithm Box */
+        .ai-algo-box {{ background: white; border-radius: 12px; padding: 16px; margin: 12px 0; border: 1px solid rgba(10, 77, 104, 0.1); }}
+        .ai-algo-formula {{ display: flex; align-items: center; gap: 12px; padding: 12px; background: linear-gradient(135deg, rgba(10, 77, 104, 0.05) 0%, rgba(6, 214, 160, 0.05) 100%); border-radius: 8px; }}
+        .ai-algo-formula i {{ font-size: 1.8rem; color: var(--secondary); }}
+        .ai-algo-label {{ font-size: 0.8rem; color: #64748b; display: block; }}
+        .ai-algo-value {{ font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); font-family: 'SF Mono', 'Consolas', monospace; }}
+        .ai-algo-note {{ font-size: 0.85rem; color: #475569; margin-top: 10px; padding-left: 12px; border-left: 3px solid var(--secondary); }}
+
+        /* AI Requirement Tags */
+        .ai-req-detected {{ display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }}
+        .ai-req-tag {{ display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }}
+
+        /* AI Matching Layers */
+        .ai-matching-layers {{ display: flex; flex-direction: column; gap: 8px; margin-top: 12px; padding: 12px; background: white; border-radius: 10px; }}
+        .ai-layer {{ display: flex; align-items: center; gap: 10px; padding: 8px 0; }}
+        .ai-layer-badge {{ padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; color: white; }}
+        .ai-layer-badge.high {{ background: linear-gradient(135deg, #10b981 0%, #059669 100%); }}
+        .ai-layer-badge.medium {{ background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }}
+        .ai-layer-badge.low {{ background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); }}
+        .ai-layer-conf {{ font-size: 0.75rem; color: #94a3b8; margin-left: 8px; }}
+
+        /* AI Score Dimensions */
+        .ai-score-dimensions {{ display: flex; flex-direction: column; gap: 12px; margin-top: 12px; padding: 16px; background: white; border-radius: 12px; }}
+        .ai-dim {{ display: flex; flex-direction: column; gap: 4px; }}
+        .ai-dim-header {{ display: flex; justify-content: space-between; align-items: center; }}
+        .ai-dim-name {{ font-weight: 600; color: var(--dark); font-size: 0.9rem; }}
+        .ai-dim-max {{ font-size: 0.8rem; color: #94a3b8; }}
+        .ai-dim-bar {{ height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }}
+        .ai-dim-fill {{ height: 100%; background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%); border-radius: 4px; transition: width 1s ease; }}
+        .ai-dim-desc {{ font-size: 0.75rem; color: #64748b; }}
+
+        /* AI Top Results */
+        .ai-top-results {{ display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }}
+        .ai-place-result {{ display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: white; border-radius: 12px; border: 1px solid rgba(0,0,0,0.06); transition: all 0.3s ease; }}
+        .ai-place-result:hover {{ transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }}
+        .ai-place-rank {{ font-size: 1.5rem; }}
+        .ai-place-info {{ flex: 1; }}
+        .ai-place-name {{ font-weight: 700; color: var(--dark); font-size: 1rem; margin-bottom: 2px; }}
+        .ai-place-score {{ display: flex; align-items: baseline; }}
+        .ai-total-score {{ font-size: 1.3rem; font-weight: 800; color: var(--primary); }}
+        .ai-score-max {{ font-size: 0.85rem; color: #94a3b8; }}
+        .ai-place-breakdown {{ display: flex; gap: 8px; flex-wrap: wrap; }}
+        .ai-place-breakdown span {{ font-size: 0.75rem; padding: 4px 8px; background: #f1f5f9; border-radius: 6px; color: #475569; cursor: help; }}
+        .ai-place-reqs {{ display: flex; gap: 6px; margin-top: 6px; }}
+        .ai-conf-badge {{ font-size: 0.7rem; padding: 3px 8px; border-radius: 10px; font-weight: 600; }}
+        .ai-conf-badge.high {{ background: rgba(16, 185, 129, 0.15); color: #059669; }}
+        .ai-conf-badge.medium {{ background: rgba(245, 158, 11, 0.15); color: #b45309; }}
+        .ai-conf-badge.low {{ background: rgba(148, 163, 184, 0.15); color: #475569; }}
         .search-process {{ position: relative; padding: 20px 0; }}
         .process-step {{ display: flex; margin-bottom: 30px; opacity: 0.5; transform: translateX(-20px); transition: opacity 0.5s ease, transform 0.5s ease; }}
         .process-step.active {{ opacity: 1; transform: translateX(0); }}
@@ -2514,62 +2795,200 @@ class CafeRecommender(BaseTool):
         locations: List[Dict],
         center_point: Tuple[float, float],
         user_requirements: str,
-        keywords: str 
+        keywords: str,
+        places: List[Dict] = None  # 新增：传入推荐结果用于显示评分详情
     ) -> str:
         primary_keyword = keywords.split("、")[0] if keywords else "场所"
         cfg = self._get_place_config(primary_keyword)
         search_steps = []
 
-        location_analysis = "<ul>"
+        # Step 1: 位置分析 - 显示坐标信息
+        location_analysis = "<div class='ai-location-list'>"
         for idx, loc in enumerate(locations):
-            location_analysis += f"<li>分析位置 {idx+1}: <strong>{loc['name']}</strong></li>"
-        location_analysis += "</ul>"
+            lng, lat = loc.get('lng', 0), loc.get('lat', 0)
+            location_analysis += f"""
+            <div class='ai-location-item'>
+                <span class='ai-loc-num'>{idx+1}</span>
+                <div class='ai-loc-info'>
+                    <strong>{loc['name']}</strong>
+                    <span class='ai-coords'>({lat:.4f}°N, {lng:.4f}°E)</span>
+                </div>
+            </div>"""
+        location_analysis += "</div>"
         search_steps.append({
-            "icon": "bx-map-pin", "title": "分析用户位置信息",
-            "content": f"<p>我检测到{len(locations)}个不同的位置。正在分析它们的地理分布...</p>{location_analysis}"
+            "icon": "bx-map-pin", "title": "Step 1: 位置解析与地理编码",
+            "content": f"<p>成功解析 <span class='highlight-text'>{len(locations)}</span> 个地点坐标，准备计算最优会面点...</p>{location_analysis}"
         })
 
+        # Step 2: 智能中点计算 - 显示球面几何算法
+        center_lat, center_lng = center_point[1], center_point[0]
+        algo_type = "球面几何中点算法" if len(locations) == 2 else "多点质心算法"
         search_steps.append({
-            "icon": "bx-map", "title": f"正在操作高德地图寻找最佳{cfg['noun_singular']}的位置...", 
+            "icon": "bx-math", "title": "Step 2: 智能中点计算",
             "content": f"""
-            <p>正在操作高德地图寻找最佳{cfg['noun_singular']}的位置...</p> 
+            <p>使用 <span class='highlight-text'>{algo_type}</span> 计算最优会面点：</p>
+            <div class="ai-algo-box">
+                <div class="ai-algo-formula">
+                    <i class='bx bx-target-lock'></i>
+                    <div>
+                        <span class="ai-algo-label">最佳会面点坐标</span>
+                        <span class="ai-algo-value">{center_lat:.6f}°N, {center_lng:.6f}°E</span>
+                    </div>
+                </div>
+                <div class="ai-algo-note">
+                    {f'采用球面几何学计算两点间的真实大圆中点，比简单平均更精确' if len(locations) == 2 else f'计算{len(locations)}个位置的地理质心，确保对所有人公平'}
+                </div>
+            </div>
             <div class="map-operation-animation">
                 <div class="map-bg"></div> <div class="map-cursor"></div> <div class="map-search-indicator"></div>
             </div>"""
         })
 
+        # Step 3: 需求解析 - 显示三层匹配机制
         requirement_analysis = ""
         if user_requirements:
             requirement_keywords_map = {
                 "停车": ["停车", "车位", "停车场"], "安静": ["安静", "环境好", "氛围"],
-                "商务": ["商务", "会议", "办公"], "交通": ["交通", "地铁", "公交"]
+                "商务": ["商务", "会议", "办公"], "交通": ["交通", "地铁", "公交"],
+                "WiFi": ["wifi", "无线", "网络"], "包间": ["包间", "私密", "独立"]
             }
-            detected_requirements = [key for key, kw_list in requirement_keywords_map.items() if any(kw in user_requirements for kw in kw_list)]
+            detected_requirements = [key for key, kw_list in requirement_keywords_map.items() if any(kw.lower() in user_requirements.lower() for kw in kw_list)]
             if detected_requirements:
-                requirement_analysis = "<p>我从您的需求中检测到以下关键偏好:</p><ul>" + "".join([f"<li><strong>{req}</strong>: 将优先考虑{req}便利的{cfg['noun_plural']}</li>" for req in detected_requirements]) + "</ul>" 
+                req_tags = "".join([f"<span class='ai-req-tag'>{req}</span>" for req in detected_requirements])
+                requirement_analysis = f"""
+                <p>从您的需求 "<em>{user_requirements}</em>" 中识别到：</p>
+                <div class="ai-req-detected">{req_tags}</div>
+                <div class="ai-matching-layers">
+                    <div class="ai-layer">
+                        <span class="ai-layer-badge high">Layer 1</span>
+                        <span>POI标签匹配 <span class="ai-layer-conf">高置信度</span></span>
+                    </div>
+                    <div class="ai-layer">
+                        <span class="ai-layer-badge medium">Layer 2</span>
+                        <span>品牌知识库匹配 <span class="ai-layer-conf">中置信度</span></span>
+                    </div>
+                    <div class="ai-layer">
+                        <span class="ai-layer-badge low">Layer 3</span>
+                        <span>场所类型推断 <span class="ai-layer-conf">低置信度</span></span>
+                    </div>
+                </div>"""
             else:
-                requirement_analysis = f"<p>您没有提供特定的需求偏好，将基于综合评分和距离推荐最佳{cfg['noun_plural']}。</p>" 
+                requirement_analysis = f"<p>未检测到特定需求关键词，将基于综合评分推荐最佳{cfg['noun_plural']}。</p>"
         else:
-            requirement_analysis = f"<p>未提供特殊需求，将根据评分和位置便利性进行推荐{cfg['noun_plural']}。</p>" 
-        search_steps.append({"icon": "bx-list-check", "title": "分析用户特殊需求", "content": requirement_analysis})
+            requirement_analysis = f"<p>未提供特殊需求，将使用多维度评分系统推荐{cfg['noun_plural']}。</p>"
+        search_steps.append({"icon": "bx-brain", "title": "Step 3: 需求语义解析", "content": requirement_analysis})
 
+        # Step 4: 场所检索
         search_places_explanation = f"""
-        <p>我正在以最佳会面点为中心，搜索周边2公里范围内的{cfg['noun_plural']}...</p> 
+        <p>以最佳会面点为圆心，在 <span class='highlight-text'>2公里</span> 范围内检索 "{primary_keyword}" 相关场所...</p>
         <div class="search-animation">
             <div class="radar-circle"></div> <div class="radar-circle"></div> <div class="radar-circle"></div>
             <div class="center-point"></div>
         </div>"""
-        search_steps.append({"icon": "bx-search-alt", "title": f"搜索周边{cfg['noun_plural']}", "content": search_places_explanation}) 
+        search_steps.append({"icon": "bx-search-alt", "title": f"Step 4: POI检索", "content": search_places_explanation})
 
+        # Step 5: 智能评分 - 显示评分维度
         ranking_explanation = f"""
-        <p>我已找到多家{cfg['noun_plural']}，正在根据综合评分对它们进行排名...</p> 
-        <div class="ranking-result">
-            <div class="result-bar" style="width: 95%;">{cfg['noun_singular']}评分</div> 
-            <div class="result-bar" style="width: 85%;">距离便利性</div>
-            <div class="result-bar" style="width: 75%;">环境舒适度</div>
-            <div class="result-bar" style="width: 65%;">交通便利性</div>
+        <p>使用 <span class='highlight-text'>V2 多维度评分系统</span> 对候选场所进行智能排序：</p>
+        <div class="ai-score-dimensions">
+            <div class="ai-dim">
+                <div class="ai-dim-header">
+                    <span class="ai-dim-name">基础分</span>
+                    <span class="ai-dim-max">30分</span>
+                </div>
+                <div class="ai-dim-bar"><div class="ai-dim-fill" style="width: 100%;"></div></div>
+                <span class="ai-dim-desc">商家评分 × 6</span>
+            </div>
+            <div class="ai-dim">
+                <div class="ai-dim-header">
+                    <span class="ai-dim-name">距离分</span>
+                    <span class="ai-dim-max">25分</span>
+                </div>
+                <div class="ai-dim-bar"><div class="ai-dim-fill" style="width: 83%;"></div></div>
+                <span class="ai-dim-desc">非线性衰减，500m内满分</span>
+            </div>
+            <div class="ai-dim">
+                <div class="ai-dim-header">
+                    <span class="ai-dim-name">热度分</span>
+                    <span class="ai-dim-max">20分</span>
+                </div>
+                <div class="ai-dim-bar"><div class="ai-dim-fill" style="width: 67%;"></div></div>
+                <span class="ai-dim-desc">评论数(log) + 图片数</span>
+            </div>
+            <div class="ai-dim">
+                <div class="ai-dim-header">
+                    <span class="ai-dim-name">场景分</span>
+                    <span class="ai-dim-max">15分</span>
+                </div>
+                <div class="ai-dim-bar"><div class="ai-dim-fill" style="width: 50%;"></div></div>
+                <span class="ai-dim-desc">关键词匹配度</span>
+            </div>
+            <div class="ai-dim">
+                <div class="ai-dim-header">
+                    <span class="ai-dim-name">需求分</span>
+                    <span class="ai-dim-max">10分</span>
+                </div>
+                <div class="ai-dim-bar"><div class="ai-dim-fill" style="width: 33%;"></div></div>
+                <span class="ai-dim-desc">三层匹配算法</span>
+            </div>
         </div>"""
-        search_steps.append({"icon": "bx-sort", "title": f"对{cfg['noun_plural']}进行排名", "content": ranking_explanation}) 
+        search_steps.append({"icon": "bx-calculator", "title": "Step 5: 多维度智能评分", "content": ranking_explanation})
+
+        # Step 6: 评分结果 - 显示Top 3场所的评分详情
+        if places and len(places) > 0:
+            top_places_html = "<div class='ai-top-results'>"
+            for idx, place in enumerate(places[:3]):
+                name = place.get('name', '未知')
+                total_score = place.get('_score', 0)
+                breakdown = place.get('_score_breakdown', {})
+                matched_reqs = place.get('_matched_requirements', [])
+                confidence_map = place.get('_requirement_confidence', {})
+
+                # 评分详情
+                base = breakdown.get('base_score', 0)
+                dist = breakdown.get('distance_score', 0)
+                pop = breakdown.get('popularity_score', 0)
+                scene = breakdown.get('scenario_score', 0)
+                req = breakdown.get('requirement_score', 0)
+
+                # 需求匹配标签
+                req_badges = ""
+                if matched_reqs:
+                    for r in matched_reqs[:3]:
+                        conf = confidence_map.get(r, 'low')
+                        req_badges += f"<span class='ai-conf-badge {conf}'>{r}</span>"
+
+                medal = ["🥇", "🥈", "🥉"][idx]
+                top_places_html += f"""
+                <div class="ai-place-result">
+                    <div class="ai-place-rank">{medal}</div>
+                    <div class="ai-place-info">
+                        <div class="ai-place-name">{name}</div>
+                        <div class="ai-place-score">
+                            <span class="ai-total-score">{total_score:.0f}</span><span class="ai-score-max">/100</span>
+                        </div>
+                    </div>
+                    <div class="ai-place-breakdown">
+                        <span title="基础分">⭐{base:.0f}</span>
+                        <span title="距离分">📍{dist:.0f}</span>
+                        <span title="热度分">🔥{pop:.0f}</span>
+                        <span title="场景分">🎯{scene:.0f}</span>
+                        <span title="需求分">✓{req:.0f}</span>
+                    </div>
+                    {f'<div class="ai-place-reqs">{req_badges}</div>' if req_badges else ''}
+                </div>"""
+            top_places_html += "</div>"
+            search_steps.append({
+                "icon": "bx-trophy",
+                "title": "Step 6: 推荐结果",
+                "content": f"<p>经过智能评分，为您推荐以下最佳会面地点：</p>{top_places_html}"
+            })
+        else:
+            search_steps.append({
+                "icon": "bx-trophy",
+                "title": "Step 6: 推荐结果",
+                "content": f"<p>正在生成{cfg['noun_plural']}推荐结果...</p>"
+            }) 
 
         search_process_html = ""
         for idx, step in enumerate(search_steps):
