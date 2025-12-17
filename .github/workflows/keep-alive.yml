@@ -1,0 +1,21 @@
+name: Keep Alive
+
+# Ping the health endpoint every 10 minutes to prevent Render cold starts
+on:
+  schedule:
+    # Run every 10 minutes
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Ping Health Endpoint
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://meetspot-irq2.onrender.com/health)
+          echo "Health check response: $response"
+          if [ "$response" != "200" ]; then
+            echo "Warning: Health check returned non-200 status"
+          fi
