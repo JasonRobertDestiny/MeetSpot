@@ -167,12 +167,25 @@
     justify-content: center;
     font-size: 24px;
     box-shadow: 0 4px 16px rgba(6, 214, 160, 0.4);
+    position: relative;
+}
+
+/* Use pseudo-element for glow animation (GPU-accelerated via opacity) */
+.ai-avatar::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(6, 214, 160, 0.5) 0%, transparent 70%);
+    opacity: 0.5;
     animation: avatarGlow 3s ease-in-out infinite;
+    will-change: opacity;
+    z-index: -1;
 }
 
 @keyframes avatarGlow {
-    0%, 100% { box-shadow: 0 4px 16px rgba(6, 214, 160, 0.4); }
-    50% { box-shadow: 0 4px 24px rgba(6, 214, 160, 0.7); }
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
 }
 
 .ai-chat-title {

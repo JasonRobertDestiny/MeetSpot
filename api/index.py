@@ -423,6 +423,37 @@ async def robots():
         )
     raise HTTPException(status_code=404, detail="robots.txt not found")
 
+@app.api_route("/favicon.ico", methods=["GET", "HEAD"])
+async def favicon_ico():
+    """返回网站图标（支持GET和HEAD请求）"""
+    # 优先返回SVG favicon（现代浏览器支持）
+    svg_file = "public/favicon.svg"
+    if os.path.exists(svg_file):
+        return FileResponse(
+            svg_file,
+            media_type="image/svg+xml",
+            headers={
+                "Cache-Control": "public, max-age=31536000, immutable",
+                "Content-Type": "image/svg+xml"
+            }
+        )
+    raise HTTPException(status_code=404, detail="Favicon not found")
+
+@app.api_route("/favicon.svg", methods=["GET", "HEAD"])
+async def favicon_svg():
+    """返回SVG网站图标（支持GET和HEAD请求）"""
+    svg_file = "public/favicon.svg"
+    if os.path.exists(svg_file):
+        return FileResponse(
+            svg_file,
+            media_type="image/svg+xml",
+            headers={
+                "Cache-Control": "public, max-age=31536000, immutable",
+                "Content-Type": "image/svg+xml"
+            }
+        )
+    raise HTTPException(status_code=404, detail="Favicon not found")
+
 @app.get("/config")
 async def get_config():
     """获取当前配置状态（不暴露敏感信息）"""
