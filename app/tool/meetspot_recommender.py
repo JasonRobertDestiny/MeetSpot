@@ -2697,15 +2697,30 @@ class CafeRecommender(BaseTool):
             var mapMarkers = []; 
             markersData.forEach(function(item) {{
                 var markerContent, position = new AMap.LngLat(item.position[0], item.position[1]);
-                var color = '#e74c3c'; 
-                if (item.icon === 'center') color = '#2ecc71'; 
-                else if (item.icon === 'location') color = '#3498db'; 
-                
-                markerContent = `<div style="background-color: ${{color}}; width: 24px; height: 24px; border-radius: 12px; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.3);"></div>`;
-                
+                var color = '#e74c3c';
+                var labelText = '';
+                if (item.icon === 'center') {{
+                    color = '#2ecc71';
+                    labelText = '最佳会面点';
+                }} else if (item.icon === 'location') {{
+                    color = '#3498db';
+                    // Extract location name from "地点N: XXX" format
+                    labelText = item.name.includes(': ') ? item.name.split(': ')[1] : item.name;
+                }}
+
+                // For center and location markers, show label with name
+                if (item.icon === 'center' || item.icon === 'location') {{
+                    markerContent = `<div style="display:flex;flex-direction:column;align-items:center;">
+                        <div style="background-color: ${{color}}; width: 28px; height: 28px; border-radius: 14px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>
+                        <div style="background: white; padding: 4px 8px; border-radius: 4px; margin-top: 4px; font-size: 12px; font-weight: bold; color: #333; box-shadow: 0 2px 6px rgba(0,0,0,0.15); white-space: nowrap; max-width: 120px; overflow: hidden; text-overflow: ellipsis;">${{labelText}}</div>
+                    </div>`;
+                }} else {{
+                    markerContent = `<div style="background-color: ${{color}}; width: 24px; height: 24px; border-radius: 12px; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.3);"></div>`;
+                }}
+
                 var marker = new AMap.Marker({{
                     position: position, content: markerContent,
-                    title: item.name, anchor: 'center', offset: new AMap.Pixel(0, 0)
+                    title: item.name, anchor: 'center', offset: new AMap.Pixel(0, item.icon === 'place' ? 0 : -20)
                 }});
                 var infoWindow = new AMap.InfoWindow({{
                     content: '<div style="padding:10px;font-size:14px;">' + item.name + '</div>',
