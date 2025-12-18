@@ -146,3 +146,7 @@ meetspot.db
 # Large presentation files
 *.pptx
 *.ppt
+
+# Internal docs (PPT outlines, pitch scripts)
+docs/PPT*.md
+docs/路演*.md
