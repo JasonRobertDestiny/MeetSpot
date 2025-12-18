@@ -3,10 +3,8 @@
 /* ========================================
    AI Chat Widget - MeetSpot Navigator
    Aesthetic: Deep Ocean Navigator + Luminescent AI
+   Uses fonts from base.html: Outfit, DM Sans, Space Mono
    ======================================== */
-
-/* Custom Fonts for Chat */
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* CSS Variables for Chat Theme */
 :root {
@@ -89,7 +87,7 @@
     font-size: 12px;
     font-weight: 700;
     color: white;
-    font-family: 'Sora', sans-serif;
+    font-family: 'Outfit', sans-serif;
     animation: badgeBounce 2s ease-in-out infinite;
     z-index: 2;
 }
@@ -194,7 +192,7 @@
 
 .ai-chat-title h4 {
     margin: 0;
-    font-family: 'Sora', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-weight: 700;
     font-size: 1.1rem;
     letter-spacing: -0.02em;
@@ -287,7 +285,7 @@
     border-radius: 20px;
     font-size: 0.95rem;
     line-height: 1.5;
-    font-family: 'Sora', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 .chat-message.ai .message-content {
@@ -342,7 +340,7 @@
     font-size: 0.8rem;
     color: var(--chat-primary);
     font-weight: 600;
-    font-family: 'Sora', sans-serif;
+    font-family: 'Outfit', sans-serif;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
@@ -361,7 +359,7 @@
     border: 1px solid rgba(10, 77, 104, 0.15);
     border-radius: 999px;
     font-size: 0.85rem;
-    font-family: 'Sora', sans-serif;
+    font-family: 'Outfit', sans-serif;
     color: var(--chat-primary);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -391,7 +389,7 @@
     border: 2px solid rgba(10, 77, 104, 0.15);
     border-radius: 16px;
     font-size: 0.95rem;
-    font-family: 'Sora', sans-serif;
+    font-family: 'Outfit', sans-serif;
     resize: none;
     max-height: 100px;
     transition: border-color 0.3s ease;
@@ -445,7 +443,7 @@
 }
 
 .welcome-message h5 {
-    font-family: 'Sora', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-weight: 700;
     color: var(--chat-dark);
     margin: 0 0 8px;
@@ -685,7 +683,7 @@ function parseMarkdown(text) {
     html = html.replace(/_([^_]+)_/g, '<em>$1</em>');
 
     // Code: `code`
-    html = html.replace(/`([^`]+)`/g, '<code style="background:#f0f4f8;padding:2px 6px;border-radius:4px;font-family:JetBrains Mono,monospace;font-size:0.9em;">$1</code>');
+    html = html.replace(/`([^`]+)`/g, '<code style="background:#f0f4f8;padding:2px 6px;border-radius:4px;font-family:Space Mono,monospace;font-size:0.9em;">$1</code>');
 
     // Headers: ### text
     html = html.replace(/^### (.+)$/gm, '<strong style="font-size:1.1em;display:block;margin:8px 0 4px;">$1</strong>');

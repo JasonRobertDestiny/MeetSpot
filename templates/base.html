@@ -35,9 +35,13 @@
     <link rel="dns-prefetch" href="https://restapi.amap.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts - deferred loading for performance -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
     <link rel="preconnect" href="https://unpkg.com">
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- Boxicons - deferred loading for performance -->
+    <link rel="preload" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"></noscript>
 
     <style>
         /* Navigation Theme - Design System */
@@ -92,7 +96,7 @@
             min-height: 100vh;
         }
 
-        /* Topographic Background Pattern */
+        /* Topographic Background Pattern - static for performance */
         body::before {
             content: '';
             position: fixed;
@@ -107,14 +111,8 @@
                 linear-gradient(135deg, transparent 48%, rgba(6, 214, 160, 0.02) 50%, transparent 52%),
                 linear-gradient(45deg, transparent 48%, rgba(255, 107, 53, 0.02) 50%, transparent 52%);
             background-size: 200px 200px, 300px 300px, 400px 400px, 100px 100px, 100px 100px;
-            animation: topographicShift 60s linear infinite;
             pointer-events: none;
             z-index: 0;
-        }
-
-        @keyframes topographicShift {
-            0% { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
-            100% { background-position: 200px 200px, -300px -300px, 400px -400px, -100px 100px, 100px -100px; }
         }
 
         a {
@@ -169,13 +167,7 @@
 
         .logo-icon {
             font-size: 1.8rem;
-            filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.5));
-            animation: pulseGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.5)); }
-            50% { filter: drop-shadow(0 0 16px rgba(255, 107, 53, 0.8)); }
+            filter: drop-shadow(0 0 10px rgba(255, 107, 53, 0.6));
         }
 
         .logo-text {
