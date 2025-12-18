@@ -48,7 +48,12 @@ MeetSpot is an AI Agent for multi-person meeting point recommendations. Users in
 
 ### Map Display
 <div align="center">
-<img src="docs/show4地图展示.jpg" alt="Map Display" width="80%"/>
+<img src="docs/show6地图展示.jpg" alt="Map Display" width="80%"/>
+</div>
+
+### Intelligent Scoring
+<div align="center">
+<img src="docs/多维度智能评分show4.jpg" alt="Multi-dimensional Intelligent Scoring" width="80%"/>
 </div>
 
 ### Recommended Venues

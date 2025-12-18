@@ -48,7 +48,12 @@ MeetSpot 是一款多人会面地点推荐的 Agent。用户输入多个出发�
 
 ### 地图展示
 <div align="center">
-<img src="docs/show4地图展示.jpg" alt="地图展示" width="80%"/>
+<img src="docs/show6地图展示.jpg" alt="地图展示" width="80%"/>
+</div>
+
+### 多维度智能评分
+<div align="center">
+<img src="docs/多维度智能评分show4.jpg" alt="多维度智能评分" width="80%"/>
 </div>
 
 ### 推荐地点
