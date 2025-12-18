@@ -2196,12 +2196,17 @@ class CafeRecommender(BaseTool):
             distance = self._calculate_distance(center_point, (loc['lng'], loc['lat']))/1000
             location_distance_html += f"<li><i class='bx bx-map'></i><strong>{loc['name']}</strong>: 距离中心点约 <span class='distance'>{distance:.1f} 公里</span></li>"
 
-        # LLM 动态生成交通与停车建议
+        # LLM 动态生成交通与停车建议 (带超时保护)
         if participant_locations is None:
             participant_locations = [loc.get("name", loc.get("formatted_address", "")) for loc in locations]
-        transport_tips_html = await self._llm_generate_transport_tips(
-            places, center_point, participant_locations, keywords
-        )
+        try:
+            transport_tips_html = await asyncio.wait_for(
+                self._llm_generate_transport_tips(places, center_point, participant_locations, keywords),
+                timeout=15.0  # 15秒超时，避免Render 30秒请求超时
+            )
+        except asyncio.TimeoutError:
+            logger.warning("LLM 交通建议生成超时，使用默认建议")
+            transport_tips_html = self._generate_default_transport_tips(keywords)
 
         place_cards_html = "" 
         for place in places:
