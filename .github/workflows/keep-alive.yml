@@ -1,10 +1,10 @@
 name: Keep Alive
 
-# Ping the health endpoint every 10 minutes to prevent Render cold starts
+# Ping endpoints every 5 minutes to prevent Render cold starts (critical for GSC)
 on:
   schedule:
-    # Run every 10 minutes
-    - cron: '*/10 * * * *'
+    # Run every 5 minutes for more reliable uptime
+    - cron: '*/5 * * * *'
   workflow_dispatch: # Allow manual trigger
 
 jobs:
@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Ping Health Endpoint
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://meetspot-irq2.onrender.com/health)
+          response=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://meetspot-irq2.onrender.com/health)
           echo "Health check response: $response"
           if [ "$response" != "200" ]; then
             echo "Warning: Health check returned non-200 status"
@@ -22,10 +22,18 @@ jobs:
 
       - name: Ping Sitemap (SEO critical)
         run: |
-          sitemap_response=$(curl -s -o /dev/null -w "%{http_code}" https://meetspot-irq2.onrender.com/sitemap.xml)
+          sitemap_response=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://meetspot-irq2.onrender.com/sitemap.xml)
           echo "Sitemap response: $sitemap_response"
+
+      - name: Ping Sitemap as Googlebot (simulate crawler)
+        run: |
+          # Simulate Googlebot to ensure server responds to Google's crawler
+          googlebot_response=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 \
+            -H "User-Agent: Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)" \
+            https://meetspot-irq2.onrender.com/sitemap.xml)
+          echo "Sitemap (Googlebot UA) response: $googlebot_response"
 
       - name: Ping Robots.txt
         run: |
-          robots_response=$(curl -s -o /dev/null -w "%{http_code}" https://meetspot-irq2.onrender.com/robots.txt)
+          robots_response=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://meetspot-irq2.onrender.com/robots.txt)
           echo "Robots.txt response: $robots_response"
