@@ -298,9 +298,10 @@ async def add_cache_headers(request: Request, call_next):
     # HTML 页面短期缓存 (10 minutes, revalidate)
     elif path.endswith('.html') or path == '/' or path in ['/about', '/faq', '/how-it-works']:
         response.headers["Cache-Control"] = "public, max-age=600, stale-while-revalidate=86400"
-    # sitemap/robots 缓存 (1 hour)
+    # sitemap/robots - long cache with stale-while-revalidate for Render cold starts
+    # This ensures CDN can serve cached content when origin is cold (fixes GSC "Couldn't fetch")
     elif path in ['/sitemap.xml', '/robots.txt']:
-        response.headers["Cache-Control"] = "public, max-age=3600"
+        response.headers["Cache-Control"] = "public, max-age=86400, stale-while-revalidate=604800"
 
     return response
 
