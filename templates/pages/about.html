@@ -16,19 +16,21 @@
     .about-hero::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        top: -100px;
+        left: -100px;
+        right: -100px;
+        bottom: -100px;
         background-image:
             repeating-radial-gradient(circle at 20% 30%, transparent 0, transparent 30px, rgba(6, 214, 160, 0.08) 30px, rgba(6, 214, 160, 0.08) 32px);
         animation: heroPattern 30s linear infinite;
         pointer-events: none;
+        will-change: transform;
     }
 
+    /* GPU-accelerated animation using transform instead of background-position */
     @keyframes heroPattern {
-        0% { background-position: 0 0; }
-        100% { background-position: 100px 100px; }
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(100px, 100px); }
     }
 
     .about-hero h1 {
