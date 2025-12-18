@@ -1226,7 +1226,7 @@
 
             <div class="loading" id="loading">
                 <i class='bx bx-loader-alt'></i>
-                <p>正在为您寻找最佳会面点...</p>
+                <p id="loadingText">Agent 正在为您寻找最佳会面点...</p>
             </div>
         </div>
     </div>
@@ -1466,8 +1466,9 @@
             const userRequirements = document.getElementById('userRequirements').value.trim();
 
             submitBtn.disabled = true;
+            // Update loading text with specific keywords
+            document.getElementById('loadingText').textContent = `Agent 正在为您推荐${keywords}，请稍候...`;
             loading.style.display = 'block';
-            const loadingToastId = showInfo('正在处理', `正在为您推荐${keywords}，请稍候...`, 0);
 
             try {
                 // 获取筛选条件
@@ -1495,7 +1496,6 @@
                 }
 
                 const result = await response.json();
-                toastManager.dismiss(loadingToastId);
 
                 if (result.success && result.html_url) {
                     showSuccess('推荐完成', `${keywords}推荐已生成，正在跳转...`);
@@ -1508,7 +1508,6 @@
                     throw new Error(result.error || '处理异常');
                 }
             } catch (error) {
-                toastManager.dismiss(loadingToastId);
                 showError('请求失败', error.message || '请重试');
             } finally {
                 submitBtn.disabled = false;
