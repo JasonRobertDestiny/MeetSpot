@@ -142,3 +142,7 @@ openmanus.egg-info/
 # 测试目录
 tests/
 meetspot.db
+
+# Large presentation files
+*.pptx
+*.ppt
