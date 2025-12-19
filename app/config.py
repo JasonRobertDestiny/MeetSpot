@@ -190,14 +190,17 @@ class Config:
         import os
         openai_api_key = os.getenv("OPENAI_API_KEY", "") or os.getenv("LLM_API_KEY", "")
         amap_api_key = os.getenv("AMAP_API_KEY", "")
-        
+        # 支持 Render 部署的环境变量配置
+        llm_base_url = os.getenv("LLM_API_BASE", "") or base_llm.get("base_url", "")
+        llm_model = os.getenv("LLM_MODEL", "") or base_llm.get("model", "gpt-3.5-turbo")
+
         llm_overrides = {
             k: v for k, v in raw_config.get("llm", {}).items() if isinstance(v, dict)
         }
 
         default_settings = {
-            "model": base_llm.get("model", "gpt-3.5-turbo"),
-            "base_url": base_llm.get("base_url", ""),
+            "model": llm_model,  # 优先使用环境变量
+            "base_url": llm_base_url,  # 优先使用环境变量
             "api_key": openai_api_key,  # 从环境变量获取
             "max_tokens": base_llm.get("max_tokens", 4096),
             "max_input_tokens": base_llm.get("max_input_tokens"),

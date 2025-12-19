@@ -25,7 +25,15 @@ def _get_llm():
     if _llm_instance is None:
         try:
             from app.llm import LLM
+            from app.config import config
+            # 检查 API Key 是否已配置
+            llm_config = config.llm.get("default", {})
+            api_key = getattr(llm_config, "api_key", "") if hasattr(llm_config, "api_key") else llm_config.get("api_key", "")
+            if not api_key:
+                logger.info("LLM API Key 未配置，跳过 LLM 初始化")
+                return None
             _llm_instance = LLM()
+            logger.info(f"LLM 初始化成功，模型: {_llm_instance.model}, base_url: {_llm_instance.base_url[:30]}..." if _llm_instance.base_url else f"LLM 初始化成功，模型: {_llm_instance.model}")
         except Exception as e:
             logger.warning(f"LLM 初始化失败，智能评分不可用: {e}")
     return _llm_instance
