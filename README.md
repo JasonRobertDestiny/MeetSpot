@@ -405,10 +405,12 @@ docker run -p 8000:8000 -e AMAP_API_KEY=your_key meetspot
 
 | Scenario | Response Time |
 |----------|---------------|
-| Single venue type (rule mode) | 0.3-0.4s |
-| Dual venue types (rule mode) | 0.5-0.6s |
-| Triple venue types (rule mode) | 0.7-0.8s |
-| Agent mode (AI-driven) | 1.0-2.0s |
+| Single venue type (rule mode) | 5-8s |
+| Dual venue types (rule mode) | 8-12s |
+| Triple venue types (rule mode) | 10-15s |
+| Agent mode (AI-driven) | 15-30s |
+
+> Note: Response times include geocoding, POI search, LLM intelligent scoring, and transport tips generation. Times vary based on network conditions and API response latency.
 
 ### Optimizations
 
