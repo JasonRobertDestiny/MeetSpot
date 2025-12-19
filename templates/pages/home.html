@@ -21,10 +21,12 @@
 
     @keyframes pulseGlow {
         0%, 100% {
-            box-shadow: 0 0 20px rgba(6, 214, 160, 0.3);
+            opacity: 0.85;
+            transform: scale(1);
         }
         50% {
-            box-shadow: 0 0 40px rgba(6, 214, 160, 0.6);
+            opacity: 1;
+            transform: scale(1.02);
         }
     }
 
@@ -39,19 +41,9 @@
         }
     }
 
-    @keyframes slideProgress {
-        from { width: 0; }
-        to { width: 100%; }
-    }
-
     @keyframes float {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-10px); }
-    }
-
-    @keyframes typewriter {
-        from { width: 0; }
-        to { width: 100%; }
     }
 
     /* Staggered Reveal Classes */
