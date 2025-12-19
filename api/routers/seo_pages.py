@@ -188,29 +188,33 @@ async def how_it_works(request: Request):
     how_to_schema = seo_generator.generate_schema_org(
         "how_to",
         {
-            "name": "使用MeetSpot规划公平会面",
-            "description": "4步流程, 从收集地址到导出SEO-ready页面, 15分钟内完成。",
-            "total_time": "PT15M",
+            "name": "使用MeetSpot AI Agent规划公平会面",
+            "description": "5步AI推理流程, 从输入地址到生成推荐, 5-30秒内完成。",
+            "total_time": "PT1M",
             "steps": [
                 {
-                    "name": "收集参与者地址",
-                    "text": "邀请2-10位成员输入常用地址或地标, 系统自动校验经纬度与交通方式。",
+                    "name": "解析地址",
+                    "text": "AI智能识别地址/地标/简称，'北大'自动转换为'北京市海淀区北京大学'，校验经纬度。",
                 },
                 {
-                    "name": "设置场景与权重",
-                    "text": "选择咖啡馆/餐厅/共享空间等场景, 调整预算与通勤权重保持公平。",
+                    "name": "计算中心点",
+                    "text": "使用球面几何（Haversine公式）计算地球曲面真实中点，数学上对每个人公平。",
                 },
                 {
-                    "name": "审核推荐结果",
-                    "text": "查看多候选场所、评分、热力图与结构化数据, 与团队实时协作确认。",
+                    "name": "搜索周边场所",
+                    "text": "在中心点周边搜索匹配场景的POI，支持咖啡馆、餐厅、图书馆等12种场景主题。",
                 },
                 {
-                    "name": "导出与监控",
-                    "text": "导出SEO-ready推荐页面, 上传至Search Console并追踪表现。",
+                    "name": "GPT-4o智能评分",
+                    "text": "AI对候选场所进行多维度评分：距离、评分、停车、环境、交通便利度。",
+                },
+                {
+                    "name": "生成推荐",
+                    "text": "综合排序输出最优推荐，包含地图、评分、导航链接，可直接分享给朋友。",
                 },
             ],
-            "tools": ["MeetSpot Dashboard", "AMap API"],
-            "supplies": ["成员清单", "交通偏好", "预算上限"],
+            "tools": ["MeetSpot AI Agent", "AMap API", "GPT-4o"],
+            "supplies": ["参与者地址", "场景选择", "特殊需求（可选）"],
         },
     )
     schema_list = _build_schema_list(
@@ -283,7 +287,15 @@ async def faq_page(request: Request):
         },
         {
             "question": "推荐速度如何？",
-            "answer": "单场景推荐 0.3-0.4 秒，多场景推荐 0.5-0.8 秒，即时获得结果。",
+            "answer": "AI Agent 会经历完整的5步推理流程：解析地址 → 计算中心点 → 搜索周边 → GPT-4o智能评分 → 生成推荐。单场景5-8秒，双场景8-12秒，复杂Agent模式15-30秒。",
+        },
+        {
+            "question": "和高德地图有什么区别？",
+            "answer": "高德搜索'我附近'，MeetSpot搜索'我们中间'。我们先用球面几何算出多人公平中点，再推荐那里的好店。这是高德/百度都没有的功能。",
+        },
+        {
+            "question": "AI Agent是什么意思？",
+            "answer": "MeetSpot不是简单的搜索工具，而是一个AI Agent。它有5步完整的推理链条，使用GPT-4o进行多维度评分（距离、评分、停车、环境），你可以看到AI每一步是怎么'思考'的，完全透明可解释。",
         },
         {
             "question": "如何反馈问题或建议？",

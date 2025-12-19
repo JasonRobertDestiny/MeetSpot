@@ -9,39 +9,30 @@ MeetSpot is an intelligent meeting point recommendation system built with FastAP
 ## Quick Reference
 
 ```bash
-# Activate conda environment (REQUIRED)
-conda activate meetspot-dev
+# Environment setup
+conda activate meetspot-dev              # Or: source venv/bin/activate
 
-# Start server
-python web_server.py                     # Development server with auto-reload
+# Development
+python web_server.py                     # Dev server with auto-reload
 uvicorn api.index:app --reload           # Alternative (preferred while iterating)
 
-# Test recommendation endpoint
+# Test the main endpoint
 curl -X POST "http://127.0.0.1:8000/api/find_meetspot" \
   -H "Content-Type: application/json" \
   -d '{"locations": ["北京大学", "清华大学"], "keywords": "咖啡馆"}'
 
-# Health/config check
-curl http://127.0.0.1:8000/health
-curl http://127.0.0.1:8000/config
+# Testing
+pytest tests/ -v                         # Full test suite
+pytest --cov=app tests/                  # With coverage (target: 80%)
+python tests/test_seo.py http://127.0.0.1:8000  # SEO audit (requires running server)
 
-# Run tests
-pytest tests/ -v                         # Run test suite
-pytest --cov=app tests/                  # With coverage
-python tests/test_seo.py http://127.0.0.1:8000  # SEO audit (server must be running)
-
-# CI validation (what GitHub Actions runs)
-python -c "import app; print('OK')"
+# Quality gates (run before PRs)
+black . && ruff check . && mypy app/
 flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-
-# Code quality (run before PRs)
-black .                                  # Auto-format
-ruff check .                            # Lint
-mypy app/                               # Type check
-python tools/validate_colors.py         # Design token color contrast validation
+python tools/validate_colors.py          # Design token accessibility check
 ```
 
-**Key URLs**: Main UI (`/`), API docs (`/docs`), Health (`/health`)
+**Key URLs**: Main UI (`/`), API docs (`/docs`), Health (`/health`), About (`/about`), FAQ (`/faq`)
 
 ## Environment Setup
 
@@ -62,16 +53,9 @@ python3.11 -m venv venv && source venv/bin/activate && pip install -r requiremen
 
 ## Testing
 
-Project focuses on integration testing. Target ≥80% coverage for `app/` package.
+Project focuses on integration testing. Target 80%+ coverage for `app/` package.
 
-```bash
-pytest tests/ -v                                    # Full suite
-pytest --cov=app tests/                            # With coverage
-python tests/test_seo.py http://127.0.0.1:8000    # SEO audit against live server
-python verify_seo.py                               # SEO content verification
-```
-
-**Test files**: `tests/test_seo.py` (SEO page validation), `verify_seo.py` (content verification)
+**Test files**: `tests/test_seo.py` (SEO page validation against live server), `verify_seo.py` (static content verification)
 
 ## Code Architecture
 
@@ -284,28 +268,37 @@ Database layer is implemented but optional. Core MeetSpot recommendation works w
 
 ## API Endpoints
 
-### Main Endpoints
+### Core Endpoints
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/` | GET | Homepage redirect to main UI |
-| `/api/find_meetspot` | POST | Main recommendation endpoint (production) |
-| `/api/find_meetspot_agent` | POST | Agent mode endpoint (experimental, not production) |
-| `/recommend` | POST | Legacy compatibility endpoint |
+| `/api/find_meetspot` | POST | Main recommendation endpoint |
+| `/api/find_meetspot_agent` | POST | Agent mode (experimental, not production) |
+| `/api/ai_chat` | POST | AI customer service endpoint |
 | `/health` | GET | Health check and config status |
 | `/config` | GET | Configuration status (no secrets) |
-| `/api/status` | GET | API status and version info |
-| `/workspace/js_src/{filename}` | GET | Generated HTML recommendation pages |
-| `/docs` | GET | Auto-generated API documentation |
-| `/seo/{city}/{venue_type}` | GET | SEO landing pages |
-| `/google48ac1a797739b7b0.html` | GET/HEAD | Google Search Console verification |
-| `/BingSiteAuth.xml` | GET/HEAD | Bing webmaster verification |
+| `/docs` | GET | OpenAPI documentation |
 
-**Authentication Endpoints** (in `api/routers/auth.py`):
-- `/api/auth/register` - User registration
-- `/api/auth/login` - User login with JWT token
-- `/api/auth/sms/send` - Send SMS verification code
-- `/api/auth/sms/verify` - Verify SMS code
-- Protected routes use JWT authentication via `Depends(get_current_user)`
+### SEO & Marketing Pages
+| Endpoint | Description |
+|----------|-------------|
+| `/` | Homepage |
+| `/about` | About page |
+| `/faq` | FAQ page |
+| `/how-it-works` | Usage guide |
+| `/meetspot/{city}` | City-specific landing pages |
+| `/seo/{city}/{venue_type}` | SEO landing pages |
+
+### Static Resources
+| Endpoint | Description |
+|----------|-------------|
+| `/workspace/js_src/{filename}` | Generated recommendation HTML pages |
+| `/google48ac1a797739b7b0.html` | Google Search Console verification |
+| `/BingSiteAuth.xml` | Bing webmaster verification |
+
+### Authentication (in `api/routers/auth.py`)
+- `/api/auth/register`, `/api/auth/login` - User registration and JWT login
+- `/api/auth/sms/send`, `/api/auth/sms/verify` - SMS verification
+- Protected routes validate via `Depends(get_current_user)`
 
 ### Request/Response Format
 
@@ -449,23 +442,14 @@ ci: upgrade GitHub Actions to latest versions
 4. List commands/tests run to verify changes
 5. Note any config changes or migration requirements
 
-## Code Style & Quality
+## Code Style
 
-### Python Conventions
-- **Formatting**: 4-space indent, type hints everywhere
-- **Naming**: `snake_case` for functions, `PascalCase` for classes, `SCREAMING_SNAKE_CASE` for constants
-- **Functions**: Keep under ~50 lines, prefer dataclasses for structured payloads
-- **Logging**: Use structured messages via `app/logger.py` (loguru)
+### Python
+- 4-space indent, type hints everywhere, `snake_case` functions, `PascalCase` classes
+- Functions under ~50 lines, prefer dataclasses for structured payloads
+- Logging: structured messages via `app/logger.py` (loguru)
 
-### Quality Gates
-Run before opening a PR:
-```bash
-black .                  # Auto-format code
-ruff check .            # Lint checks
-flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-```
-
-### Frontend Conventions
-- **CSS**: BEM-like class names (`meetspot-header__title`)
-- **Colors**: Declare shared colors via `static/css/design-tokens.css`
-- **Inline styles**: Limited to offline-only HTML in `workspace/js_src/`
+### Frontend
+- CSS: BEM-like class names (`meetspot-header__title`)
+- Colors: `static/css/design-tokens.css` and `app/design_tokens.py`
+- Inline styles: only in generated HTML (`workspace/js_src/`)
