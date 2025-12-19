@@ -150,3 +150,10 @@ meetspot.db
 # Internal docs (PPT outlines, pitch scripts)
 docs/PPT*.md
 docs/路演*.md
+docs/现场展演话术.md
+
+# Temporary images in root directory
+image.png
+image copy.png
+image copy 2.png
+线下聚会数据.png
