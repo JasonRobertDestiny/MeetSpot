@@ -1050,11 +1050,11 @@
             font-size: 1.4rem;
         }
 
-        /* Enhanced Agent Loading Experience */
+        /* ========== Enhanced Agent Thinking Experience ========== */
         .loading {
             display: none;
             text-align: center;
-            padding: 40px 24px;
+            padding: 48px 24px;
             color: var(--coral-500);
         }
 
@@ -1062,64 +1062,237 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 24px;
+            gap: 32px;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
-        .loading-orb {
+        /* Agent Brain Visualization */
+        .agent-brain {
             position: relative;
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
         }
 
-        .loading-orb::before {
+        .agent-brain::before {
             content: '';
             position: absolute;
             inset: 0;
             border-radius: 50%;
-            background: conic-gradient(from 0deg, var(--coral-500), var(--mint-500), var(--coral-400), var(--coral-500));
-            animation: orbSpin 1.5s linear infinite;
+            background: conic-gradient(from 0deg, var(--coral-500), var(--mint-500), var(--navy-700), var(--coral-400), var(--coral-500));
+            animation: brainSpin 2s linear infinite;
+            filter: blur(2px);
         }
 
-        .loading-orb::after {
+        .agent-brain::after {
             content: '';
             position: absolute;
-            inset: 6px;
+            inset: 8px;
             border-radius: 50%;
-            background: white;
+            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,248,243,1) 100%);
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        .loading-orb i {
+        .agent-brain i {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: var(--coral-500);
             z-index: 1;
-            animation: pulse 1.5s ease-in-out infinite;
+            animation: brainPulse 1.5s ease-in-out infinite;
         }
 
-        @keyframes orbSpin {
+        @keyframes brainSpin {
             to { transform: rotate(360deg); }
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+        @keyframes brainPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.15); }
         }
 
-        .loading-text {
+        /* Thinking Steps Container */
+        .thinking-steps {
+            width: 100%;
             display: flex;
             flex-direction: column;
+            gap: 12px;
+        }
+
+        .thinking-step {
+            display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 14px;
+            padding: 14px 18px;
+            background: var(--slate-100);
+            border-radius: 14px;
+            opacity: 0.4;
+            transform: translateX(-10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+
+        .thinking-step.active {
+            opacity: 1;
+            transform: translateX(0);
+            background: linear-gradient(135deg, rgba(255,107,53,0.08) 0%, rgba(255,107,53,0.03) 100%);
+            border-color: var(--coral-300);
+        }
+
+        .thinking-step.completed {
+            opacity: 1;
+            transform: translateX(0);
+            background: linear-gradient(135deg, rgba(6,214,160,0.08) 0%, rgba(6,214,160,0.03) 100%);
+            border-color: var(--mint-400);
+        }
+
+        .step-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            background: var(--slate-200);
+            color: var(--slate-400);
+            transition: all 0.3s ease;
+        }
+
+        .thinking-step.active .step-icon {
+            background: linear-gradient(135deg, var(--coral-500) 0%, var(--coral-400) 100%);
+            color: white;
+            animation: iconPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .thinking-step.completed .step-icon {
+            background: linear-gradient(135deg, var(--mint-500) 0%, var(--mint-400) 100%);
+            color: white;
+        }
+
+        @keyframes iconPop {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .step-content {
+            flex: 1;
+            text-align: left;
+        }
+
+        .step-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--slate-600);
+            margin: 0 0 2px 0;
+            transition: color 0.3s ease;
+        }
+
+        .thinking-step.active .step-title {
+            color: var(--coral-500);
+        }
+
+        .thinking-step.completed .step-title {
+            color: var(--mint-500);
+        }
+
+        .step-desc {
+            font-size: 0.8rem;
+            color: var(--slate-400);
+            margin: 0;
+        }
+
+        /* Thought Bubble Effect */
+        .thought-bubble {
+            position: absolute;
+            background: white;
+            border-radius: 20px;
+            padding: 8px 14px;
+            font-size: 0.75rem;
+            color: var(--slate-600);
+            box-shadow: 0 4px 16px rgba(0,21,36,0.1);
+            opacity: 0;
+            animation: bubbleFloat 3s ease-in-out infinite;
+            white-space: nowrap;
+            border: 1px solid var(--slate-200);
+        }
+
+        .thought-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 20px;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,21,36,0.08);
+        }
+
+        .bubble-1 { top: -30px; right: -20px; animation-delay: 0s; }
+        .bubble-2 { top: 10px; left: -40px; animation-delay: 1s; }
+        .bubble-3 { bottom: -20px; right: -30px; animation-delay: 2s; }
+
+        @keyframes bubbleFloat {
+            0%, 100% { opacity: 0; transform: translateY(0) scale(0.8); }
+            20%, 80% { opacity: 1; transform: translateY(-5px) scale(1); }
+        }
+
+        /* Loading Progress Bar */
+        .loading-progress {
+            width: 100%;
+            height: 4px;
+            background: var(--slate-200);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--coral-500), var(--mint-500));
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.5s ease-out;
+        }
+
+        /* Mode Badge */
+        .mode-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .mode-badge.agent {
+            background: linear-gradient(135deg, var(--coral-500) 0%, var(--coral-400) 100%);
+            color: white;
+        }
+
+        .mode-badge.fast {
+            background: linear-gradient(135deg, var(--mint-500) 0%, var(--mint-400) 100%);
+            color: white;
+        }
+
+        /* Legacy support */
+        .loading-orb {
+            display: none;
         }
 
         .loading-text h4 {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: var(--slate-800);
-            margin: 0;
+            margin: 0 0 4px 0;
         }
 
         .loading-text p {
@@ -1129,21 +1302,8 @@
         }
 
         .loading-dots {
-            display: flex;
-            gap: 6px;
-            margin-top: 8px;
+            display: none;
         }
-
-        .loading-dots span {
-            width: 8px;
-            height: 8px;
-            background: var(--coral-400);
-            border-radius: 50%;
-            animation: dotBounce 1.4s ease-in-out infinite;
-        }
-
-        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes dotBounce {
             0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
@@ -1547,17 +1707,62 @@
 
             <div class="loading" id="loading">
                 <div class="loading-container">
-                    <div class="loading-orb">
-                        <i class='bx bxs-bot'></i>
+                    <!-- Agent Brain with Thought Bubbles -->
+                    <div class="agent-brain">
+                        <i class='bx bxs-brain'></i>
+                        <span class="thought-bubble bubble-1">分析中...</span>
+                        <span class="thought-bubble bubble-2">思考...</span>
+                        <span class="thought-bubble bubble-3">优化...</span>
                     </div>
+
+                    <!-- Loading Text -->
                     <div class="loading-text">
                         <h4 id="loadingTitle">Agent 智能分析中</h4>
                         <p id="loadingText">正在为您寻找最佳会面点...</p>
-                        <div class="loading-dots">
-                            <span></span>
-                            <span></span>
-                            <span></span>
+                    </div>
+
+                    <!-- Thinking Steps -->
+                    <div class="thinking-steps" id="thinkingSteps">
+                        <div class="thinking-step" data-step="1">
+                            <div class="step-icon"><i class='bx bx-map-pin'></i></div>
+                            <div class="step-content">
+                                <p class="step-title">解析地址</p>
+                                <p class="step-desc">获取各位置坐标信息</p>
+                            </div>
                         </div>
+                        <div class="thinking-step" data-step="2">
+                            <div class="step-icon"><i class='bx bx-target-lock'></i></div>
+                            <div class="step-content">
+                                <p class="step-title">计算中心点</p>
+                                <p class="step-desc">寻找最公平的会面位置</p>
+                            </div>
+                        </div>
+                        <div class="thinking-step" data-step="3">
+                            <div class="step-icon"><i class='bx bx-search-alt'></i></div>
+                            <div class="step-content">
+                                <p class="step-title">搜索周边场所</p>
+                                <p class="step-desc">发现附近优质地点</p>
+                            </div>
+                        </div>
+                        <div class="thinking-step" data-step="4">
+                            <div class="step-icon"><i class='bx bx-analyse'></i></div>
+                            <div class="step-content">
+                                <p class="step-title">智能评分排序</p>
+                                <p class="step-desc">综合评估最佳选择</p>
+                            </div>
+                        </div>
+                        <div class="thinking-step" data-step="5">
+                            <div class="step-icon"><i class='bx bx-check-double'></i></div>
+                            <div class="step-content">
+                                <p class="step-title">生成推荐</p>
+                                <p class="step-desc">为您定制专属方案</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="loading-progress">
+                        <div class="loading-progress-bar" id="loadingProgressBar"></div>
                     </div>
                 </div>
             </div>
@@ -1748,6 +1953,104 @@
             });
         }
 
+        // Agent Thinking Animation Controller
+        const ThinkingAnimator = {
+            currentStep: 0,
+            totalSteps: 5,
+            animationInterval: null,
+            isComplete: false,
+
+            // Reset all steps to initial state
+            reset() {
+                this.currentStep = 0;
+                this.isComplete = false;
+                if (this.animationInterval) {
+                    clearInterval(this.animationInterval);
+                    this.animationInterval = null;
+                }
+                document.querySelectorAll('.thinking-step').forEach(step => {
+                    step.classList.remove('active', 'completed');
+                });
+                const progressBar = document.getElementById('loadingProgressBar');
+                if (progressBar) progressBar.style.width = '0%';
+            },
+
+            // Activate a specific step
+            activateStep(stepNum) {
+                const steps = document.querySelectorAll('.thinking-step');
+                steps.forEach((step, index) => {
+                    const num = index + 1;
+                    if (num < stepNum) {
+                        step.classList.remove('active');
+                        step.classList.add('completed');
+                    } else if (num === stepNum) {
+                        step.classList.add('active');
+                        step.classList.remove('completed');
+                    } else {
+                        step.classList.remove('active', 'completed');
+                    }
+                });
+
+                // Update progress bar
+                const progressBar = document.getElementById('loadingProgressBar');
+                if (progressBar) {
+                    const progress = ((stepNum - 1) / this.totalSteps) * 100 + 10;
+                    progressBar.style.width = Math.min(progress, 90) + '%';
+                }
+            },
+
+            // Start the animation sequence
+            start() {
+                this.reset();
+                this.currentStep = 1;
+                this.activateStep(1);
+
+                // Auto-advance steps with varying intervals
+                const stepDurations = [600, 500, 700, 600, 500]; // Duration for each step
+                let stepIndex = 0;
+
+                const advanceStep = () => {
+                    if (this.isComplete || stepIndex >= this.totalSteps - 1) return;
+                    stepIndex++;
+                    this.currentStep = stepIndex + 1;
+                    this.activateStep(this.currentStep);
+
+                    if (stepIndex < this.totalSteps - 1) {
+                        setTimeout(advanceStep, stepDurations[stepIndex] || 500);
+                    }
+                };
+
+                setTimeout(advanceStep, stepDurations[0]);
+            },
+
+            // Complete all steps (called when API responds)
+            complete(mode) {
+                this.isComplete = true;
+
+                // Complete all steps
+                document.querySelectorAll('.thinking-step').forEach(step => {
+                    step.classList.remove('active');
+                    step.classList.add('completed');
+                });
+
+                // Update progress bar to 100%
+                const progressBar = document.getElementById('loadingProgressBar');
+                if (progressBar) progressBar.style.width = '100%';
+
+                // Update title based on mode
+                const loadingTitle = document.getElementById('loadingTitle');
+                const loadingText = document.getElementById('loadingText');
+
+                if (mode === 'agent') {
+                    if (loadingTitle) loadingTitle.textContent = 'Agent 深度分析完成';
+                    if (loadingText) loadingText.textContent = '已为您生成个性化推荐方案';
+                } else {
+                    if (loadingTitle) loadingTitle.textContent = '快速推荐完成';
+                    if (loadingText) loadingText.textContent = '已为您找到最佳会面点';
+                }
+            }
+        };
+
         // Form submission
         document.getElementById('meetspotForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -1804,6 +2107,9 @@
             document.getElementById('loadingText').textContent = `正在为您推荐${keywords}...`;
             loading.style.display = 'block';
 
+            // Start the thinking animation
+            ThinkingAnimator.start();
+
             try {
                 // 获取筛选条件
                 const minRating = parseFloat(document.getElementById('minRating').value) || 0;
@@ -1831,21 +2137,31 @@
 
                 const result = await response.json();
 
+                // Complete the animation with mode info
+                const mode = result.mode || 'rule_llm';
+                ThinkingAnimator.complete(mode);
+
                 if (result.success && result.html_url) {
-                    showSuccess('推荐完成', `${keywords}推荐已生成，正在跳转...`);
+                    // Show mode-aware success message
+                    const modeText = mode === 'agent' ? 'Agent 深度分析' : '快速推荐';
+                    showSuccess(`${modeText}完成`, `${keywords}推荐已生成，正在跳转...`);
                     setTimeout(() => {
                         window.location.href = result.html_url;
-                    }, 500);
+                    }, 800);
                 } else if (result.success && !result.html_url) {
                     showWarning('未找到结果', '请尝试更换关键词或使用更详细的地址');
                 } else {
                     throw new Error(result.error || '处理异常');
                 }
             } catch (error) {
+                ThinkingAnimator.reset();
                 showError('请求失败', error.message || '请重试');
             } finally {
                 submitBtn.disabled = false;
-                loading.style.display = 'none';
+                // Don't hide loading immediately on success - let the redirect happen
+                if (!document.getElementById('loading').dataset.success) {
+                    loading.style.display = 'none';
+                }
             }
         });
 

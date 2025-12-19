@@ -566,12 +566,104 @@ async def ai_chat(request: AIChatRequest):
             "mode": "error"
         }
 
+# ==================== 智能路由逻辑 ====================
+
+def assess_request_complexity(request: MeetSpotRequest) -> dict:
+    """评估请求复杂度，决定使用哪种模式
+
+    Returns:
+        dict: {
+            "use_agent": bool,  # 是否使用Agent模式
+            "complexity_score": int,  # 复杂度分数 (0-100)
+            "reasons": list,  # 判断原因
+            "mode_name": str  # 模式名称（用于日志）
+        }
+    """
+    score = 0
+    reasons = []
+
+    # 1. 地点数量 (权重: 30分)
+    location_count = len(request.locations)
+    if location_count >= 4:
+        score += 30
+        reasons.append(f"{location_count}个地点，需要复杂的中心点计算")
+    elif location_count >= 3:
+        score += 15
+        reasons.append(f"{location_count}个地点")
+
+    # 2. 场所类型数量 (权重: 25分)
+    keywords = request.keywords or ""
+    keyword_count = len(keywords.split()) if keywords else 0
+    if keyword_count >= 3:
+        score += 25
+        reasons.append(f"{keyword_count}种场所类型，需要智能平衡")
+    elif keyword_count >= 2:
+        score += 12
+        reasons.append(f"{keyword_count}种场所类型")
+
+    # 3. 特殊需求复杂度 (权重: 25分)
+    requirements = request.user_requirements or ""
+    if requirements:
+        req_keywords = ["商务", "安静", "停车", "Wi-Fi", "包间", "儿童", "24小时", "久坐"]
+        matched_reqs = sum(1 for kw in req_keywords if kw in requirements)
+        if matched_reqs >= 3:
+            score += 25
+            reasons.append(f"{matched_reqs}个特殊需求，需要综合权衡")
+        elif matched_reqs >= 2:
+            score += 15
+            reasons.append(f"{matched_reqs}个特殊需求")
+        elif len(requirements) > 50:
+            score += 20
+            reasons.append("详细的自定义需求描述")
+
+    # 4. 筛选条件 (权重: 20分)
+    has_filters = False
+    if request.min_rating and request.min_rating > 0:
+        has_filters = True
+        score += 5
+    if request.max_distance and request.max_distance < 10000:
+        has_filters = True
+        score += 5
+    if request.price_range:
+        has_filters = True
+        score += 5
+    if has_filters:
+        reasons.append("有精确筛选条件")
+
+    # 决定模式 (阈值: 40分)
+    use_agent = score >= 40 and agent_available
+
+    # 如果Agent不可用，降级到规则模式
+    if score >= 40 and not agent_available:
+        reasons.append("Agent模块不可用，使用增强规则模式")
+
+    mode_name = "Agent智能模式" if use_agent else "快速规则模式"
+
+    return {
+        "use_agent": use_agent,
+        "complexity_score": min(score, 100),
+        "reasons": reasons,
+        "mode_name": mode_name
+    }
+
+
 # ==================== 会面点推荐接口 ====================
 
 @app.post("/api/find_meetspot")
 async def find_meetspot(request: MeetSpotRequest):
-    """完整的会面地点推荐功能"""
+    """统一的会面地点推荐入口 - 智能路由
+
+    根据请求复杂度自动选择最优模式：
+    - 简单请求: 规则+LLM模式 (快速，0.3-0.8秒)
+    - 复杂请求: Agent模式 (深度分析，3-8秒)
+    """
     start_time = time.time()
+
+    # 评估请求复杂度
+    complexity = assess_request_complexity(request)
+    print(f"🧠 [智能路由] 复杂度评估: {complexity['complexity_score']}分, 模式: {complexity['mode_name']}")
+    if complexity['reasons']:
+        print(f"   原因: {', '.join(complexity['reasons'])}")
 
     try:
         print(f"📝 收到请求: {request.model_dump()}")
@@ -590,7 +682,43 @@ async def find_meetspot(request: MeetSpotRequest):
                 detail="高德地图API密钥未配置，请设置AMAP_API_KEY环境变量或配置config.toml文件"
             )
 
-        # 使用推荐工具
+        # ========== 智能路由：根据复杂度选择模式 ==========
+        if complexity['use_agent']:
+            print(f"🤖 [Agent模式] 复杂请求，启用Agent智能分析...")
+            try:
+                agent = create_meetspot_agent()
+                agent_result = await agent.recommend(
+                    locations=request.locations,
+                    keywords=request.keywords or "咖啡馆",
+                    requirements=request.user_requirements or ""
+                )
+
+                processing_time = time.time() - start_time
+                print(f"⏱️  [Agent] 推荐完成，耗时: {processing_time:.2f}秒")
+
+                # Agent模式返回格式
+                return {
+                    "success": agent_result.get("success", False),
+                    "html_url": None,  # Agent模式暂不生成HTML
+                    "locations_count": len(request.locations),
+                    "processing_time": processing_time,
+                    "message": "Agent智能推荐完成",
+                    "output": agent_result.get("recommendation", ""),
+                    "mode": "agent",
+                    "complexity_score": complexity['complexity_score'],
+                    "complexity_reasons": complexity['reasons'],
+                    "agent_data": {
+                        "geocode_results": agent_result.get("geocode_results", []),
+                        "center_point": agent_result.get("center_point"),
+                        "search_results": agent_result.get("search_results", []),
+                        "steps_executed": agent_result.get("steps_executed", 0)
+                    }
+                }
+            except Exception as agent_error:
+                print(f"⚠️ [Agent] 执行失败，降级到规则模式: {agent_error}")
+                # 降级到规则模式，继续执行下面的代码
+
+        # ========== 规则+LLM模式（默认/降级） ==========
         if config:
             print("🔧 开始初始化推荐工具...")
             recommender = CafeRecommender()
@@ -645,14 +773,17 @@ async def find_meetspot(request: MeetSpotRequest):
                         print("❌ 所有匹配模式都失败了")
                         html_url = None
 
-            # 返回前端期望的格式
+            # 返回前端期望的格式（包含模式信息）
             response_data = {
                 "success": True,
                 "html_url": html_url,
                 "locations_count": len(request.locations),
                 "processing_time": processing_time,
                 "message": "推荐生成成功",
-                "output": output_text
+                "output": output_text,
+                "mode": "rule_llm",  # 规则+LLM增强模式
+                "complexity_score": complexity['complexity_score'],
+                "complexity_reasons": complexity['reasons']
             }
 
             print(f"📤 返回响应: success={response_data['success']}, html_url={response_data['html_url']}")
