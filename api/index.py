@@ -687,10 +687,15 @@ async def find_meetspot(request: MeetSpotRequest):
             print(f"🤖 [Agent模式] 复杂请求，启用Agent智能分析...")
             try:
                 agent = create_meetspot_agent()
-                agent_result = await agent.recommend(
-                    locations=request.locations,
-                    keywords=request.keywords or "咖啡馆",
-                    requirements=request.user_requirements or ""
+                # 添加15秒超时，确保Agent模式不会无限等待
+                AGENT_TIMEOUT = 15  # 秒
+                agent_result = await asyncio.wait_for(
+                    agent.recommend(
+                        locations=request.locations,
+                        keywords=request.keywords or "咖啡馆",
+                        requirements=request.user_requirements or ""
+                    ),
+                    timeout=AGENT_TIMEOUT
                 )
 
                 processing_time = time.time() - start_time
@@ -714,6 +719,8 @@ async def find_meetspot(request: MeetSpotRequest):
                         "steps_executed": agent_result.get("steps_executed", 0)
                     }
                 }
+            except asyncio.TimeoutError:
+                print(f"⚠️ [Agent] 执行超时({AGENT_TIMEOUT}秒)，降级到规则模式")
             except Exception as agent_error:
                 print(f"⚠️ [Agent] 执行失败，降级到规则模式: {agent_error}")
                 # 降级到规则模式，继续执行下面的代码
