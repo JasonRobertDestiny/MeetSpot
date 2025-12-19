@@ -173,7 +173,7 @@
 
 <div class="about-hero">
     <h1>关于 MeetSpot</h1>
-    <p>MeetSpot（聚点）是一个智能会面地点推荐系统，帮助用户根据多个参与者的位置和特定需求，快速找到最合适的会面场所。</p>
+    <p>MeetSpot（聚点）是一款多人会面地点推荐的 <strong>AI Agent</strong>。基于球面几何算法计算公平中点，结合 GPT-4o 智能评分，5步透明推理帮你找到对所有人都公平的聚会地点。</p>
 </div>
 
 <section class="about-section">
@@ -187,35 +187,36 @@
     <h2>核心价值</h2>
     <div class="value-grid">
         <div class="value-card">
-            <h3>🎯 公平性</h3>
-            <p>通过几何中心算法确保每位参与者的距离差在合理范围内，没有人需要跑特别远。</p>
+            <h3>🎯 数学公平</h3>
+            <p>使用球面几何（Haversine公式）计算地球曲面真实中点，比简单平均精确15-20%，确保每个人距离均衡。</p>
         </div>
         <div class="value-card">
-            <h3>🚀 便捷性</h3>
-            <p>无需注册、完全免费，输入地址即可获得推荐，0.3-0.8秒内返回结果。</p>
+            <h3>🤖 AI Agent</h3>
+            <p>不是简单搜索工具，而是完整的AI Agent。5步透明推理：解析地址 → 计算中点 → 搜索周边 → GPT-4o评分 → 生成推荐。</p>
         </div>
         <div class="value-card">
-            <h3>🏢 多样性</h3>
-            <p>支持同时搜索多种场所类型（咖啡馆+餐厅+图书馆），满足不同聚会场景需求。</p>
+            <h3>🏢 多场景支持</h3>
+            <p>12种场景主题（咖啡馆、餐厅、图书馆、KTV等），支持多场景并发搜索，一次获得多种推荐。</p>
         </div>
         <div class="value-card">
-            <h3>📊 智能化</h3>
-            <p>基于评分、距离、用户需求的综合排序，优先推荐高质量场所。</p>
+            <h3>📊 GPT-4o智能评分</h3>
+            <p>AI综合评估评分、距离、场景匹配、用户需求（停车、安静、包间），给出智能排序和推荐理由。</p>
         </div>
     </div>
 </section>
 
 <section class="about-section">
     <h2>技术架构</h2>
-    <p>MeetSpot 采用现代化的技术栈，确保高性能和稳定性：</p>
+    <p>MeetSpot 采用现代化的 AI Agent 技术栈：</p>
     <div class="tech-list">
+        <span class="tech-tag">GPT-4o</span>
         <span class="tech-tag">FastAPI</span>
         <span class="tech-tag">Python 3.11+</span>
         <span class="tech-tag">高德地图 API</span>
-        <span class="tech-tag">异步处理</span>
-        <span class="tech-tag">响应式设计</span>
+        <span class="tech-tag">球面几何算法</span>
+        <span class="tech-tag">异步并发</span>
     </div>
-    <p style="margin-top: 20px;">项目完全开源，欢迎在 GitHub 上查看源代码、提交问题或贡献代码。</p>
+    <p style="margin-top: 20px;"><strong>性能指标：</strong>单场景 5-8 秒，双场景 8-12 秒，Agent模式 15-30 秒。项目完全开源，欢迎在 GitHub 上查看源代码。</p>
 </section>
 
 <section class="contact-section">

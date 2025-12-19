@@ -221,7 +221,7 @@
 
 <div class="guide-hero">
     <h1>使用指南</h1>
-    <p>只需四个简单步骤，即可找到最公平的聚会地点</p>
+    <p>AI Agent 5步透明推理，几秒钟找到对所有人都公平的聚会地点</p>
 </div>
 
 <div class="steps-container">
@@ -278,15 +278,33 @@
     <div class="step-card">
         <div class="step-number">4</div>
         <div class="step-content">
-            <h3>获取推荐结果</h3>
-            <p>点击 "查找聚会地点" 按钮，系统会在 0.3-0.8 秒内返回推荐结果。每个推荐都包含：</p>
+            <h3>AI Agent 5步推理</h3>
+            <p>点击推荐按钮后，AI Agent 会执行完整的5步推理流程，你可以看到每一步的思考过程：</p>
+            <div class="step-tips">
+                <strong>Agent 推理过程</strong>
+                <ul>
+                    <li><strong>Step 1</strong> 解析地址 - 智能识别简称，转换为精确坐标</li>
+                    <li><strong>Step 2</strong> 计算中点 - 球面几何算法计算公平中心</li>
+                    <li><strong>Step 3</strong> 搜索周边 - 多场景并发搜索POI</li>
+                    <li><strong>Step 4</strong> GPT-4o评分 - AI多维度智能评估</li>
+                    <li><strong>Step 5</strong> 生成推荐 - 排序输出最优结果</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="step-card">
+        <div class="step-number">5</div>
+        <div class="step-content">
+            <h3>查看结果与导航</h3>
+            <p>推荐结果包含地图可视化、场所卡片、AI推理过程展示。单场景 5-8 秒，双场景 8-12 秒，Agent模式 15-30 秒。</p>
             <div class="step-tips">
                 <strong>结果包含</strong>
                 <ul>
-                    <li>场所名称、地址、评分</li>
-                    <li>距离中心点的距离</li>
-                    <li>一键导航按钮</li>
-                    <li>可直接分享给朋友的链接</li>
+                    <li>地图上的公平中心点（绿色）和推荐场所（橙色）</li>
+                    <li>场所名称、评分、智能评分（满分100）</li>
+                    <li>一键导航按钮，直接跳转高德地图</li>
+                    <li>AI推理过程透明展示，可解释推荐理由</li>
                 </ul>
             </div>
         </div>
@@ -294,30 +312,30 @@
 </div>
 
 <section class="advanced-section">
-    <h2>高级功能</h2>
+    <h2>AI Agent 能力</h2>
     <div class="feature-list">
         <div class="feature-item">
-            <h4>多场景组合搜索</h4>
-            <p>同时搜索 "咖啡馆 餐厅"，一次获得两种场所的推荐，方便比较选择。</p>
+            <h4>球面几何算法</h4>
+            <p>使用 Haversine 公式计算地球曲面真实中点，比简单经纬度平均精确 15-20%。</p>
         </div>
         <div class="feature-item">
-            <h4>自定义关键词</h4>
-            <p>输入特殊场所类型如 "密室逃脱"、"剧本杀" 等，搜索更精准。</p>
+            <h4>GPT-4o 智能评分</h4>
+            <p>AI 综合评估评分、距离、场景匹配、用户需求，给出多维度智能排序。</p>
         </div>
         <div class="feature-item">
-            <h4>智能排序</h4>
-            <p>结果按评分、距离、需求匹配度综合排序，最优推荐排在前面。</p>
+            <h4>60+ 高校简称识别</h4>
+            <p>输入"北大"自动识别为"北京大学"，避免歧义，智能匹配正确地点。</p>
         </div>
         <div class="feature-item">
-            <h4>结果分享</h4>
-            <p>生成的推荐页面可直接分享给朋友，方便集体决策。</p>
+            <h4>12 种场景主题</h4>
+            <p>咖啡馆、餐厅、图书馆、KTV、健身房、密室逃脱等，支持多场景并发搜索。</p>
         </div>
     </div>
 </section>
 
 <section class="cta-section">
     <h2>准备好开始了吗？</h2>
-    <p>立即体验智能聚会地点推荐，找到对所有人都公平的会面地点</p>
-    <a href="/public/meetspot_finder.html" class="cta-btn">立即开始使用</a>
+    <p>体验 AI Agent 5步透明推理，几秒钟找到对所有人都公平的聚会地点</p>
+    <a href="/" class="cta-btn">立即开始使用</a>
 </section>
 {% endblock %}
