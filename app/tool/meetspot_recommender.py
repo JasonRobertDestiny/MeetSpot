@@ -600,77 +600,59 @@ class CafeRecommender(BaseTool):
                     types=place_type 
                 )
 
+            # Fallback机制：确保始终有推荐结果
+            fallback_used = False
+            fallback_keyword = None
+
             if not searched_places:
                 logger.info(f"使用 keywords '{keywords}' 和 types '{place_type}' 未找到结果，尝试仅使用 keywords 进行搜索。")
                 searched_places = await self._search_pois(
                     f"{center_point[0]},{center_point[1]}",
                     keywords,
                     radius=5000,
-                    types="" 
+                    types=""
                 )
-                if not searched_places:
-                    # 生成智能提示信息
-                    location_names = [loc['name'] for loc in location_info]
-                    formatted_addresses = [loc['formatted_address'] for loc in location_info]
-                    
-                    # 检查是否有地址被解析到意外的城市
-                    unexpected_locations = []
-                    for i, (name, addr) in enumerate(zip(location_names, formatted_addresses)):
-                        enhanced = self._enhance_address(name)
-                        if enhanced != name:  # 是简称
-                            # 检查解析结果是否包含预期的城市关键词
-                            expected_cities = {
-                                "北京大学": ["北京", "海淀"],
-                                "清华大学": ["北京", "海淀"],
-                                "上海交通大学": ["上海", "闵行"],
-                                "复旦大学": ["上海", "杨浦"],
-                                "浙江大学": ["杭州", "西湖"],
-                                "中山大学": ["广州", "海珠"],
-                                "华中科技大学": ["武汉", "洪山"]
-                            }
-                            
-                            if enhanced in expected_cities:
-                                expected_city_keywords = expected_cities[enhanced]
-                                if not any(keyword in addr for keyword in expected_city_keywords):
-                                    unexpected_locations.append((name, enhanced, addr))
-                    
-                    error_msg = f"❌ 在计算的中心点附近找不到与 '{keywords}' 相关的场所。\n\n"
-                    
-                    if unexpected_locations:
-                        error_msg += "🔍 **可能的问题分析：**\n"
-                        for orig_name, enhanced_name, actual_addr in unexpected_locations:
-                            error_msg += f"• '{orig_name}' 被解析到：{actual_addr}\n"
-                            error_msg += f"  这可能不是您想要的 {enhanced_name}\n"
-                        
-                        error_msg += "\n💡 **建议解决方案：**\n"
-                        error_msg += "• 使用完整的大学名称，如 '北京大学'、'上海交通大学'\n"
-                        error_msg += "• 添加城市信息，如 '北京 清华大学'、'上海 复旦大学'\n"
-                        error_msg += "• 使用具体的校区地址，如 '北京市海淀区清华大学'\n"
-                    else:
-                        # 提供更具体的建议
-                        center_lng, center_lat = center_point
-                        error_msg += "🔍 **当前搜索信息：**\n"
-                        error_msg += f"• 搜索关键词：'{keywords}'\n"
-                        error_msg += f"• 搜索中心点：({center_lng:.4f}, {center_lat:.4f})\n"
-                        error_msg += f"• 搜索半径：5公里\n\n"
-                        
-                        error_msg += "💡 **建议尝试：**\n"
-                        error_msg += "• **更换关键词**：尝试 '餐厅'、'商场'、'酒店'、'银行' 等\n"
-                        error_msg += "• **使用更具体的地址**：请输入完整详细的地址信息\n"
-                        error_msg += "  - 完整地址：'北京市朝阳区建国门外大街1号'\n"
-                        error_msg += "  - 知名地标：'北京大学'、'天安门广场'、'上海外滩'\n"
-                        error_msg += "  - 商圈区域：'三里屯太古里'、'王府井步行街'\n"
-                        error_msg += "  - 交通枢纽：'北京南站'、'首都国际机场T3航站楼'\n"
-                        error_msg += "• **避免模糊地址**：避免使用 '附近'、'那边'、'市中心' 等模糊描述\n"
-                        error_msg += "• **检查拼写准确性**：确保地名、路名拼写正确无误\n"
-                        error_msg += "• **尝试附近知名地标**：如果当前位置偏僻，选择附近的大型商场、地铁站等\n\n"
-                        error_msg += "📝 **正确的地址输入格式：**\n"
-                        error_msg += "• **多个地点请分别输入**：在不同的输入框中分别填写每个地点\n"
-                        error_msg += "• **或用空格分隔**：如 '北京大学 中关村' 会被自动识别为两个地点\n"
-                        error_msg += "• **完整地址示例**：'北京市海淀区北京大学' 和 '北京市海淀区中关村大街'\n"
-                        error_msg += "• **地标名称示例**：'北京大学' 和 '中关村'\n"
-                    
-                    return ToolResult(output=error_msg)
+
+            # 如果仍无结果，启用 Fallback 搜索
+            if not searched_places:
+                logger.info(f"'{keywords}' 无结果，启用 Fallback 搜索机制")
+                fallback_categories = ["餐厅", "咖啡馆", "商场", "美食"]
+
+                for fallback_kw in fallback_categories:
+                    if fallback_kw != keywords:  # 避免重复搜索
+                        searched_places = await self._search_pois(
+                            f"{center_point[0]},{center_point[1]}",
+                            fallback_kw,
+                            radius=5000,
+                            types=""
+                        )
+                        if searched_places:
+                            fallback_used = True
+                            fallback_keyword = fallback_kw
+                            logger.info(f"Fallback 成功：使用 '{fallback_kw}' 找到 {len(searched_places)} 个结果")
+                            break
+
+            # 如果 Fallback 也失败，扩大搜索半径
+            if not searched_places:
+                logger.info("Fallback 类别无结果，尝试扩大搜索半径到 10 公里")
+                searched_places = await self._search_pois(
+                    f"{center_point[0]},{center_point[1]}",
+                    "餐厅",
+                    radius=10000,
+                    types=""
+                )
+                if searched_places:
+                    fallback_used = True
+                    fallback_keyword = "餐厅（扩大范围）"
+                    logger.info(f"扩大范围搜索成功：找到 {len(searched_places)} 个结果")
+
+            # 如果所有尝试都失败，返回错误（极端情况）
+            if not searched_places:
+                center_lng, center_lat = center_point
+                error_msg = f"在该区域未能找到任何推荐场所。\n\n"
+                error_msg += f"搜索中心点：({center_lng:.4f}, {center_lat:.4f})\n"
+                error_msg += "该区域可能较为偏远，建议选择更靠近市中心的地点。"
+                return ToolResult(output=error_msg)
 
             recommended_places = self._rank_places(
                 searched_places, center_point, user_requirements, keywords,
@@ -683,9 +665,14 @@ class CafeRecommender(BaseTool):
                 center_point,
                 user_requirements,
                 keywords,
-                theme  # 添加主题参数
+                theme,
+                fallback_used,
+                fallback_keyword
             )
-            result_text = self._format_result_text(location_info, recommended_places, html_path, keywords) 
+            result_text = self._format_result_text(
+                location_info, recommended_places, html_path, keywords,
+                fallback_used, fallback_keyword
+            )
             return ToolResult(output=result_text)
 
         except Exception as e:
@@ -2123,8 +2110,10 @@ class CafeRecommender(BaseTool):
         center_point: Tuple[float, float],
         user_requirements: str,
         keywords: str,
-        theme: str = "",  # 添加主题参数
-        participant_locations: List[str] = None  # 参与者位置名称列表
+        theme: str = "",
+        fallback_used: bool = False,
+        fallback_keyword: str = None,
+        participant_locations: List[str] = None
     ) -> str:
         file_name_prefix = "place"
 
@@ -2133,7 +2122,8 @@ class CafeRecommender(BaseTool):
             participant_locations = [loc.get("formatted_address", loc.get("address", "")) for loc in locations]
 
         html_content = await self._generate_html_content(
-            locations, places, center_point, user_requirements, keywords, theme, participant_locations
+            locations, places, center_point, user_requirements, keywords,
+            theme, fallback_used, fallback_keyword, participant_locations
         )
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         unique_id = str(uuid.uuid4())[:8]
@@ -2154,8 +2144,10 @@ class CafeRecommender(BaseTool):
         center_point: Tuple[float, float],
         user_requirements: str,
         keywords: str,
-        theme: str = "",  # 添加主题参数
-        participant_locations: List[str] = None  # 参与者位置名称列表
+        theme: str = "",
+        fallback_used: bool = False,
+        fallback_keyword: str = None,
+        participant_locations: List[str] = None
     ) -> str:
         # 根据主题参数确定配置
         if theme:
@@ -2866,7 +2858,33 @@ class CafeRecommender(BaseTool):
         .result-bar {{ height: 30px; background-color: var(--primary); color: white; margin-bottom: 8px; border-radius: 15px; padding: 0 15px; display: flex; align-items: center; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); animation: growBar 2s ease; transform-origin: left; }}
         @keyframes growBar {{ 0% {{ width: 0; }} 100% {{ width: 100%; }} }}
         .mt-4 {{ margin-top: 1rem; }}
-        @media (max-width: 768px) {{ .cafe-grid {{ grid-template-columns: 1fr; }} .transportation-info {{ grid-template-columns: 1fr; }} header {{ padding: 40px 0 80px; }} .header-logo {{ font-size: 2.2rem; }} .process-step {{ flex-direction: column; }} .step-icon {{ margin-bottom: 15px; margin-right: 0; }} }}
+        /* Fallback Notice */
+        .fallback-notice {{
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            border-left: 4px solid #FF9800;
+            padding: 16px 24px;
+            margin: 0 auto 20px;
+            max-width: 1200px;
+            border-radius: 0 12px 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(255, 152, 0, 0.15);
+        }}
+        .fallback-notice i {{
+            font-size: 24px;
+            color: #F57C00;
+        }}
+        .fallback-notice-text {{
+            color: #E65100;
+            font-weight: 500;
+            font-size: 15px;
+        }}
+        .fallback-notice-keyword {{
+            font-weight: 700;
+            color: #BF360C;
+        }}
+        @media (max-width: 768px) {{ .cafe-grid {{ grid-template-columns: 1fr; }} .transportation-info {{ grid-template-columns: 1fr; }} header {{ padding: 40px 0 80px; }} .header-logo {{ font-size: 2.2rem; }} .process-step {{ flex-direction: column; }} .step-icon {{ margin-bottom: 15px; margin-right: 0; }} .fallback-notice {{ margin: 0 16px 16px; }} }}
     </style>
 </head>
 <body>
@@ -2878,6 +2896,13 @@ class CafeRecommender(BaseTool):
             <div class="header-subtitle">为您找到的最佳会面{cfg["noun_plural"]}</div>
         </div>
     </header>
+
+    {f'''<div class="fallback-notice">
+        <i class="bx bx-info-circle"></i>
+        <span class="fallback-notice-text">
+            未找到「{keywords}」相关场所，已为您推荐附近的「<span class="fallback-notice-keyword">{fallback_keyword}</span>」
+        </span>
+    </div>''' if fallback_used and fallback_keyword else ''}
 
     <div class="container main-content">
         <div class="card glass-card">
@@ -3063,19 +3088,27 @@ class CafeRecommender(BaseTool):
     def _format_result_text(
         self,
         locations: List[Dict],
-        places: List[Dict], 
+        places: List[Dict],
         html_path: str,
-        keywords: str 
+        keywords: str,
+        fallback_used: bool = False,
+        fallback_keyword: str = None
     ) -> str:
         primary_keyword = keywords.split("、")[0] if keywords else "场所"
         cfg = self._get_place_config(primary_keyword)
         num_places = len(places)
 
         result = [
-            f"## 已为您找到{num_places}家适合会面的{cfg['noun_plural']}", 
+            f"## 已为您找到{num_places}家适合会面的{cfg['noun_plural']}",
             "",
-            f"### 推荐{cfg['noun_plural']}:", 
         ]
+
+        # 添加 Fallback 提示
+        if fallback_used and fallback_keyword:
+            result.append(f"> 提示：未找到「{keywords}」相关场所，已为您推荐附近的「{fallback_keyword}」")
+            result.append("")
+
+        result.append(f"### 推荐{cfg['noun_plural']}:")
         for i, place in enumerate(places):
             rating = place.get("biz_ext", {}).get("rating", "暂无评分")
             address = place.get("address", "地址未知")
