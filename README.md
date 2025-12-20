@@ -60,6 +60,25 @@ MeetSpot finds the **fairest meeting point for multiple people**. Input addresse
 | **Rule Mode** | 2-3 locations, simple keywords | 2-4s | Quick cafe/restaurant lookup |
 | **Agent Mode** | 4+ locations, complex requirements | 8-15s | Personalized recommendations |
 
+### Intelligent Routing Decision
+
+**Complexity Score** (0-100) determines which mode handles your request:
+
+| Factor | Points | Example |
+|--------|--------|---------|
+| Location count | +10/location | 4 locations = 40 pts |
+| Complex keywords | +15 | "quiet business cafe" |
+| Special requirements | +10 | "parking, WiFi" |
+
+- **Score < 40** → Rule Mode (fast, deterministic)
+- **Score ≥ 40** → Agent Mode (LLM-enhanced)
+
+**Agent Mode Enhancement:**
+```
+Final Score = Rule Score × 0.4 + LLM Score × 0.6
+```
+LLM analyzes venue-requirement semantic fit, then blends with rule-based scoring. Results include **Explainable AI** visualization showing the agent's chain-of-thought reasoning process.
+
 ### 5-Step Processing Pipeline
 
 1. **Geocode** - Convert addresses to coordinates (45+ university shortcuts: "PKU" -> "Peking University, Beijing")
