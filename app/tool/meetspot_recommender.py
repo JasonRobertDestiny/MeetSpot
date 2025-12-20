@@ -2525,6 +2525,19 @@ class CafeRecommender(BaseTool):
         /* ========== AI Reasoning Panel Styles ========== */
         .search-process-card {{ position: relative; overflow: hidden; background: linear-gradient(135deg, #fafbfc 0%, #f0f4f8 100%); border-left: 5px solid var(--primary); border-radius: 16px; }}
 
+        /* Collapsible AI Thinking Section */
+        .ai-thinking-details {{ width: 100%; }}
+        .ai-thinking-summary {{ display: flex; align-items: center; gap: 12px; padding: 20px 24px; cursor: pointer; list-style: none; user-select: none; background: linear-gradient(135deg, rgba(10, 77, 104, 0.03) 0%, rgba(6, 214, 160, 0.02) 100%); border-radius: 12px; transition: all 0.3s ease; }}
+        .ai-thinking-summary::-webkit-details-marker {{ display: none; }}
+        .ai-thinking-summary:hover {{ background: linear-gradient(135deg, rgba(10, 77, 104, 0.06) 0%, rgba(6, 214, 160, 0.04) 100%); }}
+        .ai-thinking-summary i.bx-bot {{ font-size: 1.8rem; color: var(--primary); }}
+        .ai-thinking-title {{ font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); font-family: 'Outfit', sans-serif; }}
+        .ai-thinking-hint {{ flex: 1; font-size: 0.85rem; color: #64748b; font-style: italic; }}
+        .ai-thinking-arrow {{ font-size: 1.5rem; color: var(--primary); transition: transform 0.3s ease; }}
+        .ai-thinking-details[open] .ai-thinking-arrow {{ transform: rotate(180deg); }}
+        .ai-thinking-details[open] .ai-thinking-summary {{ border-bottom: 1px solid rgba(10, 77, 104, 0.1); border-radius: 12px 12px 0 0; margin-bottom: 20px; }}
+        .ai-thinking-details .search-process {{ padding: 0 24px 24px; }}
+
         /* AI Location List */
         .ai-location-list {{ display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }}
         .ai-location-item {{ display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: white; border-radius: 10px; border: 1px solid rgba(0,0,0,0.06); }}
@@ -3054,8 +3067,15 @@ class CafeRecommender(BaseTool):
         </script>"""
         return f"""
         <div class="card glass-card search-process-card">
-            <h2 class="section-title"><i class='bx bx-bot'></i>AI 搜索过程</h2>
-            <div class="search-process">{search_process_html}</div>
+            <details class="ai-thinking-details">
+                <summary class="ai-thinking-summary">
+                    <i class='bx bx-bot'></i>
+                    <span class="ai-thinking-title">AI 搜索过程</span>
+                    <span class="ai-thinking-hint">点击查看 Agent 思维链</span>
+                    <i class='bx bx-chevron-down ai-thinking-arrow'></i>
+                </summary>
+                <div class="search-process">{search_process_html}</div>
+            </details>
             {search_process_javascript}
         </div>"""
 
