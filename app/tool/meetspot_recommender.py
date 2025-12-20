@@ -632,13 +632,13 @@ class CafeRecommender(BaseTool):
                             logger.info(f"Fallback 成功：使用 '{fallback_kw}' 找到 {len(searched_places)} 个结果")
                             break
 
-            # 如果 Fallback 也失败，扩大搜索半径
+            # 如果 Fallback 也失败，扩大搜索半径到不限制（API最大50km）
             if not searched_places:
-                logger.info("Fallback 类别无结果，尝试扩大搜索半径到 10 公里")
+                logger.info("Fallback 类别无结果，尝试不限距离搜索")
                 searched_places = await self._search_pois(
                     f"{center_point[0]},{center_point[1]}",
                     "餐厅",
-                    radius=10000,
+                    radius=50000,
                     types=""
                 )
                 if searched_places:
