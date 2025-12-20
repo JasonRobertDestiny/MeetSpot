@@ -79,7 +79,9 @@ app/tool/meetspot_recommender.py    # Main recommendation engine (CafeRecommende
   ├─ landmark_mapping dict          # 45 city landmarks (e.g., "陆家嘴" → "上海市浦东新区陆家嘴")
   ├─ PLACE_TYPE_CONFIG dict         # 12 venue themes with colors, icons
   ├─ _rank_places()                 # 100-point scoring algorithm
-  └─ _generate_html_content()       # Standalone HTML with Amap JS API
+  ├─ _generate_html_content()       # Standalone HTML with Amap JS API
+  ├─ geocode_cache (max 100)        # LRU-style address cache
+  └─ poi_cache (max 50)             # LRU-style POI cache
 
 app/design_tokens.py                # WCAG AA color palette, CSS generation
 api/routers/seo_pages.py            # SEO landing pages
@@ -88,10 +90,11 @@ api/routers/seo_pages.py            # SEO landing pages
 ### Data Flow
 
 ```
-1. Address enhancement (university/landmark mappings)
+1. Address enhancement (90+ university/landmark mappings)
 2. Geocoding via Amap API (with retry + rate limiting)
 3. Center point calculation (spherical geometry)
 4. POI search (concurrent for multiple keywords)
+   └─ Fallback: tries 餐厅→咖啡馆→商场→美食, then expands to 50km
 5. Ranking with multi-scenario balancing (max 8 venues)
 6. HTML generation → workspace/js_src/
 ```
@@ -127,7 +130,8 @@ Add entry to `PLACE_TYPE_CONFIG` with: Chinese name, Boxicons icons, 6 color val
 | `未找到AMAP_API_KEY` | Set environment variable |
 | Import errors in production | Check MinimalConfig fallback |
 | Wrong city geocoding | Add to `landmark_mapping` with city prefix |
-| Empty POI results | Check API rate limits |
+| Empty POI results | Fallback mechanism handles this automatically |
+| Render OOM (512MB) | Caches are limited; consider paid tier |
 
 **Logging**: Uses loguru via `app/logger.py`. `/health` endpoint shows config status.
 
