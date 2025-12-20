@@ -2522,21 +2522,212 @@ class CafeRecommender(BaseTool):
         .back-button:hover {{ background-color: var(--primary); color: white; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }}
         .back-button i {{ margin-right: 8px; }}
 
-        /* ========== AI Reasoning Panel Styles ========== */
-        .search-process-card {{ position: relative; overflow: hidden; background: linear-gradient(135deg, #fafbfc 0%, #f0f4f8 100%); border-left: 5px solid var(--primary); border-radius: 16px; }}
+        /* ========== AI Reasoning Panel - Neural Interface Theme ========== */
+        .search-process-card {{
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            border: 1px solid rgba(6, 214, 160, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+        }}
+        .search-process-card::before {{
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(6, 214, 160, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }}
+        /* Circuit pattern overlay */
+        .search-process-card::after {{
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0v10M30 50v10M0 30h10M50 30h10' stroke='%2306D6A0' stroke-width='0.5' opacity='0.1' fill='none'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%2306D6A0' opacity='0.1'/%3E%3C/svg%3E");
+            background-size: 60px 60px;
+            opacity: 0.5;
+            pointer-events: none;
+        }}
 
         /* Collapsible AI Thinking Section */
-        .ai-thinking-details {{ width: 100%; }}
-        .ai-thinking-summary {{ display: flex; align-items: center; gap: 12px; padding: 20px 24px; cursor: pointer; list-style: none; user-select: none; background: linear-gradient(135deg, rgba(10, 77, 104, 0.03) 0%, rgba(6, 214, 160, 0.02) 100%); border-radius: 12px; transition: all 0.3s ease; }}
+        .ai-thinking-details {{ width: 100%; position: relative; z-index: 1; }}
+        .ai-thinking-summary {{
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 24px 28px;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+            background: linear-gradient(135deg, rgba(6, 214, 160, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(6, 214, 160, 0.15);
+        }}
         .ai-thinking-summary::-webkit-details-marker {{ display: none; }}
-        .ai-thinking-summary:hover {{ background: linear-gradient(135deg, rgba(10, 77, 104, 0.06) 0%, rgba(6, 214, 160, 0.04) 100%); }}
-        .ai-thinking-summary i.bx-bot {{ font-size: 1.8rem; color: var(--primary); }}
-        .ai-thinking-title {{ font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); font-family: 'Outfit', sans-serif; }}
-        .ai-thinking-hint {{ flex: 1; font-size: 0.85rem; color: #64748b; font-style: italic; }}
-        .ai-thinking-arrow {{ font-size: 1.5rem; color: var(--primary); transition: transform 0.3s ease; }}
+        .ai-thinking-summary:hover {{
+            background: linear-gradient(135deg, rgba(6, 214, 160, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border-color: rgba(6, 214, 160, 0.3);
+            box-shadow: 0 0 30px rgba(6, 214, 160, 0.15);
+        }}
+
+        /* AI Brain Icon with Pulse */
+        .ai-brain-icon {{
+            position: relative;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #06D6A0 0%, #3B82F6 100%);
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(6, 214, 160, 0.4);
+        }}
+        .ai-brain-icon i {{
+            font-size: 1.8rem;
+            color: white;
+        }}
+        .ai-brain-icon::before {{
+            content: '';
+            position: absolute;
+            inset: -3px;
+            background: linear-gradient(135deg, #06D6A0, #3B82F6, #06D6A0);
+            border-radius: 17px;
+            z-index: -1;
+            opacity: 0.6;
+            animation: neuralPulse 2s ease-in-out infinite;
+        }}
+        @keyframes neuralPulse {{
+            0%, 100% {{ opacity: 0.4; transform: scale(1); }}
+            50% {{ opacity: 0.8; transform: scale(1.05); }}
+        }}
+
+        /* Title and Badge */
+        .ai-thinking-content {{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }}
+        .ai-thinking-header {{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }}
+        .ai-thinking-title {{
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }}
+        .ai-thinking-badge {{
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            background: rgba(6, 214, 160, 0.15);
+            border: 1px solid rgba(6, 214, 160, 0.3);
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #06D6A0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }}
+        .ai-thinking-badge::before {{
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #06D6A0;
+            border-radius: 50%;
+            animation: badgePulse 1.5s ease-in-out infinite;
+        }}
+        @keyframes badgePulse {{
+            0%, 100% {{ opacity: 1; }}
+            50% {{ opacity: 0.4; }}
+        }}
+        .ai-thinking-hint {{
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }}
+
+        /* Expand Arrow */
+        .ai-thinking-expand {{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }}
+        .ai-thinking-summary:hover .ai-thinking-expand {{
+            background: rgba(6, 214, 160, 0.1);
+            border-color: rgba(6, 214, 160, 0.3);
+            color: #06D6A0;
+        }}
+        .ai-thinking-arrow {{
+            font-size: 1.2rem;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }}
         .ai-thinking-details[open] .ai-thinking-arrow {{ transform: rotate(180deg); }}
-        .ai-thinking-details[open] .ai-thinking-summary {{ border-bottom: 1px solid rgba(10, 77, 104, 0.1); border-radius: 12px 12px 0 0; margin-bottom: 20px; }}
-        .ai-thinking-details .search-process {{ padding: 0 24px 24px; }}
+        .ai-thinking-details[open] .ai-thinking-expand {{
+            background: rgba(6, 214, 160, 0.15);
+            color: #06D6A0;
+        }}
+        .ai-thinking-expand .collapse-text {{ display: none; }}
+        .ai-thinking-details[open] .expand-text {{ display: none; }}
+        .ai-thinking-details[open] .collapse-text {{ display: inline; }}
+
+        /* Expanded State */
+        .ai-thinking-details[open] .ai-thinking-summary {{
+            border-bottom: 1px solid rgba(6, 214, 160, 0.15);
+            border-radius: 16px 16px 0 0;
+            margin-bottom: 0;
+        }}
+        .ai-thinking-details[open] .ai-thinking-badge::before {{
+            background: #3B82F6;
+            animation: none;
+        }}
+
+        /* Content Area */
+        .ai-thinking-details .search-process {{
+            padding: 28px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0 0 16px 16px;
+        }}
+
+        /* Override step styles for dark theme */
+        .search-process-card .process-step {{ color: #e2e8f0; }}
+        .search-process-card .step-title {{ color: #f1f5f9; }}
+        .search-process-card .step-details {{
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+        }}
+        .search-process-card .step-icon {{
+            background: linear-gradient(135deg, #06D6A0 0%, #0891b2 100%);
+            box-shadow: 0 4px 15px rgba(6, 214, 160, 0.3);
+        }}
+        .search-process-card .step-number {{
+            background: linear-gradient(135deg, #3B82F6 0%, #6366f1 100%);
+        }}
+        .search-process-card .highlight-text {{
+            background: rgba(6, 214, 160, 0.2);
+            color: #06D6A0;
+        }}
+        .search-process-card .code-block {{
+            background: #020617;
+            border: 1px solid rgba(6, 214, 160, 0.2);
+        }}
 
         /* AI Location List */
         .ai-location-list {{ display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }}
@@ -3069,10 +3260,21 @@ class CafeRecommender(BaseTool):
         <div class="card glass-card search-process-card">
             <details class="ai-thinking-details">
                 <summary class="ai-thinking-summary">
-                    <i class='bx bx-bot'></i>
-                    <span class="ai-thinking-title">AI 搜索过程</span>
-                    <span class="ai-thinking-hint">点击查看 Agent 思维链</span>
-                    <i class='bx bx-chevron-down ai-thinking-arrow'></i>
+                    <div class="ai-brain-icon">
+                        <i class='bx bx-brain'></i>
+                    </div>
+                    <div class="ai-thinking-content">
+                        <div class="ai-thinking-header">
+                            <span class="ai-thinking-title">AI 搜索过程</span>
+                            <span class="ai-thinking-badge">Explainable</span>
+                        </div>
+                        <span class="ai-thinking-hint">点击展开 Agent 思维链可视化</span>
+                    </div>
+                    <div class="ai-thinking-expand">
+                        <span class="expand-text">展开</span>
+                        <span class="collapse-text">收起</span>
+                        <i class='bx bx-chevron-down ai-thinking-arrow'></i>
+                    </div>
                 </summary>
                 <div class="search-process">{search_process_html}</div>
             </details>
