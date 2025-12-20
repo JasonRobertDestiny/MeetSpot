@@ -456,25 +456,36 @@ class CafeRecommender(BaseTool):
             location_info = []
             geocode_results = []  # 存储原始 geocode 结果用于后续分析
 
-            for i, location in enumerate(locations):
-                # 在多个地址查询之间添加延迟，避免API限制
-                if i > 0:
-                    await asyncio.sleep(0.5)  # 500ms延迟
+            # 并行地理编码 - 大幅提升性能
+            async def geocode_with_delay(location: str, index: int):
+                """带轻微延迟的地理编码，避免API限流"""
+                if index > 0:
+                    await asyncio.sleep(0.05 * index)  # 50ms递增延迟，比原来的500ms快10倍
+                return await self._geocode(location)
 
-                geocode_result = await self._geocode(location)
-                if not geocode_result:
+            # 使用 asyncio.gather 并行执行所有地理编码请求
+            geocode_tasks = [geocode_with_delay(loc, i) for i, loc in enumerate(locations)]
+            geocode_raw_results = await asyncio.gather(*geocode_tasks, return_exceptions=True)
+
+            # 处理结果并检查错误
+            for i, (location, result) in enumerate(zip(locations, geocode_raw_results)):
+                if isinstance(result, Exception):
+                    logger.error(f"地理编码异常: {location} - {result}")
+                    result = None
+
+                if not result:
                     # 检查是否为大学简称但地理编码失败
                     enhanced_address = self._enhance_address(location)
                     if enhanced_address != location:
-                        return ToolResult(output=f"❌ 无法找到地点: {location}\n\n🔍 **识别为大学简称**\n您输入的 '{location}' 可能是大学简称，但未能成功解析。\n\n💡 **建议尝试：**\n• **完整名称**：'{enhanced_address}'\n• **添加城市**：'北京 {location}'、'上海 {location}'\n• **具体地址**：'北京市海淀区{enhanced_address}'\n• **校区信息**：如 '{location}本部'、'{location}新校区'")
+                        return ToolResult(output=f"无法找到地点: {location}\n\n识别为大学简称\n您输入的 '{location}' 可能是大学简称，但未能成功解析。\n\n建议尝试：\n完整名称：'{enhanced_address}'\n添加城市：'北京 {location}'、'上海 {location}'\n具体地址：'北京市海淀区{enhanced_address}'\n校区信息：如 '{location}本部'、'{location}新校区'")
                     else:
                         # 提供更详细的地址输入指导
                         suggestions = self._get_address_suggestions(location)
-                        return ToolResult(output=f"❌ 无法找到地点: {location}\n\n🔍 **地址解析失败**\n系统无法识别您输入的地址，请检查以下几点：\n\n💡 **具体建议：**\n{suggestions}\n\n📍 **标准地址格式示例：**\n• **完整地址**：'北京市海淀区中关村大街27号'\n• **知名地标**：'北京大学'、'天安门广场'、'上海外滩'\n• **商圈区域**：'三里屯'、'王府井'、'南京路步行街'\n• **交通枢纽**：'北京南站'、'上海虹桥机场'\n\n⚠️ **常见错误避免：**\n• 避免过于简短：'大学' → '北京大学'\n• 避免拼写错误：'北大' → '北京大学'\n• 避免模糊描述：'那个商场' → '王府井百货大楼'\n\n🔧 **如果仍有问题：**\n• 检查网络连接是否正常\n• 尝试使用地址的官方全称\n• 确认地点确实存在且对外开放")
+                        return ToolResult(output=f"无法找到地点: {location}\n\n地址解析失败\n系统无法识别您输入的地址，请检查以下几点：\n\n具体建议：\n{suggestions}\n\n标准地址格式示例：\n完整地址：'北京市海淀区中关村大街27号'\n知名地标：'北京大学'、'天安门广场'、'上海外滩'\n商圈区域：'三里屯'、'王府井'、'南京路步行街'\n交通枢纽：'北京南站'、'上海虹桥机场'\n\n常见错误避免：\n避免过于简短：'大学' -> '北京大学'\n避免拼写错误：'北大' -> '北京大学'\n避免模糊描述：'那个商场' -> '王府井百货大楼'\n\n如果仍有问题：\n检查网络连接是否正常\n尝试使用地址的官方全称\n确认地点确实存在且对外开放")
 
                 geocode_results.append({
                     "original_location": location,
-                    "result": geocode_result
+                    "result": result
                 })
 
             # 智能城市推断：检测是否有地点被解析到完全不同的城市
@@ -821,14 +832,14 @@ class CafeRecommender(BaseTool):
         url = "https://restapi.amap.com/v3/geocode/geo"
         params = {"key": self.api_key, "address": enhanced_address, "output": "json"}
         
-        # 重试机制，最多重试3次
+        # 重试机制，最多重试3次（优化延迟以提升性能）
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                # 添加延迟以避免API限制
+                # 首次请求无延迟，重试时添加较短延迟
                 if attempt > 0:
-                    await asyncio.sleep(1 * attempt)  # 递增延迟
-                
+                    await asyncio.sleep(0.2 * attempt)  # 200ms递增延迟（优化：原为1s）
+
                 async with aiohttp.ClientSession() as session:
                     async with session.get(url, params=params) as response:
                         if response.status != 200:
@@ -836,31 +847,31 @@ class CafeRecommender(BaseTool):
                             if attempt == max_retries - 1:
                                 return None
                             continue
-                        
+
                         data = await response.json()
-                        
+
                         # 检查API限制错误
                         if data.get("info") == "CUQPS_HAS_EXCEEDED_THE_LIMIT":
                             logger.warning(f"API并发限制超出，地址: {address}, 尝试: {attempt + 1}, 等待后重试")
                             if attempt == max_retries - 1:
                                 logger.error(f"地理编码失败: API并发限制超出，地址: {address}")
                                 return None
-                            await asyncio.sleep(2 * (attempt + 1))  # 更长的延迟
+                            await asyncio.sleep(0.5 * (attempt + 1))  # 500ms延迟（优化：原为2s）
                             continue
-                        
+
                         if data["status"] != "1" or not data["geocodes"]:
                             logger.error(f"地理编码失败: {data.get('info', '未知错误')}, 地址: {address}")
                             return None
-                        
+
                         result = data["geocodes"][0]
                         self.geocode_cache[address] = result  # 使用原始地址作为缓存键
                         return result
-                        
+
             except Exception as e:
                 logger.error(f"地理编码请求异常: {str(e)}, 地址: {address}, 尝试: {attempt + 1}")
                 if attempt == max_retries - 1:
                     return None
-                await asyncio.sleep(1 * (attempt + 1))
+                await asyncio.sleep(0.2 * (attempt + 1))  # 200ms递增延迟（优化：原为1s）
         
         return None
 
