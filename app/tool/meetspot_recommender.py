@@ -2522,33 +2522,20 @@ class CafeRecommender(BaseTool):
         .back-button:hover {{ background-color: var(--primary); color: white; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }}
         .back-button i {{ margin-right: 8px; }}
 
-        /* ========== AI Reasoning Panel - Neural Interface Theme ========== */
+        /* ========== AI Reasoning Panel - Light Theme (Matches Page) ========== */
         .search-process-card {{
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-            border: 1px solid rgba(6, 214, 160, 0.2);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 2px solid var(--brand-secondary, #06D6A0);
             border-radius: 20px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+            box-shadow: 0 4px 24px rgba(10, 77, 104, 0.08), 0 1px 3px rgba(10, 77, 104, 0.05);
         }}
         .search-process-card::before {{
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image:
-                radial-gradient(circle at 20% 80%, rgba(6, 214, 160, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
-            pointer-events: none;
-        }}
-        /* Circuit pattern overlay */
-        .search-process-card::after {{
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0v10M30 50v10M0 30h10M50 30h10' stroke='%2306D6A0' stroke-width='0.5' opacity='0.1' fill='none'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%2306D6A0' opacity='0.1'/%3E%3C/svg%3E");
-            background-size: 60px 60px;
-            opacity: 0.5;
-            pointer-events: none;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--brand-secondary, #06D6A0) 0%, var(--brand-primary, #0A4D68) 50%, var(--brand-accent, #FF6B35) 100%);
         }}
 
         /* Collapsible AI Thinking Section */
@@ -2557,51 +2544,53 @@ class CafeRecommender(BaseTool):
             display: flex;
             align-items: center;
             gap: 16px;
-            padding: 24px 28px;
+            padding: 20px 24px;
             cursor: pointer;
             list-style: none;
             user-select: none;
-            background: linear-gradient(135deg, rgba(6, 214, 160, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%);
+            background: linear-gradient(135deg, rgba(6, 214, 160, 0.06) 0%, rgba(10, 77, 104, 0.04) 100%);
             border-radius: 16px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(6, 214, 160, 0.15);
+            margin: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
         }}
         .ai-thinking-summary::-webkit-details-marker {{ display: none; }}
         .ai-thinking-summary:hover {{
-            background: linear-gradient(135deg, rgba(6, 214, 160, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%);
+            background: linear-gradient(135deg, rgba(6, 214, 160, 0.12) 0%, rgba(10, 77, 104, 0.08) 100%);
             border-color: rgba(6, 214, 160, 0.3);
-            box-shadow: 0 0 30px rgba(6, 214, 160, 0.15);
+            box-shadow: 0 4px 16px rgba(6, 214, 160, 0.12);
         }}
 
         /* AI Brain Icon with Pulse */
         .ai-brain-icon {{
             position: relative;
-            width: 52px;
-            height: 52px;
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #06D6A0 0%, #3B82F6 100%);
-            border-radius: 14px;
-            box-shadow: 0 4px 20px rgba(6, 214, 160, 0.4);
+            background: linear-gradient(135deg, var(--brand-secondary, #06D6A0) 0%, var(--brand-primary, #0A4D68) 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(6, 214, 160, 0.3);
+            flex-shrink: 0;
         }}
         .ai-brain-icon i {{
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: white;
         }}
         .ai-brain-icon::before {{
             content: '';
             position: absolute;
-            inset: -3px;
-            background: linear-gradient(135deg, #06D6A0, #3B82F6, #06D6A0);
-            border-radius: 17px;
+            inset: -2px;
+            background: linear-gradient(135deg, var(--brand-secondary, #06D6A0), var(--brand-primary, #0A4D68));
+            border-radius: 14px;
             z-index: -1;
-            opacity: 0.6;
-            animation: neuralPulse 2s ease-in-out infinite;
+            opacity: 0.5;
+            animation: aiPulse 2s ease-in-out infinite;
         }}
-        @keyframes neuralPulse {{
-            0%, 100% {{ opacity: 0.4; transform: scale(1); }}
-            50% {{ opacity: 0.8; transform: scale(1.05); }}
+        @keyframes aiPulse {{
+            0%, 100% {{ opacity: 0.3; transform: scale(1); }}
+            50% {{ opacity: 0.6; transform: scale(1.03); }}
         }}
 
         /* Title and Badge */
@@ -2610,78 +2599,82 @@ class CafeRecommender(BaseTool):
             display: flex;
             flex-direction: column;
             gap: 4px;
+            min-width: 0;
         }}
         .ai-thinking-header {{
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
         }}
         .ai-thinking-title {{
-            font-size: 1.35rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            color: #f1f5f9;
-            font-family: 'Outfit', sans-serif;
-            letter-spacing: -0.02em;
+            color: var(--brand-primary-dark, #05445E);
+            font-family: 'DM Sans', sans-serif;
+            letter-spacing: -0.01em;
         }}
         .ai-thinking-badge {{
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            padding: 4px 10px;
-            background: rgba(6, 214, 160, 0.15);
-            border: 1px solid rgba(6, 214, 160, 0.3);
+            padding: 3px 10px;
+            background: linear-gradient(135deg, rgba(6, 214, 160, 0.15) 0%, rgba(10, 77, 104, 0.1) 100%);
+            border: 1px solid rgba(6, 214, 160, 0.4);
             border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #06D6A0;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--brand-primary, #0A4D68);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
         }}
         .ai-thinking-badge::before {{
             content: '';
             width: 6px;
             height: 6px;
-            background: #06D6A0;
+            background: var(--brand-secondary, #06D6A0);
             border-radius: 50%;
-            animation: badgePulse 1.5s ease-in-out infinite;
+            animation: livePulse 1.5s ease-in-out infinite;
         }}
-        @keyframes badgePulse {{
-            0%, 100% {{ opacity: 1; }}
-            50% {{ opacity: 0.4; }}
+        @keyframes livePulse {{
+            0%, 100% {{ opacity: 1; transform: scale(1); }}
+            50% {{ opacity: 0.5; transform: scale(0.85); }}
         }}
         .ai-thinking-hint {{
-            font-size: 0.85rem;
-            color: #94a3b8;
+            font-size: 0.82rem;
+            color: var(--text-secondary, #4B5563);
             font-weight: 400;
         }}
 
-        /* Expand Arrow */
+        /* Expand Button */
         .ai-thinking-expand {{
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            color: #94a3b8;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            gap: 6px;
+            padding: 8px 14px;
+            background: rgba(10, 77, 104, 0.06);
+            border: 1px solid rgba(10, 77, 104, 0.15);
+            border-radius: 8px;
+            color: var(--brand-primary, #0A4D68);
+            font-size: 0.78rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
         }}
         .ai-thinking-summary:hover .ai-thinking-expand {{
-            background: rgba(6, 214, 160, 0.1);
-            border-color: rgba(6, 214, 160, 0.3);
-            color: #06D6A0;
+            background: var(--brand-secondary, #06D6A0);
+            border-color: var(--brand-secondary, #06D6A0);
+            color: white;
         }}
         .ai-thinking-arrow {{
-            font-size: 1.2rem;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1rem;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }}
         .ai-thinking-details[open] .ai-thinking-arrow {{ transform: rotate(180deg); }}
         .ai-thinking-details[open] .ai-thinking-expand {{
-            background: rgba(6, 214, 160, 0.15);
-            color: #06D6A0;
+            background: var(--brand-primary, #0A4D68);
+            border-color: var(--brand-primary, #0A4D68);
+            color: white;
         }}
         .ai-thinking-expand .collapse-text {{ display: none; }}
         .ai-thinking-details[open] .expand-text {{ display: none; }}
@@ -2689,44 +2682,51 @@ class CafeRecommender(BaseTool):
 
         /* Expanded State */
         .ai-thinking-details[open] .ai-thinking-summary {{
-            border-bottom: 1px solid rgba(6, 214, 160, 0.15);
             border-radius: 16px 16px 0 0;
             margin-bottom: 0;
+            border-bottom: 1px solid rgba(10, 77, 104, 0.1);
         }}
         .ai-thinking-details[open] .ai-thinking-badge::before {{
-            background: #3B82F6;
+            background: var(--brand-accent, #FF6B35);
             animation: none;
         }}
 
         /* Content Area */
         .ai-thinking-details .search-process {{
-            padding: 28px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 0 0 16px 16px;
+            padding: 24px;
+            background: linear-gradient(180deg, rgba(248, 250, 252, 1) 0%, rgba(255, 255, 255, 1) 100%);
+            border-top: 1px solid rgba(10, 77, 104, 0.08);
+            animation: fadeSlideIn 0.3s ease-out;
+        }}
+        @keyframes fadeSlideIn {{
+            from {{ opacity: 0; transform: translateY(-8px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
         }}
 
-        /* Override step styles for dark theme */
-        .search-process-card .process-step {{ color: #e2e8f0; }}
-        .search-process-card .step-title {{ color: #f1f5f9; }}
+        /* Step styles for light theme */
+        .search-process-card .process-step {{ color: var(--text-primary, #111827); }}
+        .search-process-card .step-title {{ color: var(--brand-primary-dark, #05445E); }}
         .search-process-card .step-details {{
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #cbd5e1;
+            background: white;
+            border: 1px solid rgba(10, 77, 104, 0.08);
+            color: var(--text-secondary, #4B5563);
+            box-shadow: 0 2px 8px rgba(10, 77, 104, 0.04);
         }}
         .search-process-card .step-icon {{
-            background: linear-gradient(135deg, #06D6A0 0%, #0891b2 100%);
-            box-shadow: 0 4px 15px rgba(6, 214, 160, 0.3);
+            background: linear-gradient(135deg, var(--brand-secondary, #06D6A0) 0%, var(--brand-primary, #0A4D68) 100%);
+            box-shadow: 0 4px 12px rgba(6, 214, 160, 0.25);
         }}
         .search-process-card .step-number {{
-            background: linear-gradient(135deg, #3B82F6 0%, #6366f1 100%);
+            background: linear-gradient(135deg, var(--brand-primary, #0A4D68) 0%, var(--brand-primary-dark, #05445E) 100%);
         }}
         .search-process-card .highlight-text {{
-            background: rgba(6, 214, 160, 0.2);
-            color: #06D6A0;
+            background: rgba(6, 214, 160, 0.15);
+            color: var(--brand-primary-dark, #05445E);
         }}
         .search-process-card .code-block {{
-            background: #020617;
-            border: 1px solid rgba(6, 214, 160, 0.2);
+            background: #1e293b;
+            border: 1px solid rgba(10, 77, 104, 0.15);
+            color: #e2e8f0;
         }}
 
         /* AI Location List */

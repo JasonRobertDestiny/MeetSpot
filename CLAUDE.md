@@ -63,9 +63,9 @@ Environment variables always take precedence over TOML values.
 
 ```
 app/tool/meetspot_recommender.py  # Main recommendation engine (CafeRecommender class)
-  - UNIVERSITY_EXPANSIONS dict    # 60+ abbreviation mappings (e.g., "北大" -> "北京市海淀区北京大学")
+  - UNIVERSITY_EXPANSIONS dict    # 45+ abbreviation mappings (e.g., "北大" -> "北京市海淀区北京大学")
   - PLACE_TYPE_CONFIG dict        # 12 venue themes with colors, icons, Chinese names
-  - _rank_places() method         # Scoring: rating(x10) + distance(max 20) + scenario(+15) + requirements(+10)
+  - _rank_places() method         # 100-point scoring: Base(30) + Popularity(20) + Distance(25) + Scenario(15) + Requirements(10)
   - _generate_html_content()      # Creates standalone HTML with Amap JS API
 
 app/design_tokens.py              # WCAG AA color palette, CSS variable generation
@@ -101,11 +101,12 @@ Experimental agent endpoint (`/api/find_meetspot_agent`) requires OpenManus fram
 3. Theme auto-applies based on primary keyword match
 
 ### Modifying Ranking
-Edit `_rank_places()` in `meetspot_recommender.py`:
-- Base: Rating x 10
-- Distance: Max 20, decays with distance
-- Scenario match: +15 for matching venue type
-- Requirements: +10 for parking/quiet/business/transit
+Edit `_rank_places()` in `meetspot_recommender.py` (100-point system):
+- Base: 30 points (rating normalized to 5-star scale x 6)
+- Popularity: 20 points (log-scaled reviews + photos)
+- Distance: 25 points (non-linear decay, 500m = full score)
+- Scenario: 15 points (keyword/type match)
+- Requirements: 10 points (parking/quiet/business/transit)
 
 ### Working with Generated HTML
 - Templates embedded in `_generate_html_content()` as f-strings

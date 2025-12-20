@@ -57,15 +57,15 @@ MeetSpot finds the **fairest meeting point for multiple people**. Input addresse
 
 | Mode | Trigger | Speed | Use Case |
 |------|---------|-------|----------|
-| **Rule Mode** | 2-3 locations, simple keywords | 5-8s | Quick cafe/restaurant lookup |
-| **Agent Mode** | 4+ locations, complex requirements | 15-30s | Personalized recommendations |
+| **Rule Mode** | 2-3 locations, simple keywords | 2-4s | Quick cafe/restaurant lookup |
+| **Agent Mode** | 4+ locations, complex requirements | 8-15s | Personalized recommendations |
 
 ### 5-Step Processing Pipeline
 
-1. **Geocode** - Convert addresses to coordinates (60+ university shortcuts: "PKU" -> "Peking University, Beijing")
+1. **Geocode** - Convert addresses to coordinates (45+ university shortcuts: "PKU" -> "Peking University, Beijing")
 2. **Center Calc** - Spherical geometry for fairness
 3. **POI Search** - Concurrent async search across multiple venue types
-4. **Ranking** - Score = Rating(x10) + Distance(max 20) + ScenarioMatch(+15) + Requirements(+10)
+4. **Ranking** - 100-point scoring: Base(30) + Popularity(20) + Distance(25) + Scenario(15) + Requirements(10)
 5. **HTML Gen** - Interactive map with Amap JS API
 
 ---
