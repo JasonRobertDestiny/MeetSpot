@@ -78,9 +78,11 @@ class CafeRecommender(BaseTool):
     # 高德地图API密钥
     api_key: str = Field(default="")
 
-    # 缓存请求结果以减少API调用
+    # 缓存请求结果以减少API调用（限制大小防止内存溢出）
     geocode_cache: Dict[str, Dict] = Field(default_factory=dict)
     poi_cache: Dict[str, List] = Field(default_factory=dict)
+    GEOCODE_CACHE_MAX: int = 100  # 最多缓存100个地址
+    POI_CACHE_MAX: int = 50  # 最多缓存50个POI搜索结果
 
     # ========== 品牌特征知识库 ==========
     # 用于三层匹配算法的第二层：基于品牌特征的需求推断
@@ -907,7 +909,11 @@ class CafeRecommender(BaseTool):
                             return None
 
                         result = data["geocodes"][0]
-                        self.geocode_cache[address] = result  # 使用原始地址作为缓存键
+                        # 缓存大小限制：超限时删除最旧的条目
+                        if len(self.geocode_cache) >= self.GEOCODE_CACHE_MAX:
+                            oldest_key = next(iter(self.geocode_cache))
+                            del self.geocode_cache[oldest_key]
+                        self.geocode_cache[address] = result
                         return result
 
             except Exception as e:
@@ -1259,6 +1265,10 @@ class CafeRecommender(BaseTool):
                     logger.error(f"POI搜索API返回错误: {data.get('info', '未知错误')}, 参数: {params}")
                     return []
                 pois = data.get("pois", [])
+                # 缓存大小限制：超限时删除最旧的条目
+                if len(self.poi_cache) >= self.POI_CACHE_MAX:
+                    oldest_key = next(iter(self.poi_cache))
+                    del self.poi_cache[oldest_key]
                 self.poi_cache[cache_key] = pois
                 return pois
 
