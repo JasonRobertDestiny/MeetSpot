@@ -81,7 +81,7 @@ LLM analyzes venue-requirement semantic fit, then blends with rule-based scoring
 
 ### 5-Step Processing Pipeline
 
-1. **Geocode** - Convert addresses to coordinates (45+ university shortcuts: "PKU" -> "Peking University, Beijing")
+1. **Geocode** - Convert addresses to coordinates (90+ shortcuts: universities + city landmarks)
 2. **Center Calc** - Spherical geometry for fairness
 3. **POI Search** - Concurrent async search across multiple venue types
 4. **Ranking** - 100-point scoring: Base(30) + Popularity(20) + Distance(25) + Scenario(15) + Requirements(10)
