@@ -157,3 +157,21 @@ image.png
 image copy.png
 image copy 2.png
 线下聚会数据.png
+deepwiki.png
+*.png
+!docs/*.png
+!docs/*.jpg
+!public/**/*.png
+!public/**/*.jpg
+
+# PPT and presentation materials (local only)
+MeetSpot PPT内容/
+meetspot演讲稿子.md
+*演讲*.md
+*路演*.md
+
+# Random hash-named files
+[0-9a-f][0-9a-f][0-9a-f][0-9a-f]*.png
+
+# UI optimization guides (outdated)
+UI_UX_OPTIMIZATION_GUIDE.md
