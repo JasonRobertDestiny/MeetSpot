@@ -26,6 +26,7 @@ curl -X POST "http://127.0.0.1:8000/api/find_meetspot" \
 # Testing
 pytest tests/ -v                         # Full suite
 pytest --cov=app tests/                  # Coverage (target: 80%)
+python tests/test_seo.py http://localhost:8000  # SEO validation (separate script)
 
 # Quality gates (run before PRs)
 black . && ruff check . && mypy app/
@@ -35,7 +36,7 @@ black . && ruff check . && mypy app/
 
 ## Environment Setup
 
-**Conda**: `conda env create -f environment.yml && conda activate meetspot`
+**Conda**: `conda env create -f environment.yml && conda activate meetspot` (env name is `meetspot`)
 **Pip**: `python3.11 -m venv venv && source venv/bin/activate && pip install -r requirements.txt`
 
 **Configuration**:
@@ -109,11 +110,14 @@ Experimental agent endpoint (`/api/find_meetspot_agent`) requires OpenManus fram
 
 ### Ranking Algorithm
 Edit `_rank_places()` in `meetspot_recommender.py`:
-- Base: 30 points (rating × 6)
+- Base: 30 points (rating x 6)
 - Popularity: 20 points (log-scaled reviews)
 - Distance: 25 points (500m = full score, decays)
 - Scenario: 15 points (keyword match)
 - Requirements: 10 points (parking/quiet/business)
+
+### Brand Knowledge Base
+`BRAND_FEATURES` dict in `meetspot_recommender.py` contains 50+ brand profiles (Starbucks, Haidilao, etc.) with feature scores (0.0-1.0) for: quiet, WiFi, business, parking, child-friendly, 24h. Used in requirements matching - brands scoring >=0.7 satisfy the requirement. Place types prefixed with `_` (e.g., `_library`) provide defaults.
 
 ### Adding Address Mappings
 In `_enhance_address()` method:

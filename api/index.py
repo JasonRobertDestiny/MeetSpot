@@ -4,7 +4,12 @@ import time
 import asyncio
 import re
 import json
+import gc
 from typing import List, Optional
+
+# 并发控制：防止OOM，保证每个请求都能完成
+MAX_CONCURRENT_REQUESTS = 3  # 最大同时处理请求数
+_request_semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
 
 # 添加项目根目录到 Python 路径
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
@@ -36,14 +41,15 @@ except ImportError as e:
     config = None
     config_available = False
 
-# 导入 Agent 模块
-agent_available = False
-try:
-    from app.agent import MeetSpotAgent, create_meetspot_agent
-    agent_available = True
-    print("✅ 成功导入 Agent 模块")
-except ImportError as e:
-    print(f"⚠️ Agent 模块导入失败: {e}")
+# 导入 Agent 模块（高内存消耗，暂时禁用以保证稳定性）
+agent_available = False  # 禁用 Agent 模式，节省内存
+# try:
+#     from app.agent import MeetSpotAgent, create_meetspot_agent
+#     agent_available = True
+#     print("✅ 成功导入 Agent 模块")
+# except ImportError as e:
+#     print(f"⚠️ Agent 模块导入失败: {e}")
+print("ℹ️ Agent 模块已禁用（节省内存）")
 
 # 导入 LLM 模块
 llm_available = False
@@ -680,6 +686,13 @@ async def find_meetspot(request: MeetSpotRequest):
     """
     start_time = time.time()
 
+    # 并发控制：排队处理，保证每个请求都能完成
+    async with _request_semaphore:
+        return await _process_meetspot_request(request, start_time)
+
+
+async def _process_meetspot_request(request: MeetSpotRequest, start_time: float):
+    """实际处理推荐请求的内部函数"""
     # 评估请求复杂度
     complexity = assess_request_complexity(request)
     print(f"🧠 [智能路由] 复杂度评估: {complexity['complexity_score']}分, 模式: {complexity['mode_name']}")
@@ -815,6 +828,8 @@ async def find_meetspot(request: MeetSpotRequest):
             }
 
             print(f"📤 返回响应: success={response_data['success']}, html_url={response_data['html_url']}")
+            # 主动释放内存
+            gc.collect()
             return response_data
 
         else:
@@ -832,6 +847,9 @@ async def find_meetspot(request: MeetSpotRequest):
         traceback.print_exc()
 
         processing_time = time.time() - start_time
+
+        # 主动释放内存
+        gc.collect()
 
         # 返回错误响应，但保持前端期望的格式
         error_response = {

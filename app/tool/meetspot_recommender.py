@@ -78,11 +78,11 @@ class CafeRecommender(BaseTool):
     # 高德地图API密钥
     api_key: str = Field(default="")
 
-    # 缓存请求结果以减少API调用（限制大小防止内存溢出）
+    # 缓存请求结果以减少API调用（路演模式：极限压缩防止OOM）
     geocode_cache: Dict[str, Dict] = Field(default_factory=dict)
     poi_cache: Dict[str, List] = Field(default_factory=dict)
-    GEOCODE_CACHE_MAX: int = 100  # 最多缓存100个地址
-    POI_CACHE_MAX: int = 50  # 最多缓存50个POI搜索结果
+    GEOCODE_CACHE_MAX: int = 30  # 路演模式：减少到30个地址
+    POI_CACHE_MAX: int = 15  # 路演模式：减少到15个POI搜索结果
 
     # ========== 品牌特征知识库 ==========
     # 用于三层匹配算法的第二层：基于品牌特征的需求推断
@@ -2113,6 +2113,26 @@ class CafeRecommender(BaseTool):
         y = (lat2 - lat1) * 111000 
         return math.sqrt(x*x + y*y)
 
+    def _cleanup_old_html_files(self, directory: str, max_files: int = 50):
+        """清理旧的 HTML 文件，保留最新的 max_files 个"""
+        try:
+            files = []
+            for f in os.listdir(directory):
+                if f.endswith('.html') and f.startswith('place_recommendation_'):
+                    file_path = os.path.join(directory, f)
+                    files.append((file_path, os.path.getmtime(file_path)))
+
+            # 按修改时间排序，删除旧文件
+            files.sort(key=lambda x: x[1], reverse=True)
+            for file_path, _ in files[max_files:]:
+                try:
+                    os.remove(file_path)
+                    logger.debug(f"清理旧 HTML 文件: {file_path}")
+                except Exception:
+                    pass
+        except Exception as e:
+            logger.warning(f"清理 HTML 文件时出错: {e}")
+
     async def _generate_html_page(
         self,
         locations: List[Dict],
@@ -2138,9 +2158,13 @@ class CafeRecommender(BaseTool):
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         unique_id = str(uuid.uuid4())[:8]
         file_name = f"{file_name_prefix}_recommendation_{timestamp}_{unique_id}.html"
-        
+
         workspace_js_src_path = os.path.join("workspace", "js_src")
         os.makedirs(workspace_js_src_path, exist_ok=True)
+
+        # 清理旧文件，防止累积
+        self._cleanup_old_html_files(workspace_js_src_path, max_files=50)
+
         file_path = os.path.join(workspace_js_src_path, file_name)
 
         async with aiofiles.open(file_path, 'w', encoding='utf-8') as f:
