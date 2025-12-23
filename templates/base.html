@@ -735,7 +735,7 @@
                 <div class="social-links">
                     <button class="social-btn wechat-btn" onclick="showWeChatGroupModal()">
                         <i class='bx bxl-wechat'></i>
-                        <span>微信交流群</span>
+                        <span>个人微信</span>
                     </button>
                     <a href="https://github.com/JasonRobertDestiny/MeetSpot" class="social-btn github-btn" target="_blank" rel="noopener">
                         <i class='bx bxl-github'></i>
@@ -771,24 +771,14 @@
         </div>
     </footer>
 
-    <!-- 微信群 Modal -->
+    <!-- 个人微信 Modal -->
     <div id="wechat-modal" class="modal" onclick="closeModal(event, 'wechat-modal')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeModal(event, 'wechat-modal')" aria-label="关闭">&times;</button>
-            <h3>加入MeetSpot交流群</h3>
-            <p>与数千名用户一起交流使用心得，获取最新功能更新</p>
+            <h3>添加个人微信</h3>
+            <p>扫码添加好友，交流使用心得</p>
             <div class="qr-container">
-                <img src="/public/docs/vx_chat.png" alt="微信群二维码" title="扫描二维码加入MeetSpot社区" loading="lazy">
-                <div class="qr-notice">
-                    该二维码7天内有效，重新进入将更新
-                </div>
-                <div class="qr-fallback">
-                    <strong>如二维码过期，请通过以下方式联系：</strong>
-                    <ul>
-                        <li><a href="https://github.com/JasonRobertDestiny/MeetSpot/issues" target="_blank">GitHub Issues</a></li>
-                        <li><a href="https://jasonrobert.me/" target="_blank">博客留言</a></li>
-                    </ul>
-                </div>
+                <img src="/public/docs/vx_chat.png" alt="个人微信二维码" title="扫描二维码添加微信好友" loading="lazy">
             </div>
         </div>
     </div>
