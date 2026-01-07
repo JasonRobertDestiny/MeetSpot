@@ -267,6 +267,13 @@ black . && ruff check . && mypy app/
 **个人微信**
 
 </td>
+<td align="center">
+
+<img src="public/docs/vx_group.png" alt="微信交流群" width="150"/>
+
+**微信交流群**
+
+</td>
 </tr>
 </table>
 

@@ -51,6 +51,11 @@ agent_available = False  # 禁用 Agent 模式，节省内存
 #     print(f"⚠️ Agent 模块导入失败: {e}")
 print("ℹ️ Agent 模块已禁用（节省内存）")
 
+
+def create_meetspot_agent():
+    """Stub function - Agent模式已禁用，此函数不应被调用"""
+    raise RuntimeError("Agent模式已禁用，请使用规则模式")
+
 # 导入 LLM 模块
 llm_available = False
 llm_instance = None

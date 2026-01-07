@@ -266,7 +266,14 @@ Contributions are welcome! Please:
 
 <img src="public/docs/vx_chat.png" alt="WeChat" width="150"/>
 
-**WeChat**
+**Personal WeChat**
+
+</td>
+<td align="center">
+
+<img src="public/docs/vx_group.png" alt="WeChat Group" width="150"/>
+
+**WeChat Group**
 
 </td>
 </tr>
