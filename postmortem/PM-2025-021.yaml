@@ -1,0 +1,33 @@
+id: PM-2025-021
+created_at: '2026-01-13T05:58:12.599589Z'
+source_commit: 355b89e
+severity: high
+title: 修复Google Search Console验证文件访问问题
+description: 由于Google Search Console验证文件无法从根路径访问，导致验证超时问题，影响网站的搜索引擎优化。
+root_cause: 缺少专门的路由来处理Google Search Console验证文件的请求。
+triggers:
+  files:
+  - api/index.py
+  functions:
+  - google_verification
+  patterns:
+  - '@app.get\("/google48ac1a797739b7b0.html"\)'
+  keywords:
+  - Google Search Console
+  - 验证文件
+  - 超时
+fix_pattern:
+  approach: 添加专门的路由以确保验证文件可从根路径访问。
+  key_changes:
+  - 添加google_verification函数
+  - 定义新的路由
+verification:
+- 确认google48ac1a797739b7b0.html文件可以从根路径访问
+- 检查Google Search Console验证状态是否正常
+related:
+  files_changed:
+  - api/index.py
+tags:
+- seo
+- api
+- verification

@@ -1,0 +1,39 @@
+id: PM-2025-020
+created_at: '2026-01-13T05:58:09.424945Z'
+source_commit: aba844e
+severity: medium
+title: 修复二维码用途和描述错误
+description: 二维码用途和描述错误，导致用户无法正确识别微信群和支付二维码，影响用户体验。
+root_cause: 二维码图片和描述信息配置错误，导致用途混淆。
+triggers:
+  files:
+  - docs/vx_chat.png
+  - public/index.html
+  functions: []
+  patterns:
+  - vx_chat.png
+  - vx_payment.png
+  keywords:
+  - 二维码
+  - 微信
+  - 支付
+  - 交流群
+fix_pattern:
+  approach: 更新二维码图片及描述信息，确保用途明确。
+  key_changes:
+  - 修改vx_chat.png为微信交流群二维码
+  - 修改vx_payment.png为请喝咖啡支付码
+  - 移除个人微信二维码
+  - 优化支持页面的文案和图标
+verification:
+- 确认vx_chat.png显示为微信群二维码
+- 确认vx_payment.png显示为支付二维码
+- 检查支持页面文案和图标是否正确
+related:
+  files_changed:
+  - docs/vx_chat.png
+  - public/index.html
+tags:
+- ui
+- documentation
+- user-experience

@@ -1,0 +1,42 @@
+id: PM-2025-001
+created_at: '2026-01-13T05:56:50.491275Z'
+source_commit: bb5c8b0
+severity: high
+title: 限制缓存大小以防止免费层内存溢出
+description: 在免费层环境中，因缓存未限制大小导致内存溢出，触发 Render 512MB 内存限制错误，影响服务稳定性。
+root_cause: Geocode 和 POI 缓存未设置大小限制，导致缓存无限增长，最终耗尽内存。
+triggers:
+  files:
+  - app/tool/*.py
+  functions:
+  - CafeRecommender.geocode_cache
+  - CafeRecommender.poi_cache
+  patterns:
+  - geocode_cache
+  - poi_cache
+  - Field\(default_factory=dict\)
+  keywords:
+  - 缓存
+  - cache
+  - memory
+  - OOM
+  - 内存溢出
+fix_pattern:
+  approach: 为缓存添加大小限制，并在超限时采用 FIFO 策略逐出最旧条目。
+  key_changes:
+  - 添加 GEOCODE_CACHE_MAX 和 POI_CACHE_MAX 常量，分别限制缓存大小为 100 和 50。
+  - 在 geocode_cache 和 poi_cache 写入逻辑中添加 FIFO 驱逐逻辑。
+verification:
+- 验证 geocode_cache 和 poi_cache 的大小是否符合限制。
+- 检查 FIFO 驱逐逻辑是否正确执行。
+- 在内存受限环境中运行服务，确保不会触发 OOM 错误。
+- 测试缓存命中率是否符合预期，避免过多 API 调用。
+related:
+  files_changed:
+  - app/tool/meetspot_recommender.py
+tags:
+- geocoding
+- memory
+- cache
+- performance
+- api

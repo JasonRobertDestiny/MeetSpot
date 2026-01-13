@@ -1,0 +1,98 @@
+name: Postmortem Update
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: 'Specific commit hash to process'
+        required: false
+      force:
+        description: 'Force generation even if not a fix commit'
+        type: boolean
+        default: false
+
+jobs:
+  update-postmortems:
+    runs-on: ubuntu-latest
+    # Only run for fix commits or manual trigger
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      startsWith(github.event.head_commit.message, 'fix')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 10
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+          # Install project dependencies for LLM (optional)
+          if [ -f requirements.txt ]; then
+            pip install openai tiktoken tenacity || true
+          fi
+
+      - name: Determine commit to process
+        id: commit
+        run: |
+          if [ -n "${{ github.event.inputs.commit }}" ]; then
+            echo "sha=${{ github.event.inputs.commit }}" >> $GITHUB_OUTPUT
+          else
+            echo "sha=${{ github.sha }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate postmortem
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_API_BASE: ${{ secrets.LLM_API_BASE }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+        run: |
+          COMMIT="${{ steps.commit.outputs.sha }}"
+          FORCE_FLAG=""
+
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            FORCE_FLAG="--force"
+          fi
+
+          # Check if LLM is configured
+          if [ -z "$LLM_API_KEY" ]; then
+            echo "LLM_API_KEY not configured, using rule-based extraction"
+            NO_LLM="--no-llm"
+          else
+            NO_LLM=""
+          fi
+
+          # Run generation
+          python tools/postmortem_generate.py \
+            --commit "$COMMIT" \
+            --output postmortem/ \
+            $FORCE_FLAG \
+            $NO_LLM || echo "Generation skipped or failed"
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [ -n "$(git status --porcelain postmortem/)" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit postmortem updates
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add postmortem/
+          git commit -m "docs(postmortem): auto-generated from ${{ steps.commit.outputs.sha }}"
+          git push

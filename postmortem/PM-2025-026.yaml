@@ -1,0 +1,40 @@
+id: PM-2025-026
+created_at: '2026-01-13T05:58:33.486366Z'
+source_commit: b601e97
+severity: high
+title: 修复 GitHub Actions 工作流语法错误
+description: 部分 GitHub Actions 工作流文件存在 YAML 语法错误，导致 CI/CD 无法正常运行。问题影响了自动化构建和依赖管理流程。
+root_cause: 工作流文件中存在不规范的 YAML 语法，导致无法通过验证。
+triggers:
+  files:
+  - .github/workflows/*.yml
+  functions: []
+  patterns:
+  - ^.*:\s+\[.*\]$
+  - ^.*:\s+\{.*\}$
+  keywords:
+  - syntax error
+  - YAML validation
+  - GitHub Actions
+fix_pattern:
+  approach: 清理工作流文件，移除语法错误并简化复杂逻辑。
+  key_changes:
+  - 移除有问题的工作流文件，保留 ci-clean.yml 和 auto-merge-clean.yml
+  - 简化 update-badges.yml 文件，避免复杂的 shell 语法
+  - 新增 GITHUB_ACTIONS_CLEANUP_REPORT.md，记录详细清理日志
+verification:
+- 确保所有工作流文件通过 YAML 验证
+- 验证 CI/CD 流程是否正常运行
+- 检查 update-badges.yml 的 shell 逻辑是否简化且可执行
+- 确认 GITHUB_ACTIONS_CLEANUP_REPORT.md 包含完整清理记录
+related:
+  files_changed:
+  - .github/workflows/auto-merge-clean.yml
+  - .github/workflows/ci-clean.yml
+  - .github/workflows/update-badges.yml
+  - GITHUB_ACTIONS_CLEANUP_REPORT.md
+tags:
+- ci
+- github-actions
+- yaml
+- automation

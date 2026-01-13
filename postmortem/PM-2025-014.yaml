@@ -1,0 +1,38 @@
+id: PM-2025-014
+created_at: '2026-01-13T05:57:45.466710Z'
+source_commit: 5d694dc
+severity: high
+title: 修复 sitemap.xml 和 robots.txt 的 HEAD 请求支持
+description: Google Search Console 报告 sitemap.xml 无法获取，原因是 HEAD 请求返回 405 Method Not
+  Allowed，影响搜索引擎爬虫的文件访问检查。
+root_cause: sitemap.xml 和 robots.txt 的 API 路由未支持 HEAD 请求，导致爬虫无法验证文件可访问性。
+triggers:
+  files:
+  - api/routers/seo_pages.py
+  functions:
+  - sitemap
+  - robots_txt
+  patterns:
+  - '@router.api_route\(.*methods=\[.*HEAD.*\]\)'
+  keywords:
+  - HEAD method
+  - sitemap.xml
+  - robots.txt
+  - Google Search Console
+fix_pattern:
+  approach: 为 sitemap.xml 和 robots.txt 的 API 路由添加 HEAD 请求支持。
+  key_changes:
+  - 将 @router.get 替换为 @router.api_route，并添加 methods=["GET", "HEAD"] 参数。
+  - 确保 HEAD 请求返回正确的 HTTP 状态码和响应头。
+verification:
+- 验证 sitemap.xml 和 robots.txt 的 HEAD 请求是否返回 200 状态码。
+- 检查 HEAD 请求是否正确返回 Content-Type 和其他必要的响应头。
+- 通过 Google Search Console 确认问题已解决，文件可正常访问。
+related:
+  files_changed:
+  - api/routers/seo_pages.py
+tags:
+- seo
+- api
+- crawler
+- google

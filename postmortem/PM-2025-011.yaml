@@ -1,0 +1,39 @@
+id: PM-2025-011
+created_at: '2026-01-13T05:57:33.139741Z'
+source_commit: 2456df8
+severity: high
+title: 修复SEO问题：添加/sitemap.xml和/robots.txt显式路由
+description: 由于StaticFiles挂载路径问题，Google Search Console报告“无法读取站点地图”。此问题影响了搜索引擎对网站的抓取和索引。
+root_cause: sitemap.xml和robots.txt文件路径不正确，导致搜索引擎无法访问。
+triggers:
+  files:
+  - api/index.py
+  - public/sitemap.xml
+  functions:
+  - sitemap
+  - robots
+  patterns:
+  - '@app.api_route\("/sitemap.xml"'
+  - '@app.api_route\("/robots.txt"'
+  keywords:
+  - sitemap
+  - robots.txt
+  - SEO
+  - StaticFiles
+fix_pattern:
+  approach: 添加显式路由以正确提供sitemap.xml和robots.txt文件，并设置适当的HTTP头。
+  key_changes:
+  - 在api/index.py中添加/sitemap.xml和/robots.txt路由
+  - 为sitemap.xml和robots.txt设置正确的Content-Type头
+verification:
+- 确保/sitemap.xml和/robots.txt路由返回正确的文件内容
+- 验证Google Search Console中不再出现“无法读取站点地图”错误
+- 检查sitemap.xml的lastmod日期是否更新
+related:
+  files_changed:
+  - api/index.py
+  - public/sitemap.xml
+tags:
+- SEO
+- api
+- routing

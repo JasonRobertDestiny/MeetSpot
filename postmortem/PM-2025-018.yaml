@@ -1,0 +1,44 @@
+id: PM-2025-018
+created_at: '2026-01-13T05:58:02.063142Z'
+source_commit: a34acd4
+severity: high
+title: Bing验证文件访问优化 - 支持HEAD请求和防缓存
+description: Bing站长工具验证失败，HEAD请求返回405错误，导致验证无法通过。同时，CDN缓存问题导致验证文件不可达，robots.txt配置可能阻止验证文件爬取。
+root_cause: 验证文件路由未正确支持HEAD请求，且未设置防缓存headers，导致验证失败。
+triggers:
+  files:
+  - api/index.py
+  - public/robots.txt
+  functions:
+  - google_verification
+  - bing_verification
+  patterns:
+  - '@app.api_route'
+  - Cache-Control
+  - robots.txt
+  keywords:
+  - BingSiteAuth.xml
+  - HEAD请求
+  - 防缓存
+  - robots.txt
+fix_pattern:
+  approach: 优化验证文件路由，支持HEAD请求并添加防缓存headers，同时更新robots.txt明确允许验证文件爬取。
+  key_changes:
+  - 在api/index.py中为Google和Bing验证文件路由添加HEAD请求支持
+  - 为验证文件响应添加防缓存headers
+  - 更新robots.txt，明确Allow验证文件路径
+verification:
+- 验证HEAD请求是否返回200 OK
+- 检查验证文件是否包含防缓存headers
+- 确认robots.txt中允许验证文件路径
+- 通过curl命令测试验证文件的GET和HEAD请求是否正常
+related:
+  files_changed:
+  - api/index.py
+  - public/robots.txt
+tags:
+- api
+- SEO
+- robots.txt
+- CDN
+- validation

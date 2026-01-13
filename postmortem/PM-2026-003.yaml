@@ -1,0 +1,39 @@
+id: PM-2026-003
+created_at: '2026-01-13T05:56:45.473246Z'
+source_commit: 83f25ab
+severity: medium
+title: 修复 CI 管道失败问题：添加 create_meetspot_agent 存根
+description: 由于未定义名称错误，CI 管道失败。通过添加 create_meetspot_agent 存根函数解决此问题。
+root_cause: create_meetspot_agent 函数未定义导致 flake8 F821 错误。
+triggers:
+  files:
+  - api/index.py
+  functions:
+  - create_meetspot_agent
+  patterns:
+  - def create_meetspot_agent\(
+  keywords:
+  - CI
+  - flake8
+  - F821
+  - create_meetspot_agent
+fix_pattern:
+  approach: 添加 create_meetspot_agent 存根函数以避免未定义名称错误。
+  key_changes:
+  - 添加 create_meetspot_agent 存根函数
+  - 更新 README 文件
+verification:
+- 确保 create_meetspot_agent 函数存在且不会被调用
+- 检查 CI 管道是否成功运行
+- 验证 README 文件中的图片是否正确显示
+related:
+  files_changed:
+  - CLAUDE.md
+  - README.md
+  - README_ZH.md
+  - api/index.py
+  - public/docs/vx_group.png
+tags:
+- ci
+- documentation
+- agent

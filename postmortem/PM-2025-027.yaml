@@ -1,0 +1,43 @@
+id: PM-2025-027
+created_at: '2026-01-13T05:58:38.080214Z'
+source_commit: 7a124b0
+severity: medium
+title: 修复构建状态徽章和 GitHub Actions 配置问题
+description: 构建状态徽章的 URL 路径错误，导致显示不正确，同时 GitHub Actions CI 配置文件需要重新创建，影响了项目的持续集成状态。
+root_cause: 构建徽章的 URL 路径配置错误，以及 GitHub Actions CI 配置文件丢失或损坏。
+triggers:
+  files:
+  - README.md
+  - README_EN.md
+  - GITHUB_CONTRIBUTOR_RECRUITMENT.md
+  - GITHUB_ISSUE_TEMPLATE.md
+  - .github/workflows/ci.yml
+  functions: []
+  patterns:
+  - workflows/CI%20Tests/badge.svg
+  - actions/workflows/ci.yml/badge.svg
+  keywords:
+  - 构建徽章
+  - GitHub Actions
+  - CI 配置
+fix_pattern:
+  approach: 更正构建徽章的 URL 路径并重新创建 GitHub Actions CI 配置文件。
+  key_changes:
+  - 更正 README 文件中的徽章 URL
+  - 重新创建 .github/workflows/ci.yml 文件
+verification:
+- 检查 README 文件中构建徽章的 URL 是否正确
+- 验证 GitHub Actions CI 配置文件是否存在并正确配置
+- 确保所有相关文档中的徽章链接均已更新
+related:
+  files_changed:
+  - .github/workflows/ci.yml
+  - GITHUB_CONTRIBUTOR_RECRUITMENT.md
+  - GITHUB_ISSUE_TEMPLATE.md
+  - README.md
+  - README_EN.md
+  - README_RESOLVED.md
+tags:
+- ci
+- documentation
+- github

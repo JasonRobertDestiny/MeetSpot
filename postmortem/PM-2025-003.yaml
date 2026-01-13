@@ -1,0 +1,36 @@
+id: PM-2025-003
+created_at: '2026-01-13T05:56:59.697193Z'
+source_commit: 3ba4b1d
+severity: high
+title: 修复地理编码跨城市歧义问题，提升演示可靠性
+description: 在地理编码过程中，某些地标名称可能导致跨城市的歧义，影响系统的准确性和演示的可靠性。此次修复通过添加地标映射解决了这一问题。
+root_cause: 缺乏对常见地标的明确城市映射，导致地理编码结果不准确。
+triggers:
+  files:
+  - app/tool/*.py
+  functions:
+  - _get_address
+  patterns:
+  - landmark_mapping\s*=\s*\{
+  keywords:
+  - geocoding
+  - landmark
+  - ambiguity
+  - 城市歧义
+fix_pattern:
+  approach: 通过添加45个以上的地标映射，确保地标名称能够正确解析到对应的城市。
+  key_changes:
+  - 新增 landmark_mapping 字典
+  - 在 _get_address 函数中增加地标映射逻辑
+verification:
+- 验证地标名称是否正确映射到对应城市
+- 检查新增地标映射是否覆盖主要城市的常见地标
+- 确保地理编码结果在演示中表现良好
+related:
+  files_changed:
+  - app/tool/meetspot_recommender.py
+tags:
+- geocoding
+- data-mapping
+- 城市歧义
+- demo-reliability

@@ -1,0 +1,35 @@
+id: PM-2025-002
+created_at: '2026-01-13T05:56:55.380581Z'
+source_commit: 4d12fbe
+severity: medium
+title: 推荐系统搜索半径扩大至50公里以解决无结果问题
+description: 在推荐系统中，当使用fallback策略搜索地点无结果时，搜索半径被扩大至50公里（API最大值），以确保获取更多结果。此变更影响了推荐系统的搜索范围。
+root_cause: 原有的搜索半径限制导致在某些情况下无法获取足够的推荐结果。
+triggers:
+  files:
+  - app/tool/*.py
+  functions:
+  - _search_pois
+  patterns:
+  - radius=10000
+  - radius=50000
+  keywords:
+  - fallback
+  - 搜索半径
+  - API最大
+fix_pattern:
+  approach: 将搜索半径从10公里扩大到50公里以获取更多结果。
+  key_changes:
+  - radius=10000
+  - radius=50000
+verification:
+- 验证在扩大搜索半径后，推荐系统能够返回更多的结果。
+- 确保API调用在50公里半径下正常工作。
+- 检查日志信息是否正确反映搜索半径的变化。
+related:
+  files_changed:
+  - app/tool/meetspot_recommender.py
+tags:
+- recommender
+- api
+- search radius

@@ -1,0 +1,32 @@
+id: PM-2025-019
+created_at: '2026-01-13T05:58:04.940805Z'
+source_commit: a27c796
+severity: medium
+title: 修复CSS hover语法错误导致的样式问题
+description: 在 public/index.html 中发现无效的 CSS hover 属性，导致页面样式在某些浏览器中无法正常显示。此问题影响了用户体验。
+root_cause: 内联样式中使用了无效的 hover 属性，未被浏览器正确解析。
+triggers:
+  files:
+  - public/index.html
+  functions: []
+  patterns:
+  - hover\s*:\s*[^;]+;
+  keywords:
+  - CSS
+  - hover
+  - 样式错误
+fix_pattern:
+  approach: 移除无效的内联 hover 样式，确保 CSS 语法正确。
+  key_changes:
+  - 删除无效的 hover 属性
+verification:
+- 检查所有 CSS hover 属性的语法是否正确。
+- 确保页面在不同浏览器中显示一致。
+- 验证页面 hover 效果是否符合设计预期。
+related:
+  files_changed:
+  - public/index.html
+tags:
+- ui
+- css
+- bugfix

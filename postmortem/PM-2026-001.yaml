@@ -1,0 +1,35 @@
+id: PM-2026-001
+created_at: '2026-01-13T05:53:56.241279+00:00'
+source_commit: 3e221be
+severity: medium
+title: 添加大学全称映射，修复华南理工大学等地址解析错误
+description: '问题：用户输入大学全称（如''华南理工大学''）时，地址增强不生效，
+
+  高德API返回错误地址（如大连的公交站而非广州的大学）
+
+
+  修复：在university_mapping中同时添加简称和全称映射，
+
+  覆盖45所主要高校的简称+全称共90+条映射'
+root_cause: See commit body for details
+triggers:
+  files:
+  - CLAUDE.md
+  - app/tool/meetspot_recommender.py
+  functions:
+  - _enhance_address
+  patterns: []
+  keywords:
+  - general
+fix_pattern:
+  approach: 添加大学全称映射，修复华南理工大学等地址解析错误
+  key_changes:
+  - 添加大学全称映射，修复华南理工大学等地址解析错误
+verification:
+- Review related code changes
+related:
+  files_changed:
+  - CLAUDE.md
+  - app/tool/meetspot_recommender.py
+tags:
+- general

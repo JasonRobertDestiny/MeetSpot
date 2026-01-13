@@ -1,0 +1,43 @@
+id: PM-2025-005
+created_at: '2026-01-13T05:57:06.915651Z'
+source_commit: b8b64fa
+severity: high
+title: 修复 Render 部署环境变量读取问题
+description: 在 Render 部署时，LLM 的环境变量未正确读取，导致无法生成 LLM 传输提示，影响智能推荐功能。
+root_cause: 代码未优先读取环境变量 LLM_API_BASE 和 LLM_MODEL，导致配置错误。
+triggers:
+  files:
+  - app/config.py
+  - app/tool/*.py
+  functions:
+  - Config.__init__
+  - _get_llm
+  patterns:
+  - os.getenv\("LLM_API_BASE"
+  - os.getenv\("LLM_MODEL"
+  keywords:
+  - LLM_API_BASE
+  - LLM_MODEL
+  - Render
+  - 环境变量
+fix_pattern:
+  approach: 优先从环境变量读取 LLM 配置，并在初始化时验证 API Key 的有效性。
+  key_changes:
+  - 在 config.py 中添加对 LLM_API_BASE 和 LLM_MODEL 环境变量的支持。
+  - 调整 _get_llm 函数，增加 API Key 验证逻辑。
+  - 添加 LLM 初始化状态的日志记录。
+verification:
+- 确保环境变量 LLM_API_BASE 和 LLM_MODEL 被正确读取。
+- 验证 _get_llm 函数是否正确初始化 LLM 实例。
+- 检查日志是否记录 LLM 初始化状态。
+- 测试在 Render 部署环境下是否生成 LLM 传输提示。
+related:
+  files_changed:
+  - app/config.py
+  - app/tool/meetspot_recommender.py
+tags:
+- llm
+- api
+- environment
+- render
+- deployment

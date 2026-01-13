@@ -1,0 +1,49 @@
+id: PM-2025-010
+created_at: '2026-01-13T05:57:29.616214Z'
+source_commit: 9ebaacf
+severity: high
+title: 修复 Google Search Console 抓取超时问题
+description: 由于 Render 冷启动导致 Google 爬虫超时，出现 GSC 'Couldn't fetch' 错误，影响了网站的 SEO 表现。
+root_cause: Render 冷启动导致响应时间过长，Google 爬虫无法及时获取 sitemap 和 robots.txt。
+triggers:
+  files:
+  - api/routers/seo_pages.py
+  - .github/workflows/keep-alive.yml
+  functions:
+  - sitemap
+  - robots_txt
+  patterns:
+  - .*sitemap.*
+  - .*robots\.txt.*
+  - .*Cache-Control.*
+  - .*stale-while-revalidate.*
+  keywords:
+  - sitemap
+  - robots.txt
+  - Cache-Control
+  - stale-while-revalidate
+  - Googlebot
+  - Render cold start
+fix_pattern:
+  approach: 通过增加缓存策略、提高 keep-alive 频率以及模拟 Googlebot 爬虫访问来解决冷启动问题。
+  key_changes:
+  - 为 sitemap.xml 和 robots.txt 添加长时间缓存策略（max-age=86400, stale-while-revalidate=604800）
+  - 提高 keep-alive 频率从 10 分钟到 5 分钟
+  - 为冷启动响应添加 --max-time 30 超时限制
+  - 模拟 Googlebot 爬虫访问以验证抓取可用性
+verification:
+- 检查 sitemap.xml 和 robots.txt 是否正确设置了 Cache-Control 头
+- 验证 Cloudflare CDN 是否在冷启动期间提供缓存内容
+- 通过 Google Search Console 验证爬虫抓取是否正常
+- 模拟 Googlebot 爬虫访问，确保返回有效响应
+- 检查 keep-alive 机制是否按预期运行
+related:
+  files_changed:
+  - .github/workflows/keep-alive.yml
+  - api/routers/seo_pages.py
+tags:
+- seo
+- api
+- performance
+- googlebot
+- cache

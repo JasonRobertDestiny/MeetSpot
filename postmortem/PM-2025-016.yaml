@@ -1,0 +1,50 @@
+id: PM-2025-016
+created_at: '2026-01-13T05:57:54.839321Z'
+source_commit: 9c847c1
+severity: medium
+title: 网站内容优化修复，提升用户体验
+description: 修正了网站内容，使其更具用户友好性，移除了技术性术语并扩展了FAQ页面。影响用户对网站功能的理解和使用体验。
+root_cause: 网站内容过于技术化，影响用户体验和理解。
+triggers:
+  files:
+  - api/routers/seo_pages.py
+  - templates/pages/about.html
+  - templates/pages/faq.html
+  - templates/pages/home.html
+  - templates/pages/how_it_works.html
+  functions:
+  - faq_page
+  patterns:
+  - 移除技术性内容
+  - 扩展至10个实用问题
+  - 重写为用户导向内容
+  - 四步骤卡片式布局
+  keywords:
+  - 用户体验
+  - 技术术语
+  - FAQ
+  - 内容优化
+fix_pattern:
+  approach: 通过参考README优化网站内容，移除技术性术语，增加用户友好描述和实用问题。
+  key_changes:
+  - 首页内容优化
+  - FAQ页面扩展
+  - 关于页面重写
+  - 使用指南布局调整
+verification:
+- 检查首页是否移除技术术语
+- 确认FAQ页面包含10个问题
+- 确保关于页面内容用户导向
+- 验证使用指南布局是否为卡片式
+related:
+  files_changed:
+  - api/routers/seo_pages.py
+  - templates/pages/about.html
+  - templates/pages/faq.html
+  - templates/pages/home.html
+  - templates/pages/how_it_works.html
+tags:
+- content
+- ui
+- user_experience
+- documentation

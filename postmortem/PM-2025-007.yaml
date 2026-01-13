@@ -1,0 +1,42 @@
+id: PM-2025-007
+created_at: '2026-01-13T05:57:14.136672Z'
+source_commit: defe545
+severity: medium
+title: 修复重复加载指示器并添加 Agent 品牌标识
+description: 在加载过程中出现重复的加载指示器（“两个圈”），影响用户体验。问题还涉及品牌标识未正确显示。
+root_cause: Toast 通知与内联加载指示器同时显示，导致重复加载动画；加载文本未包含品牌标识。
+triggers:
+  files:
+  - public/meetspot_finder.html
+  functions:
+  - renderLoadingIndicator
+  - updateLoadingMessage
+  patterns:
+  - \bloading\b
+  - \bspinner\b
+  - \btoast\b
+  keywords:
+  - loading indicator
+  - spinner
+  - toast notification
+  - Agent branding
+fix_pattern:
+  approach: 移除重复的加载指示器，保留内联加载动画，并更新加载文本以动态显示品牌标识和搜索关键词。
+  key_changes:
+  - 移除 toast 通知加载动画
+  - 保留内联加载指示器
+  - 更新加载文本以包含 Agent 品牌标识
+  - 动态显示加载消息中的搜索关键词
+verification:
+- 确保加载过程中仅显示一个加载指示器
+- 检查加载文本是否正确显示 Agent 品牌标识
+- 验证动态加载消息是否包含搜索关键词
+- 确认用户界面在加载时无视觉冲突
+related:
+  files_changed:
+  - public/meetspot_finder.html
+tags:
+- ui
+- branding
+- loading
+- ux

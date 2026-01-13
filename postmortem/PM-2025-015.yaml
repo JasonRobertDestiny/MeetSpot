@@ -1,0 +1,41 @@
+id: PM-2025-015
+created_at: '2026-01-13T05:57:50.946672Z'
+source_commit: c13279a
+severity: high
+title: 智能城市推断修复简短地名解析错误
+description: 用户输入简短地名时，地理编码错误地解析到错误城市，导致中心点计算错误和POI搜索失败，前端显示数据处理异常。
+root_cause: 高德API将简短地名解析到错误城市，未能正确识别用户意图。
+triggers:
+  files:
+  - app/tool/*.py
+  - public/*.html
+  functions:
+  - _geocode
+  - _smart_city_inference
+  patterns:
+  - geocode_result
+  - geocode_results
+  keywords:
+  - 智能城市推断
+  - geocode
+  - 解析错误
+fix_pattern:
+  approach: 通过智能城市推断功能检测并纠正错误的城市解析，前端处理无结果的成功搜索。
+  key_changes:
+  - 添加智能城市推断功能
+  - 前端处理无结果的成功搜索
+  - 更新文档说明
+verification:
+- 验证简短地名能正确解析到预期城市
+- 检查中心点坐标计算是否正确
+- 确认前端显示友好的无结果提示
+related:
+  files_changed:
+  - CLAUDE.md
+  - app/tool/meetspot_recommender.py
+  - public/meetspot_finder.html
+tags:
+- geocoding
+- ui
+- api
+- error-handling

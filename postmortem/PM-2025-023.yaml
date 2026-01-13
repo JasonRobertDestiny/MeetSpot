@@ -1,0 +1,40 @@
+id: PM-2025-023
+created_at: '2026-01-13T05:58:20.762479Z'
+source_commit: a57e614
+severity: high
+title: 修复CafeRecommender类缺失execute方法导致的运行时错误
+description: 在系统运行时，CafeRecommender类缺失execute方法导致服务不可用。此问题影响了推荐功能的正常使用。
+root_cause: CafeRecommender类中缺失execute方法，导致调用时出现属性错误。
+triggers:
+  files:
+  - web_server.py
+  - app/__pycache__/*.pyc
+  functions:
+  - CafeRecommender.execute
+  patterns:
+  - def execute\(
+  - from app.tool.meetspot_recommender import CafeRecommender
+  keywords:
+  - CafeRecommender
+  - execute
+  - fallback
+  - MockResult
+fix_pattern:
+  approach: 在CafeRecommender类中添加execute方法，并实现回退机制。
+  key_changes:
+  - 在CafeRecommender类中添加execute方法
+  - 实现原始推荐器调用失败时的回退机制
+  - 创建fallback_result.html页面
+verification:
+- 检查CafeRecommender类中是否存在execute方法
+- 验证execute方法在原始推荐器不可用时是否正确回退到MockResult
+- 确保fallback_result.html页面在回退时正确显示
+related:
+  files_changed:
+  - app/__pycache__/__init__.cpython-312.pyc
+  - app/__pycache__/exceptions.cpython-312.pyc
+  - web_server.py
+tags:
+- runtime_error
+- recommendation_system
+- fallback_mechanism

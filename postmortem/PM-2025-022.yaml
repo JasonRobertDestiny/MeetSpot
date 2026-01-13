@@ -1,0 +1,36 @@
+id: PM-2025-022
+created_at: '2026-01-13T05:58:16.981664Z'
+source_commit: 53c15bb
+severity: high
+title: 修复图像响应的令牌计算问题
+description: 在处理图像响应时，令牌计算存在错误，可能导致不正确的计费或资源分配问题。此问题影响了图像处理模块的准确性。
+root_cause: 图像响应处理逻辑中缺少对令牌的正确计算。
+triggers:
+  files:
+  - app/image_processing/*.py
+  functions:
+  - calculate_token_usage
+  - process_image_response
+  patterns:
+  - calculate\s*\(.*\)
+  - token_usage\s*=\s*.*
+  keywords:
+  - token
+  - image response
+  - accounting
+  - fix
+fix_pattern:
+  approach: 修复了图像响应处理中的令牌计算逻辑，确保令牌使用量的准确性。
+  key_changes:
+  - 修正了 calculate_token_usage 函数中的计算公式
+  - 更新了 process_image_response 函数以正确处理令牌
+verification:
+- 检查 calculate_token_usage 函数的计算逻辑是否正确
+- 验证 process_image_response 函数在不同图像输入下的令牌计算是否准确
+- 确保所有图像响应的令牌使用量记录在案
+related:
+  files_changed: []
+tags:
+- image processing
+- token accounting
+- bug fix

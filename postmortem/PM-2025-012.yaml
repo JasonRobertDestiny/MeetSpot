@@ -1,0 +1,44 @@
+id: PM-2025-012
+created_at: '2026-01-13T05:57:38.272426Z'
+source_commit: bc3efc7
+severity: medium
+title: 修复UI距离选项和重定向路径问题
+description: 在应用中，距离选项更新为5/10/20/30/50公里，并修复了重定向和资源路径问题。这些问题可能导致用户体验不佳和资源加载失败。
+root_cause: 原始代码中距离选项设置不合理，且重定向和资源路径配置错误。
+triggers:
+  files:
+  - app/tool/*.py
+  - public/*.html
+  functions:
+  - CafeRecommender
+  patterns:
+  - href="/css/
+  - href="/public/meetspot_finder.html"
+  - src="/js/
+  keywords:
+  - distance options
+  - redirect
+  - asset paths
+  - window.location.href
+fix_pattern:
+  approach: 更新距离选项，修正重定向方式和资源路径。
+  key_changes:
+  - 距离选项更新为5/10/20/30/50公里
+  - 大城市默认距离设置为10公里
+  - 使用window.location.href替代window.open
+  - 返回链接指向根目录
+  - 更新CSS和JS资源路径
+verification:
+- 验证距离选项是否正确显示
+- 检查重定向是否正常工作
+- 确认资源路径是否正确加载
+- 确保返回链接指向正确页面
+related:
+  files_changed:
+  - app/tool/meetspot_recommender.py
+  - public/meetspot_finder.html
+tags:
+- ui
+- redirect
+- resource paths
+- distance options

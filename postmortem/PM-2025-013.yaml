@@ -1,0 +1,38 @@
+id: PM-2025-013
+created_at: '2026-01-13T05:57:42.048224Z'
+source_commit: 384bf6f
+severity: high
+title: 修复环境变量加载问题，确保AI聊天机器人正常运行
+description: AI聊天机器人显示“配置中”，因为未能加载.env文件中的环境变量，影响了关键配置的使用。
+root_cause: .env文件中的环境变量未被正确加载，导致配置缺失。
+triggers:
+  files:
+  - api/*.py
+  - web_server.py
+  functions:
+  - main
+  patterns:
+  - load_dotenv\(\)
+  keywords:
+  - .env
+  - 环境变量
+  - python-dotenv
+  - 配置中
+fix_pattern:
+  approach: 使用python-dotenv库加载.env文件中的环境变量。
+  key_changes:
+  - 在api/index.py和web_server.py中添加load_dotenv()调用
+verification:
+- 确保.env文件中的所有关键环境变量都被正确加载。
+- 验证AI聊天机器人不再显示“配置中”状态。
+- 检查python-dotenv库是否在requirements.txt中正确列出。
+related:
+  files_changed:
+  - api/index.py
+  - requirements.txt
+  - web_server.py
+tags:
+- environment
+- configuration
+- api
+- chatbot

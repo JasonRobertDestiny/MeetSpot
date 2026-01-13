@@ -1,0 +1,45 @@
+id: PM-2025-004
+created_at: '2026-01-13T05:57:03.601645Z'
+source_commit: a97fad3
+severity: medium
+title: 修复非合成动画以通过 Lighthouse 审核
+description: 移除了使用 width 属性的非 GPU 加速动画，解决了 Lighthouse 中的非合成动画审核失败问题。此问题可能导致页面性能下降，影响用户体验。
+root_cause: 部分动画使用了 width 和 box-shadow 等非 GPU 加速属性，导致 Lighthouse 审核失败。
+triggers:
+  files:
+  - docs/*.md
+  - templates/pages/*.html
+  - image*.png
+  - '*.png'
+  functions: []
+  patterns:
+  - .*width.*
+  - .*box-shadow.*
+  keywords:
+  - non-composited animations
+  - Lighthouse
+  - GPU acceleration
+  - transform
+  - opacity
+fix_pattern:
+  approach: 移除非 GPU 加速的动画属性，确保所有动画仅使用 transform 和 opacity。
+  key_changes:
+  - 移除了 slideProgress 和 typewriter 动画的 keyframes
+  - '将 pulseGlow 动画的 box-shadow 替换为 transform: scale()'
+verification:
+- 检查所有动画是否仅使用 transform 和 opacity 属性
+- 运行 Lighthouse 审核，确保通过非合成动画检查
+- 验证页面性能是否提升
+related:
+  files_changed:
+  - '"docs/\347\216\260\345\234\272\345\261\225\346\274\224\350\257\235\346\234\257.md"'
+  - image copy 2.png
+  - image copy.png
+  - image.png
+  - templates/pages/home.html
+  - '"\347\272\277\344\270\213\350\201\232\344\274\232\346\225\260\346\215\256.png"'
+tags:
+- ui
+- performance
+- animation
+- Lighthouse

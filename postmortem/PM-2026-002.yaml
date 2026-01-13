@@ -1,0 +1,35 @@
+id: PM-2026-002
+created_at: '2026-01-13T05:56:41.686707Z'
+source_commit: 3e221be
+severity: high
+title: 修复大学全称解析错误，确保地址增强准确性
+description: 用户输入大学全称时，地址增强功能未生效，导致高德API返回错误地址，影响用户体验。
+root_cause: 大学全称未在映射中，导致地址解析不准确。
+triggers:
+  files:
+  - app/tool/*.py
+  functions:
+  - _enhance_address
+  patterns:
+  - university_mapping
+  keywords:
+  - 大学全称
+  - 地址解析
+  - 高德API
+fix_pattern:
+  approach: 在university_mapping中添加大学全称映射，确保地址解析准确。
+  key_changes:
+  - 在university_mapping中添加45所高校的简称和全称映射
+  - 更新 _enhance_address 函数以使用新的映射
+verification:
+- 检查university_mapping中是否包含所有主要高校的简称和全称
+- 验证 _enhance_address 函数在处理全称时返回正确的地址
+- 测试高德API返回的地址是否与预期一致
+related:
+  files_changed:
+  - CLAUDE.md
+  - app/tool/meetspot_recommender.py
+tags:
+- geocoding
+- api
+- address enhancement

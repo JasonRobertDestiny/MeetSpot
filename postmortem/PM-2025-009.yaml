@@ -1,0 +1,36 @@
+id: PM-2025-009
+created_at: '2026-01-13T05:57:21.963815Z'
+source_commit: cb1784c
+severity: high
+title: 修复SEO缓存问题以解决Render冷启动问题
+description: 由于Render冷启动导致Google Search Console出现“Couldn't fetch”错误，影响了网站的SEO表现。通过扩展sitemap和robots的缓存策略解决了该问题。
+root_cause: sitemap.xml和robots.txt的缓存时间过短，导致在Render冷启动时无法及时响应搜索引擎爬虫请求。
+triggers:
+  files:
+  - api/index.py
+  functions:
+  - add_cache_headers
+  patterns:
+  - max-age=3600
+  - max-age=86400, stale-while-revalidate=604800
+  keywords:
+  - sitemap.xml
+  - robots.txt
+  - Cache-Control
+  - cold start
+fix_pattern:
+  approach: 增加缓存时间并添加stale-while-revalidate策略以确保在冷启动时仍能提供缓存内容。
+  key_changes:
+  - max-age从3600秒增加到86400秒
+  - 添加stale-while-revalidate=604800
+verification:
+- 确认sitemap.xml和robots.txt的Cache-Control头包含正确的max-age和stale-while-revalidate值
+- 使用Google Search Console验证爬虫是否能够正常获取sitemap和robots文件
+- 模拟Render冷启动环境，确保缓存策略有效
+related:
+  files_changed:
+  - api/index.py
+tags:
+- seo
+- cache
+- api

@@ -1,0 +1,49 @@
+id: PM-2025-024
+created_at: '2026-01-13T05:58:25.760808Z'
+source_commit: b481fbc
+severity: high
+title: 修复 Python 和 YAML 语法错误，优化工作流文件
+description: 多个 Python 文件和 YAML 工作流文件存在语法错误，导致部分功能无法正常运行，影响了代码的正常执行和 CI/CD 流程的稳定性。
+root_cause: 缺少必要的模块导入和工作流文件配置错误，导致语法错误和功能异常。
+triggers:
+  files:
+  - app/tool/*.py
+  - .github/workflows/*.yml
+  functions:
+  - meetspot_recommender_fixed.py
+  - llm.py
+  patterns:
+  - import .*
+  - f".*"
+  - 'workflow: .*'
+  keywords:
+  - syntax error
+  - datetime
+  - ChatCompletion
+  - workflow
+  - f-string
+fix_pattern:
+  approach: 添加缺失的模块导入，修复 HTML 模板中的 f-string 冲突，清理并保留有效的工作流文件。
+  key_changes:
+  - 在 meetspot_recommender_fixed.py 中添加 datetime 模块导入
+  - 在 llm.py 中添加 ChatCompletion 模块导入
+  - 修复 HTML 模板中 f-string 与 JavaScript 的冲突
+  - 删除重复或损坏的工作流文件，仅保留 ci.yml、auto-merge.yml 和 update-badges.yml
+verification:
+- 确保所有 Python 文件运行时无语法错误
+- 验证 HTML 模板渲染是否正确
+- 检查工作流文件是否能正常触发并执行
+- 确认 CI/CD 流程是否稳定运行
+related:
+  files_changed:
+  - .github/workflows/auto-merge-clean.yml
+  - .github/workflows/auto-merge-dependabot.yml
+  - .github/workflows/ci-clean.yml
+  - .github/workflows/ci-simple.yml
+  - app/tool/meetspot_recommender_fixed.py
+tags:
+- syntax
+- ci/cd
+- python
+- yaml
+- workflow

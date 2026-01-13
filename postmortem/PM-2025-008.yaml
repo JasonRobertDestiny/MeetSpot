@@ -1,0 +1,41 @@
+id: PM-2025-008
+created_at: '2026-01-13T05:57:18.566066Z'
+source_commit: 0843bfd
+severity: medium
+title: LLM交通建议超时保护修复
+description: 在生成交通与停车建议时，因未设置超时导致请求超时，影响用户体验。修复后添加了15秒超时保护，避免Render 30秒请求超时。
+root_cause: 缺少超时保护导致请求在30秒后超时。
+triggers:
+  files:
+  - app/tool/*.py
+  functions:
+  - _llm_generate_transport_tips
+  - _generate_default_transport_tips
+  patterns:
+  - asyncio.wait_for
+  - asyncio.TimeoutError
+  keywords:
+  - 超时
+  - timeout
+  - LLM
+  - 交通建议
+  - transport tips
+fix_pattern:
+  approach: 添加15秒超时保护，并在超时时使用默认建议。
+  key_changes:
+  - 使用asyncio.wait_for设置15秒超时
+  - 在超时时捕获asyncio.TimeoutError异常
+  - 记录超时警告日志
+  - 调用_generate_default_transport_tips提供默认建议
+verification:
+- 检查是否在15秒内返回交通建议
+- 验证超时时是否使用默认建议
+- 确认超时警告日志是否记录
+related:
+  files_changed:
+  - app/tool/meetspot_recommender.py
+tags:
+- timeout
+- LLM
+- transport
+- asyncio
