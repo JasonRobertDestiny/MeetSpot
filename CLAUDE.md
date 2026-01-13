@@ -37,7 +37,7 @@ black . && ruff check . && mypy app/
 
 ## Environment Setup
 
-**Conda**: `conda env create -f environment.yml && conda activate meetspot`
+**Conda**: `conda env create -f environment.yml && conda activate meetspot` (env name is `meetspot`, not `meetspot-dev`)
 **Pip**: `python3.11 -m venv venv && source venv/bin/activate && pip install -r requirements.txt`
 
 **Required Environment Variables**:
@@ -47,7 +47,7 @@ black . && ruff check . && mypy app/
 - `LLM_API_BASE` - API base URL (default: `https://newapi.deepwisdom.ai/v1`)
 - `LLM_MODEL` - Model name (default: `deepseek-chat`)
 
-**Local Config**: Copy `config/config.toml.example` to `config/config.toml` and fill in API keys.
+**Local Config**: Copy `config/config.toml.example` to `config/config.toml` and fill in API keys. Alternatively, create a `.env` file with the environment variables above.
 
 ## Architecture
 
@@ -156,8 +156,20 @@ Add entry to `PLACE_TYPE_CONFIG` with: Chinese name, Boxicons icons, 6 color val
 | Wrong city geocoding | Add to `landmark_mapping` with city prefix |
 | Empty POI results | Fallback mechanism handles this automatically |
 | Render OOM (512MB) | Caches are reduced (30/15 limits); Agent mode disabled |
+| Render service down | Trigger redeploy: `git commit --allow-empty -m "trigger redeploy" && git push` |
 
 **Logging**: Uses loguru via `app/logger.py`. `/health` endpoint shows config status.
+
+## Deployment
+
+Hosted on Render free tier (512MB RAM, cold starts after 15min idle).
+
+**Redeploy**: Push to `main` branch triggers auto-deploy. For manual restart without code changes:
+```bash
+git commit --allow-empty -m "chore: trigger redeploy" && git push origin main
+```
+
+**Generated artifacts**: HTML files in `workspace/js_src/` are runtime-generated and should not be committed.
 
 ## Code Style
 
