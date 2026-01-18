@@ -438,6 +438,7 @@ class CafeRecommender(BaseTool):
         min_rating: float = 0.0,  # 最低评分筛选
         max_distance: int = 100000,  # 最大距离筛选(米)
         price_range: str = "",  # 价格区间筛选
+        pre_resolved_coords: List[dict] = None,  # 预解析坐标（来自前端 Autocomplete）
     ) -> ToolResult:
         # 尝试从多个来源获取API key
         if not self.api_key:
@@ -448,7 +449,7 @@ class CafeRecommender(BaseTool):
             elif not self.api_key:
                 import os
                 self.api_key = os.getenv("AMAP_API_KEY", "")
-        
+
         if not self.api_key:
             logger.error("高德地图API密钥未配置。请在config.toml中设置 amap.api_key 或设置环境变量 AMAP_API_KEY。")
             return ToolResult(output="推荐失败: 高德地图API密钥未配置。")
@@ -458,55 +459,79 @@ class CafeRecommender(BaseTool):
             location_info = []
             geocode_results = []  # 存储原始 geocode 结果用于后续分析
 
-            # 并行地理编码 - 大幅提升性能
-            async def geocode_with_delay(location: str, index: int):
-                """带轻微延迟的地理编码，避免API限流"""
-                if index > 0:
-                    await asyncio.sleep(0.05 * index)  # 50ms递增延迟，比原来的500ms快10倍
-                return await self._geocode(location)
+            # 检查是否有预解析坐标（来自前端 Autocomplete 选择）
+            if pre_resolved_coords and len(pre_resolved_coords) == len(locations):
+                logger.info(f"使用前端预解析坐标，跳过 geocoding: {len(pre_resolved_coords)} 个地点")
+                for i, coord in enumerate(pre_resolved_coords):
+                    coordinates.append((coord["lng"], coord["lat"]))
+                    location_info.append({
+                        "name": locations[i],
+                        "formatted_address": coord.get("address", locations[i]),
+                        "location": f"{coord['lng']},{coord['lat']}",
+                        "lng": coord["lng"],
+                        "lat": coord["lat"],
+                        "city": coord.get("city", "")
+                    })
+                    geocode_results.append({
+                        "original_location": locations[i],
+                        "result": {
+                            "formatted_address": coord.get("address", locations[i]),
+                            "location": f"{coord['lng']},{coord['lat']}",
+                            "city": coord.get("city", "")
+                        }
+                    })
+            else:
+                # 原有的 geocoding 逻辑
+                # 并行地理编码 - 大幅提升性能
+                async def geocode_with_delay(location: str, index: int):
+                    """带轻微延迟的地理编码，避免API限流"""
+                    if index > 0:
+                        await asyncio.sleep(0.05 * index)  # 50ms递增延迟，比原来的500ms快10倍
+                    return await self._geocode(location)
 
-            # 使用 asyncio.gather 并行执行所有地理编码请求
-            geocode_tasks = [geocode_with_delay(loc, i) for i, loc in enumerate(locations)]
-            geocode_raw_results = await asyncio.gather(*geocode_tasks, return_exceptions=True)
+                # 使用 asyncio.gather 并行执行所有地理编码请求
+                geocode_tasks = [geocode_with_delay(loc, i) for i, loc in enumerate(locations)]
+                geocode_raw_results = await asyncio.gather(*geocode_tasks, return_exceptions=True)
 
-            # 处理结果并检查错误
-            for i, (location, result) in enumerate(zip(locations, geocode_raw_results)):
-                if isinstance(result, Exception):
-                    logger.error(f"地理编码异常: {location} - {result}")
-                    result = None
+                # 处理结果并检查错误
+                for i, (location, result) in enumerate(zip(locations, geocode_raw_results)):
+                    if isinstance(result, Exception):
+                        logger.error(f"地理编码异常: {location} - {result}")
+                        result = None
 
-                if not result:
-                    # 检查是否为大学简称但地理编码失败
-                    enhanced_address = self._enhance_address(location)
-                    if enhanced_address != location:
-                        return ToolResult(output=f"无法找到地点: {location}\n\n识别为大学简称\n您输入的 '{location}' 可能是大学简称，但未能成功解析。\n\n建议尝试：\n完整名称：'{enhanced_address}'\n添加城市：'北京 {location}'、'上海 {location}'\n具体地址：'北京市海淀区{enhanced_address}'\n校区信息：如 '{location}本部'、'{location}新校区'")
-                    else:
-                        # 提供更详细的地址输入指导
-                        suggestions = self._get_address_suggestions(location)
-                        return ToolResult(output=f"无法找到地点: {location}\n\n地址解析失败\n系统无法识别您输入的地址，请检查以下几点：\n\n具体建议：\n{suggestions}\n\n标准地址格式示例：\n完整地址：'北京市海淀区中关村大街27号'\n知名地标：'北京大学'、'天安门广场'、'上海外滩'\n商圈区域：'三里屯'、'王府井'、'南京路步行街'\n交通枢纽：'北京南站'、'上海虹桥机场'\n\n常见错误避免：\n避免过于简短：'大学' -> '北京大学'\n避免拼写错误：'北大' -> '北京大学'\n避免模糊描述：'那个商场' -> '王府井百货大楼'\n\n如果仍有问题：\n检查网络连接是否正常\n尝试使用地址的官方全称\n确认地点确实存在且对外开放")
+                    if not result:
+                        # 检查是否为大学简称但地理编码失败
+                        enhanced_address = self._enhance_address(location)
+                        if enhanced_address != location:
+                            return ToolResult(output=f"无法找到地点: {location}\n\n识别为大学简称\n您输入的 '{location}' 可能是大学简称，但未能成功解析。\n\n建议尝试：\n完整名称：'{enhanced_address}'\n添加城市：'北京 {location}'、'上海 {location}'\n具体地址：'北京市海淀区{enhanced_address}'\n校区信息：如 '{location}本部'、'{location}新校区'")
+                        else:
+                            # 提供更详细的地址输入指导
+                            suggestions = self._get_address_suggestions(location)
+                            return ToolResult(output=f"无法找到地点: {location}\n\n地址解析失败\n系统无法识别您输入的地址，请检查以下几点：\n\n具体建议：\n{suggestions}\n\n标准地址格式示例：\n完整地址：'北京市海淀区中关村大街27号'\n知名地标：'北京大学'、'天安门广场'、'上海外滩'\n商圈区域：'三里屯'、'王府井'、'南京路步行街'\n交通枢纽：'北京南站'、'上海虹桥机场'\n\n常见错误避免：\n避免过于简短：'大学' -> '北京大学'\n避免拼写错误：'北大' -> '北京大学'\n避免模糊描述：'那个商场' -> '王府井百货大楼'\n\n如果仍有问题：\n检查网络连接是否正常\n尝试使用地址的官方全称\n确认地点确实存在且对外开放")
 
-                geocode_results.append({
-                    "original_location": location,
-                    "result": result
-                })
+                    geocode_results.append({
+                        "original_location": location,
+                        "result": result
+                    })
 
-            # 智能城市推断：检测是否有地点被解析到完全不同的城市
-            if len(geocode_results) > 1:
-                geocode_results = await self._smart_city_inference(locations, geocode_results)
+                # 智能城市推断：检测是否有地点被解析到完全不同的城市
+                if len(geocode_results) > 1:
+                    city_hint = self._extract_city_hint(locations)
+                    geocode_results = await self._smart_city_inference(locations, geocode_results, city_hint)
 
-            # 处理最终的 geocode 结果
-            for item in geocode_results:
-                geocode_result = item["result"]
-                location = item["original_location"]
-                lng, lat = geocode_result["location"].split(",")
-                coordinates.append((float(lng), float(lat)))
-                location_info.append({
-                    "name": location,
-                    "formatted_address": geocode_result.get("formatted_address", location),
-                    "location": geocode_result["location"],
-                    "lng": float(lng),
-                    "lat": float(lat),
-                    "city": geocode_result.get("city", "")
+                # 处理最终的 geocode 结果
+                for item in geocode_results:
+                    geocode_result = item["result"]
+                    location = item["original_location"]
+                    lng, lat = geocode_result["location"].split(",")
+                    coordinates.append((float(lng), float(lat)))
+                    location_info.append({
+                        "name": location,
+                        "formatted_address": geocode_result.get("formatted_address", location),
+                        "location": geocode_result["location"],
+                        "lng": float(lng),
+                        "lat": float(lat),
+                        "city": geocode_result.get("city", "")
                 })
 
             if not coordinates:
@@ -682,174 +707,125 @@ class CafeRecommender(BaseTool):
             return ToolResult(output=f"推荐失败: {str(e)}")
 
     def _enhance_address(self, address: str) -> str:
-        """智能地址增强 - 为常见简称添加更准确的搜索词，包含城市信息以避免歧义"""
-        # 大学简称和全称映射，包含城市信息以提高准确性
-        # 注意：必须同时包含简称和全称，否则高德API可能返回错误地址
-        university_mapping = {
-            # 北京高校
+        """对输入地址做轻量增强，减少歧义。
+
+        这里只做“简称/别名 -> 更完整的查询词”转换。
+        主解析逻辑应在 `_geocode` / `_smart_city_inference` 中完成。
+        """
+        if not address:
+            return address
+
+        normalized = address.strip()
+
+        alias_to_fullname: Dict[str, str] = {
+            # 常见高校简称
             "北大": "北京市海淀区北京大学",
-            "北京大学": "北京市海淀区北京大学",
             "清华": "北京市海淀区清华大学",
-            "清华大学": "北京市海淀区清华大学",
             "人大": "北京市海淀区中国人民大学",
-            "中国人民大学": "北京市海淀区中国人民大学",
             "北师大": "北京市海淀区北京师范大学",
-            "北京师范大学": "北京市海淀区北京师范大学",
-            "北理工": "北京市海淀区北京理工大学",
-            "北京理工大学": "北京市海淀区北京理工大学",
-            "北航": "北京市海淀区北京航空航天大学",
-            "北京航空航天大学": "北京市海淀区北京航空航天大学",
-            "中财": "北京市海淀区中央财经大学",
-            "中央财经大学": "北京市海淀区中央财经大学",
-            "对外经贸": "北京市朝阳区对外经济贸易大学",
-            "对外经济贸易大学": "北京市朝阳区对外经济贸易大学",
-            "央美": "北京市朝阳区中央美术学院",
-            "中央美术学院": "北京市朝阳区中央美术学院",
-            "北影": "北京市海淀区北京电影学院",
-            "北京电影学院": "北京市海淀区北京电影学院",
-            "中戏": "北京市东城区中央戏剧学院",
-            "中央戏剧学院": "北京市东城区中央戏剧学院",
-            "中音": "北京市西城区中央音乐学院",
-            "中央音乐学院": "北京市西城区中央音乐学院",
-            # 上海高校
-            "上交": "上海市闵行区上海交通大学",
-            "上海交通大学": "上海市闵行区上海交通大学",
-            "上海交大": "上海市闵行区上海交通大学",
             "复旦": "上海市杨浦区复旦大学",
-            "复旦大学": "上海市杨浦区复旦大学",
-            "同济": "上海市杨浦区同济大学",
-            "同济大学": "上海市杨浦区同济大学",
-            "华师大": "上海市普陀区华东师范大学",
-            "华东师范大学": "上海市普陀区华东师范大学",
-            "上戏": "上海市静安区上海戏剧学院",
-            "上海戏剧学院": "上海市静安区上海戏剧学院",
-            "上音": "上海市徐汇区上海音乐学院",
-            "上海音乐学院": "上海市徐汇区上海音乐学院",
-            # 广东高校
-            "中大": "广州市海珠区中山大学",
-            "中山大学": "广州市海珠区中山大学",
-            "华南理工": "广州市天河区华南理工大学",
-            "华南理工大学": "广州市天河区华南理工大学",
-            "华工": "广州市天河区华南理工大学",
-            "暨大": "广州市天河区暨南大学",
-            "暨南大学": "广州市天河区暨南大学",
-            # 江浙高校
-            "浙大": "杭州市西湖区浙江大学",
-            "浙江大学": "杭州市西湖区浙江大学",
-            "南大": "南京市鼓楼区南京大学",
-            "南京大学": "南京市鼓楼区南京大学",
-            "东南": "南京市玄武区东南大学",
-            "东南大学": "南京市玄武区东南大学",
-            # 湖北高校
-            "华科": "武汉市洪山区华中科技大学",
-            "华中科技大学": "武汉市洪山区华中科技大学",
-            "华中师大": "武汉市洪山区华中师范大学",
-            "华中师范大学": "武汉市洪山区华中师范大学",
-            # 陕西高校
-            "西交": "西安市碑林区西安交通大学",
-            "西安交通大学": "西安市碑林区西安交通大学",
-            "西大": "西安市碑林区西北大学",
-            "西北大学": "西安市碑林区西北大学",
-            "西工大": "西安市碑林区西北工业大学",
-            "西北工业大学": "西安市碑林区西北工业大学",
-            # 东北高校
-            "哈工大": "哈尔滨市南岗区哈尔滨工业大学",
-            "哈尔滨工业大学": "哈尔滨市南岗区哈尔滨工业大学",
-            "大连理工": "大连市甘井子区大连理工大学",
-            "大连理工大学": "大连市甘井子区大连理工大学",
-            "东北大学": "沈阳市和平区东北大学",
-            "吉大": "长春市朝阳区吉林大学",
-            "吉林大学": "长春市朝阳区吉林大学",
-            # 其他高校
-            "中科大": "合肥市包河区中国科学技术大学",
-            "中国科学技术大学": "合肥市包河区中国科学技术大学",
-            "天大": "天津市南开区天津大学",
-            "天津大学": "天津市南开区天津大学",
-            "南开": "天津市南开区南开大学",
-            "南开大学": "天津市南开区南开大学",
-            "厦大": "厦门市思明区厦门大学",
-            "厦门大学": "厦门市思明区厦门大学",
-            "山大": "济南市历城区山东大学",
-            "山东大学": "济南市历城区山东大学",
-            "川大": "成都市武侯区四川大学",
-            "四川大学": "成都市武侯区四川大学",
-            "重大": "重庆市沙坪坝区重庆大学",
-            "重庆大学": "重庆市沙坪坝区重庆大学",
-            "兰大": "兰州市城关区兰州大学",
-            "兰州大学": "兰州市城关区兰州大学",
-            "电子科大": "成都市郫都区电子科技大学",
-            "电子科技大学": "成都市郫都区电子科技大学",
-            "中南": "长沙市岳麓区中南大学",
-            "中南大学": "长沙市岳麓区中南大学",
-            "湖大": "长沙市岳麓区湖南大学",
-            "湖南大学": "长沙市岳麓区湖南大学",
-            "西南": "重庆市北碚区西南大学",
-            "西南大学": "重庆市北碚区西南大学"
-        }
-        
-        # 检查是否为大学简称
-        if address in university_mapping:
-            enhanced = university_mapping[address]
-            logger.info(f"地址增强: '{address}' -> '{enhanced}'")
-            return enhanced
-
-        # 常见地标映射，避免跨城市歧义（如"陆家嘴"在多个城市都有）
-        landmark_mapping = {
-            # 上海地标
-            "陆家嘴": "上海市浦东新区陆家嘴",
-            "人民广场": "上海市黄浦区人民广场",
-            "徐家汇": "上海市徐汇区徐家汇",
-            "外滩": "上海市黄浦区外滩",
-            "南京路": "上海市黄浦区南京路步行街",
-            "淮海路": "上海市黄浦区淮海中路",
-            "静安寺": "上海市静安区静安寺",
-            "新天地": "上海市黄浦区新天地",
-            "五角场": "上海市杨浦区五角场",
-            "张江": "上海市浦东新区张江高科技园区",
-            "虹桥": "上海市闵行区虹桥商务区",
-            "浦东机场": "上海市浦东新区上海浦东国际机场",
-            "虹桥机场": "上海市闵行区上海虹桥国际机场",
-            # 北京地标
-            "国贸": "北京市朝阳区国贸",
-            "三里屯": "北京市朝阳区三里屯",
-            "望京": "北京市朝阳区望京",
-            "中关村": "北京市海淀区中关村",
-            "王府井": "北京市东城区王府井",
-            "西单": "北京市西城区西单",
-            "金融街": "北京市西城区金融街",
-            "CBD": "北京市朝阳区CBD中央商务区",
-            "亦庄": "北京市大兴区亦庄经济开发区",
-            "通州": "北京市通州区",
-            "天安门": "北京市东城区天安门广场",
-            "故宫": "北京市东城区故宫博物院",
-            "颐和园": "北京市海淀区颐和园",
-            "鸟巢": "北京市朝阳区国家体育场鸟巢",
-            "水立方": "北京市朝阳区国家游泳中心水立方",
-            "首都机场": "北京市朝阳区北京首都国际机场",
-            "大兴机场": "北京市大兴区北京大兴国际机场",
-            # 广州地标
-            "天河": "广州市天河区",
-            "珠江新城": "广州市天河区珠江新城",
-            "北京路": "广州市越秀区北京路步行街",
-            "白云机场": "广州市白云区广州白云国际机场",
-            # 深圳地标
-            "南山": "深圳市南山区",
-            "福田": "深圳市福田区",
-            "罗湖": "深圳市罗湖区",
-            "华强北": "深圳市福田区华强北",
-            "科技园": "深圳市南山区科技园",
-            # 杭州地标
-            "西湖": "杭州市西湖区西湖风景名胜区",
-            "钱江新城": "杭州市上城区钱江新城",
-            "滨江": "杭州市滨江区",
+            "上交": "上海市闵行区上海交通大学",
+            "浙大": "浙江省杭州市浙江大学",
+            "中大": "广东省广州市中山大学",
+            "华工": "广东省广州市华南理工大学",
+            "华科": "湖北省武汉市华中科技大学",
         }
 
-        if address in landmark_mapping:
-            enhanced = landmark_mapping[address]
-            logger.info(f"地标增强: '{address}' -> '{enhanced}'")
-            return enhanced
+        mapped = alias_to_fullname.get(normalized)
+        if mapped:
+            logger.info(f"地址别名映射: '{normalized}' -> '{mapped}'")
+            return mapped
 
-        return address
+        return normalized
+
+    def _extract_city_hint(self, locations: List[str]) -> str:
+        """从输入地点中抽取城市提示（用于 citylimit）。"""
+        city_keywords = [
+            "北京", "上海", "广州", "深圳", "杭州", "南京", "武汉", "成都", "西安", "天津",
+            "重庆", "苏州", "长沙", "郑州", "济南", "青岛", "大连", "厦门", "福州", "昆明",
+        ]
+
+        votes: Dict[str, int] = {}
+        for loc in locations:
+            if not loc:
+                continue
+            full_loc = self._enhance_address(loc)
+            for city in city_keywords:
+                if city in loc or city in full_loc:
+                    votes[city] = votes.get(city, 0) + 1
+
+        if not votes:
+            return ""
+
+        best_city = max(votes, key=votes.get)
+        logger.info(f"城市提示投票: {votes} -> '{best_city}'")
+        return best_city
+
+    async def _geocode_via_poi(self, address: str, city_hint: str = "") -> Optional[Dict[str, Any]]:
+        """使用 AMap POI 文本检索优先解析地点。"""
+        keyword = self._enhance_address(address)
+        if not keyword:
+            return None
+
+        url = "https://restapi.amap.com/v3/place/text"
+        params: Dict[str, Any] = {
+            "key": self.api_key,
+            "keywords": keyword,
+            "offset": 5,
+            "extensions": "base",
+        }
+        if city_hint:
+            params["city"] = city_hint
+            params["citylimit"] = "true"
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, params=params) as response:
+                    if response.status != 200:
+                        return None
+                    data = await response.json()
+
+            if data.get("info") == "CUQPS_HAS_EXCEEDED_THE_LIMIT":
+                return None
+            if data.get("status") != "1" or not data.get("pois"):
+                return None
+
+            poi = self._select_best_poi(data["pois"], keyword, city_hint)
+            if not poi:
+                return None
+
+            return {
+                "location": poi.get("location", ""),
+                "formatted_address": (poi.get("address") or "") or poi.get("name", address),
+                "city": poi.get("cityname", ""),
+                "province": poi.get("pname", ""),
+                "district": poi.get("adname", ""),
+                "name": poi.get("name", address),
+                "_source": "poi",
+            }
+        except Exception:
+            return None
+
+    def _select_best_poi(self, pois: List[Dict], keyword: str, city_hint: str) -> Optional[Dict]:
+        if not pois:
+            return None
+
+        keyword_lower = keyword.lower()
+
+        for poi in pois:
+            if poi.get("name", "").lower() == keyword_lower:
+                return poi
+
+        if city_hint:
+            for poi in pois:
+                if keyword_lower in poi.get("name", "").lower() and city_hint in poi.get("cityname", ""):
+                    return poi
+
+        for poi in pois:
+            if keyword_lower in poi.get("name", "").lower():
+                return poi
+
+        return pois[0]
 
     def _get_address_suggestions(self, address: str) -> str:
         """根据输入的地址提供智能建议"""
@@ -916,7 +892,7 @@ class CafeRecommender(BaseTool):
     async def _geocode(self, address: str) -> Optional[Dict[str, Any]]:
         if address in self.geocode_cache:
             return self.geocode_cache[address]
-        
+
         # 确保API密钥已设置
         if not self.api_key:
             if hasattr(config, "amap") and config.amap and hasattr(config.amap, "api_key"):
@@ -924,13 +900,23 @@ class CafeRecommender(BaseTool):
             else:
                 logger.error("高德地图API密钥未配置")
                 return None
-        
-        # 智能地址增强
+
+        # 先尝试 POI 文本检索，降低同名跨城误解析
+        poi_city_hint = ""
+        poi_result = await self._geocode_via_poi(address, city_hint=poi_city_hint)
+        if poi_result and poi_result.get("location"):
+            if len(self.geocode_cache) >= self.GEOCODE_CACHE_MAX:
+                oldest_key = next(iter(self.geocode_cache))
+                del self.geocode_cache[oldest_key]
+            self.geocode_cache[address] = poi_result
+            return poi_result
+
+        # POI 不可用时回退到 Geocode
         enhanced_address = self._enhance_address(address)
-        
+
         url = "https://restapi.amap.com/v3/geocode/geo"
         params = {"key": self.api_key, "address": enhanced_address, "output": "json"}
-        
+
         # 重试机制，最多重试3次（优化延迟以提升性能）
         max_retries = 3
         for attempt in range(max_retries):
@@ -942,7 +928,9 @@ class CafeRecommender(BaseTool):
                 async with aiohttp.ClientSession() as session:
                     async with session.get(url, params=params) as response:
                         if response.status != 200:
-                            logger.error(f"高德地图API地理编码请求失败: {response.status}, 地址: {address}, 尝试: {attempt + 1}")
+                            logger.error(
+                                f"高德地图API地理编码请求失败: {response.status}, 地址: {address}, 尝试: {attempt + 1}"
+                            )
                             if attempt == max_retries - 1:
                                 return None
                             continue
@@ -975,13 +963,14 @@ class CafeRecommender(BaseTool):
                 if attempt == max_retries - 1:
                     return None
                 await asyncio.sleep(0.2 * (attempt + 1))  # 200ms递增延迟（优化：原为1s）
-        
+
         return None
 
     async def _smart_city_inference(
         self,
         original_locations: List[str],
-        geocode_results: List[Dict]
+        geocode_results: List[Dict],
+        city_hint: str = ""
     ) -> List[Dict]:
         """智能城市推断：检测并修正被解析到错误城市的地点
 
@@ -1001,16 +990,42 @@ class CafeRecommender(BaseTool):
             lng, lat = result["location"].split(",")
             coords.append((float(lng), float(lat)))
 
-        # 找出主流城市（出现次数最多的城市）
+        # 如果输入本身是跨城（例如：北京 + 广州），不要强行拉到同一城市。
+        # 只在“同城为主、少数点明显跑偏”的场景做纠正。
         from collections import Counter
         city_counts = Counter(cities)
         if not city_counts:
             return geocode_results
 
-        main_city, main_count = city_counts.most_common(1)[0]
+        # 明确给出的城市提示代表用户意图，出现跨城时直接跳过纠正。
+        if city_hint and sum(1 for c in cities if city_hint in c) < len(cities):
+            return geocode_results
+
+        # 若城市分布很分散（例如 1:1 或 1:1:1），无法可靠判断“主城市”，直接跳过纠正。
+        most_common = city_counts.most_common(2)
+        if len(most_common) == 1:
+            main_city, main_count = most_common[0]
+        else:
+            (main_city, main_count), (_, second_count) = most_common
+            if main_count == second_count:
+                return geocode_results
 
         # 如果所有地点都在同一城市，无需修正
         if main_count == len(cities):
+            return geocode_results
+
+        # 主城市占比过低（< 60%）时，不做纠正，避免跨城输入被误拉同城
+        if main_count / len(cities) < 0.6:
+            return geocode_results
+
+        # 当地点数量较少时，如果更像是跨城输入，直接跳过纠正。
+        # 典型情况：两地相距很远（例如北京 + 广州），不应强行拉同城。
+        if len(cities) <= 2:
+            if len(coords) == 2 and self._calculate_distance(coords[0], coords[1]) > 300000:
+                return geocode_results
+
+        # 允许纠正的前提：城市提示（如果有）必须与主城市一致
+        if city_hint and city_hint not in main_city:
             return geocode_results
 
         # 检测异常地点：距离其他地点过远（超过500公里）
@@ -2196,8 +2211,8 @@ class CafeRecommender(BaseTool):
         keywords: str,
         theme: str = "",
         fallback_used: bool = False,
-        fallback_keyword: str = None,
-        participant_locations: List[str] = None
+        fallback_keyword: Optional[str] = None,
+        participant_locations: Optional[List[str]] = None
     ) -> str:
         file_name_prefix = "place"
 
@@ -2234,8 +2249,8 @@ class CafeRecommender(BaseTool):
         keywords: str,
         theme: str = "",
         fallback_used: bool = False,
-        fallback_keyword: str = None,
-        participant_locations: List[str] = None
+        fallback_keyword: Optional[str] = None,
+        participant_locations: Optional[List[str]] = None
     ) -> str:
         # 根据主题参数确定配置
         if theme:

@@ -40,6 +40,14 @@ except ImportError as e:
     print(f"⚠️ 导入模块警告: {e}")
     config = None
     config_available = False
+    # 创建 fallback logger（当 app.logger 导入失败时）
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger("meetspot")
+
+    # Fallback for init_db
+    async def init_db():
+        logger.warning("Database module not available, skipping init")
 
 # 导入 Agent 模块（高内存消耗，暂时禁用以保证稳定性）
 agent_available = False  # 禁用 Agent 模式，节省内存
@@ -196,6 +204,15 @@ class LocationRequest(BaseModel):
     venue_types: Optional[List[str]] = ["咖啡馆"]
     user_requirements: Optional[str] = ""
 
+class LocationCoord(BaseModel):
+    """预解析的地址坐标信息（来自前端 Autocomplete 选择）"""
+    name: str                              # 用户选择的地点名称
+    address: str                           # 完整地址
+    lng: float                             # 经度
+    lat: float                             # 纬度
+    city: Optional[str] = ""               # 城市名
+
+
 class MeetSpotRequest(BaseModel):
     locations: List[str]
     keywords: Optional[str] = "咖啡馆"
@@ -205,6 +222,8 @@ class MeetSpotRequest(BaseModel):
     min_rating: Optional[float] = 0.0      # 最低评分 (0-5)
     max_distance: Optional[int] = 100000   # 最大距离 (米)
     price_range: Optional[str] = ""        # 价格区间: economy/mid/high
+    # 预解析坐标（可选，由前端 Autocomplete 提供）
+    location_coords: Optional[List[LocationCoord]] = None
 
 class AIChatRequest(BaseModel):
     message: str
@@ -267,6 +286,7 @@ PRESET_QUESTIONS = [
 
 # 环境变量配置（用于 Vercel）
 AMAP_API_KEY = os.getenv("AMAP_API_KEY", "")
+AMAP_JS_API_KEY = os.getenv("AMAP_JS_API_KEY", "")  # JS API key for frontend map
 AMAP_SECURITY_JS_CODE = os.getenv("AMAP_SECURITY_JS_CODE", "")
 
 # 创建 FastAPI 应用
@@ -770,15 +790,31 @@ async def _process_meetspot_request(request: MeetSpotRequest, start_time: float)
             recommender = CafeRecommender()
 
             print("🚀 开始执行推荐...")
+            # 转换 location_coords 为推荐器期望的格式
+            pre_resolved_coords = None
+            if request.location_coords:
+                pre_resolved_coords = [
+                    {
+                        "name": coord.name,
+                        "address": coord.address,
+                        "lng": coord.lng,
+                        "lat": coord.lat,
+                        "city": coord.city or ""
+                    }
+                    for coord in request.location_coords
+                ]
+                print(f"📍 使用前端预解析坐标: {len(pre_resolved_coords)} 个")
+
             # 调用推荐工具
             result = await recommender.execute(
                 locations=request.locations,
-                keywords=request.keywords,
-                place_type=request.place_type,
-                user_requirements=request.user_requirements,
-                min_rating=request.min_rating,
-                max_distance=request.max_distance,
-                price_range=request.price_range
+                keywords=request.keywords or "咖啡馆",
+                place_type=request.place_type or "",
+                user_requirements=request.user_requirements or "",
+                min_rating=request.min_rating or 0.0,
+                max_distance=request.max_distance or 100000,
+                price_range=request.price_range or "",
+                pre_resolved_coords=pre_resolved_coords
             )
 
             processing_time = time.time() - start_time
@@ -961,6 +997,34 @@ async def get_recommendations(request: LocationRequest):
 
     # 直接调用主端点并返回相同格式
     return await find_meetspot(meetspot_request)
+
+
+@app.get("/api/config/amap")
+async def get_amap_config():
+    """返回 AMap 配置（用于前端地图和 Autocomplete）
+
+    Note: 前端需要 JS API key，与后端 geocoding 使用的 Web服务 key 不同
+    """
+    # 优先使用 JS API key（前端地图专用）
+    js_api_key = AMAP_JS_API_KEY
+    security_js_code = AMAP_SECURITY_JS_CODE
+
+    # 从 config.toml 获取（如果存在）
+    if config and hasattr(config, "amap") and config.amap:
+        if not js_api_key:
+            js_api_key = getattr(config.amap, "js_api_key", "") or getattr(config.amap, "api_key", "")
+        if not security_js_code:
+            security_js_code = getattr(config.amap, "security_js_code", "")
+
+    # 最后回退到 Web服务 key（不推荐，可能无法加载地图）
+    if not js_api_key:
+        js_api_key = AMAP_API_KEY
+
+    return {
+        "api_key": js_api_key,
+        "security_js_code": security_js_code
+    }
+
 
 @app.get("/api/status")
 async def api_status():

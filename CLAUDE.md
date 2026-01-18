@@ -31,9 +31,17 @@ python tests/test_seo.py http://localhost:8000  # SEO validation (standalone)
 
 # Quality gates (run before PRs)
 black . && ruff check . && mypy app/
+
+# Postmortem regression check (optional, runs in CI)
+python tools/postmortem_check.py         # Check for known issue patterns
 ```
 
 **Key URLs**: Main UI (`/`), API docs (`/docs`), Health (`/health`)
+
+## Repo Rules
+
+- Follow `AGENTS.md` for repo-local guidelines (style, structure, what not to commit). In particular: runtime-generated files under `workspace/js_src/` must not be committed.
+- There are no Cursor/Copilot rule files in this repo (no `.cursorrules`, no `.cursor/rules/`, no `.github/copilot-instructions.md`).
 
 ## Environment Setup
 
@@ -140,12 +148,38 @@ The `max_distance` filter applies after POI retrieval during ranking. To change 
 `BRAND_FEATURES` dict in `meetspot_recommender.py` contains 50+ brand profiles (Starbucks, Haidilao, etc.) with feature scores (0.0-1.0) for: quiet, WiFi, business, parking, child-friendly, 24h. Used in requirements matching - brands scoring >=0.7 satisfy the requirement. Place types prefixed with `_` (e.g., `_library`) provide defaults.
 
 ### Adding Address Mappings
-In `_enhance_address()` method:
-- `university_mapping` dict for university abbreviations
-- `landmark_mapping` dict for city landmarks (prevents cross-city geocoding errors)
+Two sources for address resolution:
+1. **External file**: `data/address_aliases.json` - JSON file with `university_aliases` and `landmark_aliases` dicts. Preferred for new mappings.
+2. **Internal dicts**: `university_mapping` and `landmark_mapping` in `_enhance_address()` method of `meetspot_recommender.py`. Use for mappings requiring city prefixes (prevents cross-city geocoding errors).
 
 ### Adding Venue Themes
 Add entry to `PLACE_TYPE_CONFIG` with: Chinese name, Boxicons icons, 6 color values.
+
+## Postmortem System
+
+Automated regression prevention system that tracks historical fixes and warns when code changes might reintroduce past bugs.
+
+### Structure
+```
+postmortem/
+  PM-2025-001.yaml ... PM-2026-xxx.yaml  # Historical fix documentation
+tools/
+  postmortem_init.py     # Generate initial knowledge base from git history
+  postmortem_check.py    # Check code changes against known patterns
+  postmortem_generate.py # Generate postmortem for a single commit
+```
+
+### CI Integration
+- `postmortem-check.yml`: Runs on PRs, warns if changes match known issue patterns
+- `postmortem-update.yml`: Auto-generates postmortem when `fix:` commits merge to main
+
+### Adding New Postmortems
+When fixing a bug, the CI will auto-generate a postmortem. For manual creation:
+```bash
+python tools/postmortem_generate.py <commit-hash>
+```
+
+Each postmortem YAML contains triggers (file patterns, function names, regex, keywords) that enable multi-dimensional pattern matching.
 
 ## Debugging
 

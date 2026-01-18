@@ -1388,6 +1388,73 @@
                 font-size: 1.75rem;
             }
         }
+
+        /* Address Autocomplete Dropdown Styles */
+        .amap-sug-result {
+            z-index: 9999 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 8px 32px rgba(0, 21, 36, 0.15) !important;
+            border: 1px solid var(--slate-200) !important;
+            overflow: hidden !important;
+        }
+
+        .amap-sug-result .auto-item {
+            padding: 12px 16px !important;
+            border-bottom: 1px solid var(--slate-100) !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .amap-sug-result .auto-item:hover {
+            background: linear-gradient(135deg, var(--cream-100) 0%, var(--cream-200) 100%) !important;
+        }
+
+        .amap-sug-result .auto-item.selected {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(255, 107, 53, 0.05) 100%) !important;
+        }
+
+        .amap-sug-result .auto-item .poi-name {
+            font-weight: 600 !important;
+            color: var(--slate-800) !important;
+        }
+
+        .amap-sug-result .auto-item .poi-addr {
+            font-size: 0.85rem !important;
+            color: var(--slate-500) !important;
+            margin-top: 2px !important;
+        }
+
+        /* Location input with selected indicator */
+        .location-input.has-coord input {
+            border-color: var(--mint-400) !important;
+            background: linear-gradient(to bottom, white, rgba(6, 214, 160, 0.05)) !important;
+        }
+
+        .location-input .coord-indicator {
+            position: absolute;
+            right: 48px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            background: var(--mint-500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .location-input.has-coord .coord-indicator {
+            opacity: 1;
+        }
+
+        /* First two inputs don't have remove button, adjust indicator position */
+        .location-input:not(:has(.remove-location-btn)) .coord-indicator {
+            right: 12px;
+        }
     </style>
 </head>
 <body>
@@ -1462,13 +1529,15 @@
                     </div>
 
                     <div class="locations-container" id="locationsContainer">
-                        <div class="location-input">
+                        <div class="location-input" data-index="0">
                             <i class='bx bxs-location-plus'></i>
-                            <input type="text" name="location" placeholder="输入第一个地点，如：北京朝阳区望京" required>
+                            <input type="text" name="location" id="location-0" placeholder="输入第一个地点，如：北京朝阳区望京" required>
+                            <span class="coord-indicator"><i class='bx bx-check'></i></span>
                         </div>
-                        <div class="location-input">
+                        <div class="location-input" data-index="1">
                             <i class='bx bxs-location-plus'></i>
-                            <input type="text" name="location" placeholder="输入第二个地点，如：海淀区中关村" required>
+                            <input type="text" name="location" id="location-1" placeholder="输入第二个地点，如：海淀区中关村" required>
+                            <span class="coord-indicator"><i class='bx bx-check'></i></span>
                         </div>
                     </div>
 
@@ -1774,6 +1843,132 @@
         let selectedThemeOrder = [];
         const MAX_PLACE_TYPES = 3;
 
+        // ========== Address Autocomplete State ==========
+        let locationIndex = 2;  // Start from 2 since we have 0 and 1
+        let locationCoords = {};  // Store selected coordinates: { inputId: { name, address, lng, lat, city } }
+        let AMap = null;  // Will be set after AMap loads
+        let autocompleteInstances = {};  // Store Autocomplete instances for cleanup
+
+        // ========== AMap Loader ==========
+        function loadAMapAPI() {
+            return new Promise((resolve, reject) => {
+                // Set security config
+                window._AMapSecurityConfig = {
+                    securityJsCode: window.AMAP_SECURITY_JS_CODE || ''
+                };
+
+                // Load AMap Loader
+                const script = document.createElement('script');
+                script.src = 'https://webapi.amap.com/loader.js';
+                script.onload = function() {
+                    // Fetch API key from server
+                    fetch('/api/config/amap')
+                        .then(r => r.json())
+                        .then(config => {
+                            window._AMapSecurityConfig.securityJsCode = config.security_js_code || '';
+                            AMapLoader.load({
+                                key: config.api_key,
+                                version: "2.0",
+                                plugins: ["AMap.AutoComplete", "AMap.PlaceSearch"]
+                            })
+                            .then(function(amap) {
+                                AMap = amap;
+                                console.log('AMap loaded successfully');
+                                // Initialize autocomplete for existing inputs
+                                initAllAutocomplete();
+                                resolve(amap);
+                            })
+                            .catch(function(e) {
+                                console.error('AMap load failed:', e);
+                                reject(e);
+                            });
+                        })
+                        .catch(err => {
+                            console.warn('Failed to fetch AMap config, autocomplete disabled:', err);
+                            resolve(null);
+                        });
+                };
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        // Initialize autocomplete for a single input
+        function initAutocomplete(inputId) {
+            if (!AMap) {
+                console.warn('AMap not loaded, skipping autocomplete init for', inputId);
+                return;
+            }
+
+            const input = document.getElementById(inputId);
+            if (!input) return;
+
+            // Clean up existing instance
+            if (autocompleteInstances[inputId]) {
+                // AMap Autocomplete doesn't have a destroy method, but we can remove event listeners
+                delete autocompleteInstances[inputId];
+            }
+
+            try {
+                const autocomplete = new AMap.AutoComplete({
+                    input: inputId,
+                    datatype: 'all',
+                    citylimit: false  // Search across all cities
+                });
+
+                autocompleteInstances[inputId] = autocomplete;
+
+                // Handle selection
+                AMap.Event.addListener(autocomplete, 'select', function(e) {
+                    if (e.poi && e.poi.location) {
+                        const locationInput = input.closest('.location-input');
+                        locationCoords[inputId] = {
+                            name: e.poi.name,
+                            address: e.poi.address || e.poi.name,
+                            lng: e.poi.location.lng,
+                            lat: e.poi.location.lat,
+                            city: e.poi.adcode ? '' : ''  // City will be in address
+                        };
+                        // Update input value to show selected name
+                        input.value = e.poi.name;
+                        // Add visual indicator
+                        if (locationInput) {
+                            locationInput.classList.add('has-coord');
+                        }
+                        console.log('Selected location:', locationCoords[inputId]);
+                        updateStepIndicator();
+                    }
+                });
+
+                // Clear coord when user types manually
+                input.addEventListener('input', function() {
+                    const locationInput = input.closest('.location-input');
+                    // If user is typing (not selecting from dropdown), clear the stored coord
+                    setTimeout(() => {
+                        if (!locationCoords[inputId] || input.value !== locationCoords[inputId].name) {
+                            delete locationCoords[inputId];
+                            if (locationInput) {
+                                locationInput.classList.remove('has-coord');
+                            }
+                        }
+                    }, 100);
+                });
+
+                console.log('Autocomplete initialized for', inputId);
+            } catch (err) {
+                console.error('Failed to init autocomplete for', inputId, err);
+            }
+        }
+
+        // Initialize autocomplete for all existing inputs
+        function initAllAutocomplete() {
+            document.querySelectorAll('input[name="location"]').forEach(input => {
+                if (input.id) {
+                    initAutocomplete(input.id);
+                }
+            });
+        }
+
         // Step indicator update
         function updateStepIndicator() {
             const locations = document.querySelectorAll('input[name="location"]');
@@ -1877,18 +2072,24 @@
                 return;
             }
 
+            const inputId = `location-${locationIndex++}`;
             const newLocationDiv = document.createElement('div');
             newLocationDiv.className = 'location-input';
+            newLocationDiv.setAttribute('data-index', locationIndex - 1);
             newLocationDiv.style.animationDelay = '0s';
             newLocationDiv.innerHTML = `
                 <i class='bx bxs-location-plus'></i>
-                <input type="text" name="location" placeholder="输入地点">
+                <input type="text" name="location" id="${inputId}" placeholder="输入地点">
+                <span class="coord-indicator"><i class='bx bx-check'></i></span>
                 <button type="button" class="remove-location-btn" onclick="removeLocation(this)">
                     <i class='bx bx-x'></i>
                 </button>
             `;
             container.appendChild(newLocationDiv);
             updateLocationCountHint();
+
+            // Initialize autocomplete for the new input
+            initAutocomplete(inputId);
 
             // Focus the new input
             newLocationDiv.querySelector('input').focus();
@@ -1918,8 +2119,14 @@
         function removeLocation(button) {
             const locationInput = button.closest('.location-input');
             const container = document.getElementById('locationsContainer');
+            const input = locationInput.querySelector('input');
 
             if (container.querySelectorAll('.location-input').length > 2) {
+                // Clean up autocomplete instance and stored coords
+                if (input && input.id) {
+                    delete autocompleteInstances[input.id];
+                    delete locationCoords[input.id];
+                }
                 locationInput.style.animation = 'slideInUp 0.3s ease-out reverse';
                 setTimeout(() => {
                     locationInput.remove();
@@ -2060,14 +2267,28 @@
 
             const locationInputs = document.querySelectorAll('input[name="location"]');
             let locations = [];
+            let coordsArray = [];  // Collect pre-resolved coordinates
 
+            // Collect locations and their coordinates
             Array.from(locationInputs).forEach(input => {
                 const value = input.value.trim();
                 if (value) {
-                    if (value.includes(' ') && !value.includes('区') && !value.includes('市') && !value.includes('县')) {
-                        locations.push(...value.split(/\s+/).filter(loc => loc.trim()));
+                    // Check if this input has pre-resolved coordinates
+                    const inputId = input.id;
+                    if (inputId && locationCoords[inputId] && locationCoords[inputId].name === value) {
+                        // Use the pre-resolved coordinate
+                        locations.push(value);
+                        coordsArray.push(locationCoords[inputId]);
+                    } else if (value.includes(' ') && !value.includes('区') && !value.includes('市') && !value.includes('县')) {
+                        // Split space-separated locations (no coords for these)
+                        const splitLocs = value.split(/\s+/).filter(loc => loc.trim());
+                        splitLocs.forEach(loc => {
+                            locations.push(loc);
+                            coordsArray.push(null);  // No pre-resolved coord
+                        });
                     } else {
                         locations.push(value);
+                        coordsArray.push(null);  // No pre-resolved coord
                     }
                 }
             });
@@ -2082,6 +2303,18 @@
             if (locations.length > 10) {
                 showError('地点过多', '最多支持10个地点');
                 return;
+            }
+
+            // Only send location_coords if ALL locations have pre-resolved coordinates
+            // This ensures we don't mix pre-resolved and geocoded results
+            let location_coords = null;
+            const validCoords = coordsArray.filter(c => c !== null);
+            if (validCoords.length === locations.length) {
+                // All locations have pre-resolved coordinates
+                location_coords = validCoords;
+                console.log('All locations have pre-resolved coordinates:', location_coords);
+            } else if (validCoords.length > 0) {
+                console.log(`${validCoords.length}/${locations.length} locations have pre-resolved coordinates, falling back to geocoding for all`);
             }
 
             let keywords = '';
@@ -2116,18 +2349,26 @@
                 const maxDistance = parseInt(document.getElementById('maxDistance').value) || 100000;
                 const priceRange = document.getElementById('priceRange').value || "";
 
+                // Build request body
+                const requestBody = {
+                    locations: locations,
+                    keywords: keywords,
+                    user_requirements: userRequirements,
+                    theme: selectedTheme,
+                    min_rating: minRating,
+                    max_distance: maxDistance,
+                    price_range: priceRange
+                };
+
+                // Add pre-resolved coordinates if available
+                if (location_coords) {
+                    requestBody.location_coords = location_coords;
+                }
+
                 const response = await fetch('/api/find_meetspot', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        locations: locations,
-                        keywords: keywords,
-                        user_requirements: userRequirements,
-                        theme: selectedTheme,
-                        min_rating: minRating,
-                        max_distance: maxDistance,
-                        price_range: priceRange
-                    })
+                    body: JSON.stringify(requestBody)
                 });
 
                 if (!response.ok) {
@@ -2175,6 +2416,15 @@
             if (cafeType) {
                 cafeType.click();
             }
+
+            // Load AMap API for autocomplete
+            loadAMapAPI()
+                .then(() => {
+                    console.log('Address autocomplete ready');
+                })
+                .catch(err => {
+                    console.warn('Address autocomplete not available:', err);
+                });
         });
     </script>
 
