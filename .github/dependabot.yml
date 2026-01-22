@@ -10,9 +10,9 @@ updates:
       time: "09:00"
       timezone: "Asia/Shanghai"
     reviewers:
-      - "JasonRobertDestiny"
+      - "calderbuild"
     assignees:
-      - "JasonRobertDestiny"
+      - "calderbuild"
     labels:
       - "dependencies"
       - "python"
@@ -41,7 +41,7 @@ updates:
       time: "10:00"
       timezone: "Asia/Shanghai"
     reviewers:
-      - "JasonRobertDestiny"
+      - "calderbuild"
     labels:
       - "github-actions"
       - "automated"
@@ -56,7 +56,7 @@ updates:
       time: "09:00"
       timezone: "Asia/Shanghai"
     reviewers:
-      - "JasonRobertDestiny"
+      - "calderbuild"
     labels:
       - "docker"
       - "automated"

@@ -3,7 +3,7 @@
 **Scan Date**: 2025-11-08
 **Repository**: MeetSpot - Intelligent Meeting Point Recommendation System
 **Live URL**: https://meetspot-irq2.onrender.com/
-**GitHub**: https://github.com/JasonRobertDestiny/MeetSpot
+**GitHub**: https://github.com/calderbuild/MeetSpot
 
 ---
 
@@ -436,7 +436,7 @@ jobs:
 
 #### Setup
 ```bash
-git clone https://github.com/JasonRobertDestiny/MeetSpot.git
+git clone https://github.com/calderbuild/MeetSpot.git
 cd MeetSpot
 pip install -r requirements.txt
 cp config/config.toml.example config/config.toml

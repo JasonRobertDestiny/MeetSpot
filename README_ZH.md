@@ -14,7 +14,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com/)
-[![Build Status](https://github.com/JasonRobertDestiny/MeetSpot/actions/workflows/ci.yml/badge.svg)](https://github.com/JasonRobertDestiny/MeetSpot/actions)
+[![Build Status](https://github.com/calderbuild/MeetSpot/actions/workflows/ci.yml/badge.svg)](https://github.com/calderbuild/MeetSpot/actions)
 
 [English](README.md) | 简体中文
 
@@ -109,7 +109,7 @@ LLM 分析场所与需求的语义匹配度，再与规则评分融合。结果�
 
 ```bash
 # 克隆并安装
-git clone https://github.com/JasonRobertDestiny/MeetSpot.git && cd MeetSpot
+git clone https://github.com/calderbuild/MeetSpot.git && cd MeetSpot
 pip install -r requirements.txt
 
 # 配置（从 https://lbs.amap.com/ 获取密钥）
@@ -255,7 +255,7 @@ black . && ruff check . && mypy app/
 
 **邮箱：** Johnrobertdestiny@gmail.com
 
-**GitHub：** [Issues](https://github.com/JasonRobertDestiny/MeetSpot/issues)
+**GitHub：** [Issues](https://github.com/calderbuild/MeetSpot/issues)
 
 **博客：** [jasonrobert.me](https://jasonrobert.me/)
 
@@ -289,6 +289,6 @@ MIT License - 详见 [LICENSE](LICENSE)
 
 **觉得有用？请给个 Star 支持一下！**
 
-[![Star History Chart](https://api.star-history.com/svg?repos=JasonRobertDestiny/MeetSpot&type=Date)](https://star-history.com/#JasonRobertDestiny/MeetSpot&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=calderbuild/MeetSpot&type=Date)](https://star-history.com/#calderbuild/MeetSpot&Date)
 
 </div>

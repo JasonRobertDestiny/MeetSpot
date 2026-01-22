@@ -175,7 +175,7 @@ class SEOContentGenerator:
                     }
                 ],
                 "sameAs": [
-                    "https://github.com/JasonRobertDestiny/MeetSpot",
+                    "https://github.com/calderbuild/MeetSpot",
                     "https://jasonrobert.me/",
                 ],
             }

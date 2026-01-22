@@ -14,7 +14,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com/)
-[![Build Status](https://github.com/JasonRobertDestiny/MeetSpot/actions/workflows/ci.yml/badge.svg)](https://github.com/JasonRobertDestiny/MeetSpot/actions)
+[![Build Status](https://github.com/calderbuild/MeetSpot/actions/workflows/ci.yml/badge.svg)](https://github.com/calderbuild/MeetSpot/actions)
 
 [English](README.md) | [简体中文](README_ZH.md)
 
@@ -111,7 +111,7 @@ The LLM analyzes semantic fit between venues and requirements, then blends with 
 
 ```bash
 # Clone and install
-git clone https://github.com/JasonRobertDestiny/MeetSpot.git && cd MeetSpot
+git clone https://github.com/calderbuild/MeetSpot.git && cd MeetSpot
 pip install -r requirements.txt
 
 # Configure (get key from https://lbs.amap.com/)
@@ -257,7 +257,7 @@ Contributions are welcome! Please:
 
 **Email:** Johnrobertdestiny@gmail.com
 
-**GitHub:** [Issues](https://github.com/JasonRobertDestiny/MeetSpot/issues)
+**GitHub:** [Issues](https://github.com/calderbuild/MeetSpot/issues)
 
 **Blog:** [jasonrobert.me](https://jasonrobert.me/)
 
@@ -291,6 +291,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 **If MeetSpot helps you, please give it a star!**
 
-[![Star History Chart](https://api.star-history.com/svg?repos=JasonRobertDestiny/MeetSpot&type=Date)](https://star-history.com/#JasonRobertDestiny/MeetSpot&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=calderbuild/MeetSpot&type=Date)](https://star-history.com/#calderbuild/MeetSpot&Date)
 
 </div>

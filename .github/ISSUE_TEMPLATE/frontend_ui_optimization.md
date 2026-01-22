@@ -72,7 +72,7 @@ function hideLoading() {
 
 ## 🚀 开始贡献
 
-1. **Fork 项目**: https://github.com/JasonRobertDestiny/MeetSpot
+1. **Fork 项目**: https://github.com/calderbuild/MeetSpot
 2. **本地运行**: `python web_server.py`
 3. **编辑文件**: `workspace/meetspot_finder.html`
 4. **测试效果**: 在浏览器中查看改进

@@ -3,7 +3,7 @@ name: 🚀 寻找贡献者 - 多个开发任务等你来挑战！
 about: 欢迎加入 MeetSpot 开发团队，为开源项目贡献力量
 title: '🚀 [HELP WANTED] 寻找贡献者参与 MeetSpot 开发 - 新手友好项目'
 labels: 'help wanted, good first issue, enhancement, documentation'
-assignees: 'JasonRobertDestiny'
+assignees: 'calderbuild'
 ---
 
 ## 🎯 项目概述
