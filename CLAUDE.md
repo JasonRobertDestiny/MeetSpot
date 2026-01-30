@@ -101,6 +101,10 @@ app/design_tokens.py                # WCAG AA color palette, CSS generation
 api/routers/seo_pages.py            # SEO landing pages
 ```
 
+### Frontend Address Input
+
+`public/meetspot_finder.html` uses AMap Autocomplete API for real-time address suggestions. When users select from dropdown, coordinates are pre-resolved client-side, bypassing backend geocoding. Falls back to backend geocoding when manual text is entered.
+
 ### LLM Scoring (Agent Mode)
 
 When Agent Mode is enabled, final venue scores blend rule-based and LLM semantic analysis:
@@ -148,9 +152,9 @@ The `max_distance` filter applies after POI retrieval during ranking. To change 
 `BRAND_FEATURES` dict in `meetspot_recommender.py` contains 50+ brand profiles (Starbucks, Haidilao, etc.) with feature scores (0.0-1.0) for: quiet, WiFi, business, parking, child-friendly, 24h. Used in requirements matching - brands scoring >=0.7 satisfy the requirement. Place types prefixed with `_` (e.g., `_library`) provide defaults.
 
 ### Adding Address Mappings
-Two sources for address resolution:
-1. **External file**: `data/address_aliases.json` - JSON file with `university_aliases` and `landmark_aliases` dicts. Preferred for new mappings.
-2. **Internal dicts**: `university_mapping` and `landmark_mapping` in `_enhance_address()` method of `meetspot_recommender.py`. Use for mappings requiring city prefixes (prevents cross-city geocoding errors).
+**Preferred**: Edit `data/address_aliases.json` - maps abbreviations to full names (e.g., "北大" → "北京大学").
+
+**For cross-city issues**: Add to `university_mapping` or `landmark_mapping` dicts in `meetspot_recommender.py` with city prefix (e.g., "华南理工" → "广州市番禺区华南理工大学").
 
 ### Adding Venue Themes
 Add entry to `PLACE_TYPE_CONFIG` with: Chinese name, Boxicons icons, 6 color values.
